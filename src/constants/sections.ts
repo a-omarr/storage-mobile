@@ -39,14 +39,14 @@ export const SECTIONS: SectionConfig[] = [
     },
     {
         key: 'THE_SIXTH',
-        label: 'السادس',
+        label: 'القسم السادس',
         color: '#eb2f96',
         bgColor: '#fff0f6',
         gradient: 'linear-gradient(135deg, #eb2f96, #c41d7f)',
     },
     {
         key: 'EYES',
-        label: 'العينين',
+        label: 'قسم العينن',
         color: '#13c2c2',
         bgColor: '#e6fffb',
         gradient: 'linear-gradient(135deg, #13c2c2, #08979c)',

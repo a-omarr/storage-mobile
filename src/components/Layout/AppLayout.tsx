@@ -43,14 +43,16 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
                     <FiHome className="nav-icon" />
                     <span>الرئيسية</span>
                 </button>
-                {SECTIONS.slice(0, 4).map((s) => (
+                {SECTIONS.map((s) => (
                     <button
                         key={s.key}
                         className={`nav-item ${section === s.key ? 'nav-item-active' : ''}`}
                         onClick={() => navigate(`/section/${s.key}`)}
                     >
-                        <span className="nav-icon" style={{ fontWeight: 700 }}>{s.key}</span>
-                        <span>{s.label.split(' ')[1] || s.label}</span>
+                        <span className="nav-icon" style={{ fontWeight: 700, fontSize: 16 }}>
+                            {s.key === 'THE_SIXTH' ? 'س' : s.key === 'EYES' ? 'ع' : s.key}
+                        </span>
+                        <span>{s.label.includes(' ') ? s.label.split(' ')[1] : s.label}</span>
                     </button>
                 ))}
             </div>

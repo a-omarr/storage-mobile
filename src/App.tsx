@@ -5,11 +5,11 @@ import arEG from 'antd/locale/ar_EG';
 import AppLayout from './components/Layout/AppLayout';
 import Home from './pages/Home';
 import SectionPage from './pages/SectionPage';
-import AddProductPage from './pages/AddProductPage';
-import EditProductPage from './pages/EditProductPage';
+import AddProductPage from './pages/AddProductPage/AddProductPage';
+import EditProductPage from './pages/EditProductPage/EditProductPage';
 import SearchResultsPage from './pages/SearchResultsPage';
 import ProductDetailPage from './pages/ProductDetailPage';
-import AllProductsPage from './pages/AllProductsPage';
+import AllProductsPage from './pages/AllProductsPage/AllProductsPage';
 
 const App: React.FC = () => {
   return (

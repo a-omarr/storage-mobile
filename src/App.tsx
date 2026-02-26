@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
 import arEG from 'antd/locale/ar_EG';
 import AppLayout from './components/Layout/AppLayout';
-import Home from './pages/Home';
+import Home from './pages/Home/Home';
 import SectionPage from './pages/SectionPage';
 import AddProductPage from './pages/AddProductPage/AddProductPage';
 import EditProductPage from './pages/EditProductPage/EditProductPage';

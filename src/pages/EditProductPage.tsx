@@ -61,7 +61,7 @@ const EditProductPage: React.FC = () => {
 
     if (loading) {
         return (
-            <div style={{ display: 'flex', justifyContent: 'center', padding: 80 }}>
+            <div className="flex justify-center py-20">
                 <Spin size="large" />
             </div>
         );
@@ -86,12 +86,8 @@ const EditProductPage: React.FC = () => {
     return (
         <div>
             <div
-                style={{
-                    background: sectionConfig?.gradient || 'linear-gradient(135deg, #1677ff, #0958d9)',
-                    borderRadius: 'var(--radius-md)',
-                    padding: '16px 24px',
-                    marginBottom: 20,
-                }}
+                className="rounded-[12px] px-6 py-4 mb-5"
+                style={{ background: sectionConfig?.gradient || 'linear-gradient(135deg, #1677ff, #0958d9)' }}
             >
                 <Title level={4} style={{ color: 'white', margin: 0, fontFamily: 'Cairo, sans-serif' }}>
                     ✏️ تعديل منتج — {product.type} {product.capacity}

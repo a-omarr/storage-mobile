@@ -47,12 +47,8 @@ const AddProductPage: React.FC = () => {
         <div>
             {/* Page Header */}
             <div
-                style={{
-                    background: sectionConfig?.gradient || 'linear-gradient(135deg, #1677ff, #0958d9)',
-                    borderRadius: 'var(--radius-md)',
-                    padding: '16px 24px',
-                    marginBottom: 20,
-                }}
+                className="rounded-[12px] px-6 py-4 mb-5"
+                style={{ background: sectionConfig?.gradient || 'linear-gradient(135deg, #1677ff, #0958d9)' }}
             >
                 <Title level={4} style={{ color: 'white', margin: 0, fontFamily: 'Cairo, sans-serif' }}>
                     ➕ إضافة منتج جديد{sectionConfig ? ` — ${sectionConfig.label}` : ''}

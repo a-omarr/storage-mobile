@@ -32,15 +32,8 @@ const SectionPage: React.FC = () => {
         <div>
             {/* Section Header */}
             <div
-                style={{
-                    background: sectionConfig.gradient,
-                    borderRadius: 'var(--radius-md)',
-                    padding: '20px 24px',
-                    marginBottom: 20,
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                }}
+                className="rounded-[12px] px-6 py-5 mb-5 flex justify-between items-center"
+                style={{ background: sectionConfig.gradient }}
             >
                 <div>
                     <Title level={3} style={{ color: 'white', margin: 0, fontFamily: 'Cairo, sans-serif' }}>
@@ -76,7 +69,7 @@ const SectionPage: React.FC = () => {
             )}
 
             {loading ? (
-                <div style={{ display: 'flex', justifyContent: 'center', padding: 60 }}>
+                <div className="flex justify-center py-[60px]">
                     <Spin size="large" />
                 </div>
             ) : (

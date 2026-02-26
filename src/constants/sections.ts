@@ -46,7 +46,7 @@ export const SECTIONS: SectionConfig[] = [
     },
     {
         key: 'EYES',
-        label: 'قسم العينن',
+        label: 'قسم العينين',
         color: '#13c2c2',
         bgColor: '#e6fffb',
         gradient: 'linear-gradient(135deg, #13c2c2, #08979c)',

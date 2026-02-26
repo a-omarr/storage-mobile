@@ -26,7 +26,7 @@ const Home: React.FC = () => {
 
     if (loading) {
         return (
-            <div style={{ display: 'flex', justifyContent: 'center', padding: 80 }}>
+            <div className="flex justify-center py-20">
                 <Spin size="large" />
             </div>
         );
@@ -35,8 +35,8 @@ const Home: React.FC = () => {
     return (
         <div>
             {/* Stats bar */}
-            <div className="stats-bar" style={{ marginBottom: 20 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div className="bg-gradient-to-br from-[#1677ff] to-[#0958d9] text-white rounded-[12px] px-5 py-4 mb-5">
+                <div className="flex justify-between items-center">
                     <div>
                         <Text style={{ color: 'rgba(255,255,255,0.8)', fontFamily: 'Cairo, sans-serif', fontSize: 13 }}>
                             إجمالي المنتجات
@@ -45,7 +45,7 @@ const Home: React.FC = () => {
                             {products.length}
                         </Title>
                     </div>
-                    <div style={{ fontSize: 40, opacity: 0.3 }}>📦</div>
+                    <div className="text-[40px] opacity-30">📦</div>
                 </div>
             </div>
 
@@ -59,7 +59,7 @@ const Home: React.FC = () => {
                     return (
                         <Col xs={12} sm={8} md={6} key={s.key}>
                             <div
-                                className="section-card"
+                                className="bg-white rounded-[12px] p-5 shadow-[0_1px_3px_rgba(0,0,0,0.08)] cursor-pointer transition-all duration-200 border-2 border-transparent hover:shadow-[0_4px_16px_rgba(0,0,0,0.10)] hover:border-[#1677ff] hover:-translate-y-0.5 active:translate-y-0"
                                 onClick={() => navigate(`/section/${s.key}`)}
                             >
                                 <div
@@ -112,13 +112,13 @@ const Home: React.FC = () => {
                     }}
                     bodyStyle={{ padding: '16px 20px' }}
                 >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
+                    <div className="flex items-center gap-2 mb-3.5">
                         <FiAlertTriangle style={{ color: '#f59e0b', fontSize: 20 }} />
                         <Text strong style={{ fontFamily: 'Cairo, sans-serif', fontSize: 15, color: '#92400e' }}>
                             أقدم المنتجات — يحتاج تصريف
                         </Text>
                     </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    <div className="flex flex-col gap-2.5">
                         {oldest.map((p) => {
                             const days = daysOld(p.dateOfProduction);
                             const section = SECTIONS.find((s) => s.key === p.section);
@@ -126,16 +126,7 @@ const Home: React.FC = () => {
                                 <div
                                     key={p.id}
                                     onClick={() => navigate(`/product/${p.id}`)}
-                                    style={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center',
-                                        cursor: 'pointer',
-                                        padding: '8px 12px',
-                                        background: 'white',
-                                        borderRadius: 10,
-                                        boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
-                                    }}
+                                    className="flex justify-between items-center cursor-pointer px-3 py-2 bg-white rounded-[10px] shadow-[0_1px_4px_rgba(0,0,0,0.06)]"
                                 >
                                     <div>
                                         <Text
@@ -148,11 +139,11 @@ const Home: React.FC = () => {
                                             {section?.label} · {p.batchNumber}
                                         </Text>
                                     </div>
-                                    <div style={{ textAlign: 'left' }}>
+                                    <div className="text-left">
                                         <Text style={{ color: '#ef4444', fontWeight: 700, fontFamily: 'Cairo, sans-serif', display: 'block' }}>
                                             {formatDate(p.dateOfProduction)}
                                         </Text>
-                                        <span className="oldest-badge">{days} يوم</span>
+                                        <span className="bg-gradient-to-br from-[#fef3c7] to-[#fde68a] border border-[#f59e0b] rounded-lg px-2.5 py-1 text-xs text-[#92400e] font-semibold">{days} يوم</span>
                                     </div>
                                 </div>
                             );
@@ -162,8 +153,8 @@ const Home: React.FC = () => {
             )}
 
             {products.length === 0 && (
-                <div style={{ textAlign: 'center', padding: 60, color: 'var(--color-text-muted)' }}>
-                    <div style={{ fontSize: 60, marginBottom: 12 }}>📦</div>
+                <div className="text-center py-[60px] text-[#6b7c93]">
+                    <div className="text-[60px] mb-3">📦</div>
                     <Text style={{ fontFamily: 'Cairo, sans-serif', fontSize: 16 }}>
                         لا توجد منتجات مضافة بعد
                     </Text>

@@ -46,12 +46,11 @@ const OCRProcessor: React.FC<OCRProcessorProps> = ({ imageDataUrl, onResult, onE
     }, [imageDataUrl, onResult, onError]);
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
+        <div className="flex flex-col items-center gap-4">
             <img
                 src={imageDataUrl}
                 alt="صورة الإيصال"
-                className="camera-preview"
-                style={{ maxHeight: 280, borderRadius: 12, opacity: 0.7 }}
+                className="max-w-full max-h-[280px] rounded-[12px] shadow-[0_4px_16px_rgba(0,0,0,0.10)] opacity-70"
             />
             <Spin size="large" />
             <Text

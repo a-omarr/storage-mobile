@@ -14,14 +14,7 @@ const SearchResultsPage: React.FC = () => {
     return (
         <div>
             {/* Header */}
-            <div
-                style={{
-                    background: 'linear-gradient(135deg, #1677ff, #0958d9)',
-                    borderRadius: 'var(--radius-md)',
-                    padding: '16px 24px',
-                    marginBottom: 20,
-                }}
-            >
+            <div className="bg-gradient-to-br from-[#1677ff] to-[#0958d9] rounded-[12px] px-6 py-4 mb-5">
                 <Title level={4} style={{ color: 'white', margin: 0, fontFamily: 'Cairo, sans-serif', marginBottom: 12 }}>
                     🔍 البحث في المخزن
                 </Title>
@@ -34,29 +27,15 @@ const SearchResultsPage: React.FC = () => {
 
             {/* Results */}
             {!query ? (
-                <div
-                    style={{
-                        textAlign: 'center',
-                        padding: 60,
-                        color: 'var(--color-text-muted)',
-                        fontFamily: 'Cairo, sans-serif',
-                    }}
-                >
-                    <div style={{ fontSize: 50, marginBottom: 12 }}>🔍</div>
+                <div className="text-center py-[60px] text-[#6b7c93] font-['Cairo',sans-serif]">
+                    <div className="text-[50px] mb-3">🔍</div>
                     <Text style={{ fontSize: 16, fontFamily: 'Cairo, sans-serif' }}>
                         ابدأ بالكتابة للبحث عن منتج في جميع الأقسام
                     </Text>
                 </div>
             ) : results.length === 0 ? (
-                <div
-                    style={{
-                        textAlign: 'center',
-                        padding: 60,
-                        color: 'var(--color-text-muted)',
-                        fontFamily: 'Cairo, sans-serif',
-                    }}
-                >
-                    <div style={{ fontSize: 50, marginBottom: 12 }}>😕</div>
+                <div className="text-center py-[60px] text-[#6b7c93] font-['Cairo',sans-serif]">
+                    <div className="text-[50px] mb-3">😕</div>
                     <Text style={{ fontSize: 16, fontFamily: 'Cairo, sans-serif' }}>
                         لم يُعثر على أي منتج مطابق لـ "{query}"
                     </Text>

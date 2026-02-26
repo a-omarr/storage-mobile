@@ -109,7 +109,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                 requiredMark={false}
             >
                 {/* Camera Button */}
-                <div style={{ marginBottom: 20 }}>
+                <div className="mb-5">
                     {ocrSuccess && (
                         <Alert
                             message="تم قراءة البيانات من الصورة بنجاح ✓"

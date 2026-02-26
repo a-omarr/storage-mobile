@@ -156,7 +156,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
                         </Text>
                         {isOld && (
                             <div>
-                                <span className="oldest-badge">{days} يوم</span>
+                                <span className="bg-gradient-to-br from-[#fef3c7] to-[#fde68a] border border-[#f59e0b] rounded-lg px-2.5 py-1 text-xs text-[#92400e] font-semibold">{days} يوم</span>
                             </div>
                         )}
                     </div>
@@ -200,20 +200,18 @@ const ProductTable: React.FC<ProductTableProps> = ({
         },
     ];
 
-
-
     const renderMobileCards = () => (
-        <div className="mobile-only">
+        <div className="md:hidden">
             {sorted.map((record) => (
                 <div
                     key={record.id}
-                    className="mobile-product-card"
+                    className="bg-white rounded-[12px] p-3.5 mb-3 shadow-[0_1px_3px_rgba(0,0,0,0.08)] border border-[#e2e8f0] cursor-pointer"
                     onClick={() => navigate(`/product/${record.id}`)}
                 >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10, borderBottom: '1px solid var(--color-border)', paddingBottom: 8, alignItems: 'center' }}>
+                    <div className="flex justify-between mb-2.5 border-b border-[#e2e8f0] pb-2 items-center">
                         <div>
                             {showSection && (
-                                <div style={{ marginBottom: 4 }}>
+                                <div className="mb-1">
                                     {(() => {
                                         const s = SECTION_MAP[record.section as keyof typeof SECTION_MAP];
                                         return s ? (
@@ -259,24 +257,24 @@ const ProductTable: React.FC<ProductTableProps> = ({
                         </Space>
                     </div>
 
-                    <div className="mobile-card-row">
-                        <span className="mobile-card-label">رقم الصنف:</span>
-                        <span className="mobile-card-value">{record.itemNo}</span>
+                    <div className="flex justify-between mb-1.5 text-[13px]">
+                        <span className="text-[#6b7c93] font-['Cairo',sans-serif]">رقم الصنف:</span>
+                        <span className="font-semibold text-[#1a2332]">{record.itemNo}</span>
                     </div>
-                    <div className="mobile-card-row">
-                        <span className="mobile-card-label">الدفعة:</span>
-                        <span className="mobile-card-value">{record.batchNumber}</span>
+                    <div className="flex justify-between mb-1.5 text-[13px]">
+                        <span className="text-[#6b7c93] font-['Cairo',sans-serif]">الدفعة:</span>
+                        <span className="font-semibold text-[#1a2332]">{record.batchNumber}</span>
                     </div>
-                    <div className="mobile-card-row">
-                        <span className="mobile-card-label">بالتات:</span>
+                    <div className="flex justify-between mb-1.5 text-[13px]">
+                        <span className="text-[#6b7c93] font-['Cairo',sans-serif]">بالتات:</span>
                         <Text strong style={{ color: '#1677ff' }}>{record.numberOfPallet}</Text>
                     </div>
-                    <div className="mobile-card-row">
-                        <span className="mobile-card-label">تاريخ الإنتاج:</span>
+                    <div className="flex justify-between mb-1.5 text-[13px]">
+                        <span className="text-[#6b7c93] font-['Cairo',sans-serif]">تاريخ الإنتاج:</span>
                         <span>
                             {formatDate(record.dateOfProduction)}
                             {daysOld(record.dateOfProduction) > 365 && (
-                                <span className="oldest-badge" style={{ padding: '2px 6px', fontSize: 10, marginLeft: 4 }}>
+                                <span className="bg-gradient-to-br from-[#fef3c7] to-[#fde68a] border border-[#f59e0b] rounded-lg px-1.5 py-0.5 text-[10px] text-[#92400e] font-semibold ml-1">
                                     {daysOld(record.dateOfProduction)} يوم
                                 </span>
                             )}
@@ -288,8 +286,8 @@ const ProductTable: React.FC<ProductTableProps> = ({
     );
 
     return (
-        <div className="product-table-container">
-            <div className="desktop-only">
+        <div className="bg-white rounded-[12px] shadow-[0_1px_3px_rgba(0,0,0,0.08)] overflow-hidden">
+            <div className="hidden md:block">
                 <Table
                     dataSource={sorted}
                     columns={columns}
@@ -313,8 +311,8 @@ const ProductTable: React.FC<ProductTableProps> = ({
                     })}
                     locale={{
                         emptyText: (
-                            <div style={{ padding: 40, textAlign: 'center', color: 'var(--color-text-muted)' }}>
-                                <div style={{ fontSize: 40, marginBottom: 8 }}>📦</div>
+                            <div className="py-10 text-center text-[#6b7c93]">
+                                <div className="text-[40px] mb-2">📦</div>
                                 <div>لا توجد منتجات في هذا القسم</div>
                             </div>
                         ),
@@ -324,8 +322,8 @@ const ProductTable: React.FC<ProductTableProps> = ({
             </div>
             {renderMobileCards()}
             {products.length === 0 && !loading && (
-                <div className="mobile-only" style={{ padding: 40, textAlign: 'center', color: 'var(--color-text-muted)' }}>
-                    <div style={{ fontSize: 40, marginBottom: 8 }}>📦</div>
+                <div className="md:hidden py-10 text-center text-[#6b7c93]">
+                    <div className="text-[40px] mb-2">📦</div>
                     <div>لا توجد منتجات</div>
                 </div>
             )}

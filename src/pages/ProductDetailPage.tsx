@@ -34,7 +34,7 @@ const ProductDetailPage: React.FC = () => {
 
     if (loading) {
         return (
-            <div style={{ display: 'flex', justifyContent: 'center', padding: 80 }}>
+            <div className="flex justify-center py-20">
                 <Spin size="large" />
             </div>
         );

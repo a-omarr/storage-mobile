@@ -26,26 +26,13 @@ const Navbar: React.FC = () => {
             }}
         >
             <div
-                style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', flex: 1, minWidth: 0, paddingRight: 8 }}
+                className="flex items-center gap-[10px] cursor-pointer flex-1 min-w-0 pr-2"
                 onClick={() => navigate('/')}
             >
-                <div
-                    style={{
-                        width: 36,
-                        height: 36,
-                        background: 'rgba(255,255,255,0.2)',
-                        borderRadius: 10,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontWeight: 800,
-                        fontSize: 18,
-                        color: 'white',
-                    }}
-                >
+                <div className="w-9 h-9 bg-white/20 rounded-[10px] flex items-center justify-center font-extrabold text-lg text-white shrink-0">
                     م
                 </div>
-                <div style={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
+                <div className="flex-1 min-w-0 overflow-hidden">
                     <Text
                         style={{
                             color: 'white',
@@ -61,7 +48,6 @@ const Navbar: React.FC = () => {
                     >
                         إدارة المخزن
                     </Text>
-
                 </div>
             </div>
 
@@ -73,7 +59,7 @@ const Navbar: React.FC = () => {
                 onClick={() => navigate('/search')}
                 title="البحث"
             />
-        </Header >
+        </Header>
     );
 };
 

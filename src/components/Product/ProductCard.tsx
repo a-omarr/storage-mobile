@@ -30,11 +30,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         >
             {/* Header */}
             <div
-                style={{
-                    background: section?.gradient || '#1677ff',
-                    padding: '20px 24px',
-                    color: 'white',
-                }}
+                className="px-6 py-5 text-white"
+                style={{ background: section?.gradient || '#1677ff' }}
             >
                 <Space style={{ marginBottom: 4 }}>
                     <Button
@@ -64,21 +61,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             </div>
 
             {/* Body */}
-            <div style={{ padding: '24px' }}>
+            <div className="p-6">
                 {isOld && (
-                    <div
-                        style={{
-                            background: '#fef3c7',
-                            border: '1px solid #f59e0b',
-                            borderRadius: 8,
-                            padding: '10px 16px',
-                            marginBottom: 16,
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 8,
-                        }}
-                    >
-                        <span style={{ fontSize: 20 }}>⚠️</span>
+                    <div className="bg-[#fef3c7] border border-[#f59e0b] rounded-lg px-4 py-2.5 mb-4 flex items-center gap-2">
+                        <span className="text-xl">⚠️</span>
                         <Text style={{ color: '#92400e', fontWeight: 600, fontFamily: 'Cairo, sans-serif' }}>
                             تحذير: هذا المنتج عمره {days} يوم — الأقدم
                         </Text>
@@ -114,7 +100,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                             {formatDate(product.dateOfProduction)}
                         </Text>
                         {isOld && (
-                            <span className="oldest-badge" style={{ marginRight: 8 }}>
+                            <span className="bg-gradient-to-br from-[#fef3c7] to-[#fde68a] border border-[#f59e0b] rounded-lg px-2.5 py-1 text-xs text-[#92400e] font-semibold mr-2">
                                 {days} يوم
                             </span>
                         )}
@@ -123,7 +109,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
                 <Divider />
 
-                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <div className="flex justify-end">
                     <Button
                         type="primary"
                         icon={<FiEdit />}

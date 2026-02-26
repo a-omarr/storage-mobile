@@ -1,9 +1,11 @@
 @import "tailwindcss";
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
 }
 
 :root {
@@ -44,170 +46,7 @@ body,
   direction: rtl;
 }
 
-/* Mobile-first scrolling */
-.page-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 16px;
-  padding-bottom: 80px;
-  /* Space for bottom nav */
-}
-
-@media (min-width: 768px) {
-  .page-container {
-    padding-bottom: 24px;
-  }
-}
-
-/* Mobile Product Card (ListView) */
-.mobile-product-card {
-  background: var(--color-surface);
-  border-radius: var(--radius-md);
-  padding: 14px;
-  margin-bottom: 12px;
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--color-border);
-}
-
-.mobile-card-row {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 6px;
-  font-size: 13px;
-}
-
-.mobile-card-label {
-  color: var(--color-text-muted);
-  font-family: 'Cairo', sans-serif;
-}
-
-.mobile-card-value {
-  font-weight: 600;
-  color: var(--color-text);
-}
-
-/* Bottom Navigation */
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 72px;
-  background: var(--color-surface);
-  border-top: 1px solid var(--color-border);
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  z-index: 1000;
-  padding: 0 8px;
-  padding-bottom: env(safe-area-inset-bottom);
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-}
-
-.bottom-nav::-webkit-scrollbar {
-  display: none;
-}
-
-.nav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  color: var(--color-text-muted);
-  font-size: 10px;
-  font-family: 'Cairo', sans-serif;
-  border: none;
-  background: none;
-  cursor: pointer;
-}
-
-.nav-item-active {
-  color: var(--color-primary);
-}
-
-.nav-icon {
-  font-size: 20px;
-}
-
-/* Section cards */
-.section-card {
-  background: var(--color-surface);
-  border-radius: var(--radius-md);
-  padding: 20px;
-  box-shadow: var(--shadow-sm);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border: 2px solid transparent;
-}
-
-.section-card:hover {
-  box-shadow: var(--shadow-md);
-  border-color: var(--color-primary);
-  transform: translateY(-2px);
-}
-
-.section-card:active {
-  transform: translateY(0);
-}
-
-/* Product table */
-.product-table-container {
-  background: var(--color-surface);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
-  overflow: hidden;
-}
-
-/* Warning badge */
-.oldest-badge {
-  background: linear-gradient(135deg, #fef3c7, #fde68a);
-  border: 1px solid #f59e0b;
-  border-radius: var(--radius-sm);
-  padding: 4px 10px;
-  font-size: 12px;
-  color: #92400e;
-  font-weight: 600;
-}
-
-/* Loading spinner overlay */
-.ocr-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  flex-direction: column;
-  gap: 16px;
-  color: white;
-  font-size: 18px;
-  font-family: 'Cairo', sans-serif;
-}
-
-/* Camera preview */
-.camera-preview {
-  max-width: 100%;
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-md);
-}
-
-/* Stats bar */
-.stats-bar {
-  background: linear-gradient(135deg, #1677ff, #0958d9);
-  color: white;
-  border-radius: var(--radius-md);
-  padding: 16px 20px;
-  margin-bottom: 20px;
-}
-
 /* Smooth page transitions */
-.page-enter {
-  animation: fadeSlideIn 0.25s ease forwards;
-}
-
 @keyframes fadeSlideIn {
   from {
     opacity: 0;
@@ -220,7 +59,11 @@ body,
   }
 }
 
-/* Scrollbar */
+.page-enter {
+  animation: fadeSlideIn 0.25s ease forwards;
+}
+
+/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -237,21 +80,4 @@ body,
 
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
-}
-
-@media (max-width: 639px) {
-  .desktop-only {
-    display: none !important;
-  }
-
-  .page-container {
-    padding: 12px;
-    padding-bottom: 80px;
-  }
-}
-
-@media (min-width: 640px) {
-  .mobile-only {
-    display: none !important;
-  }
 }

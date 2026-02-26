@@ -29,22 +29,9 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onResult, onClose }) => {
     };
 
     return (
-        <div
-            style={{
-                position: 'fixed',
-                inset: 0,
-                background: 'rgba(0,0,0,0.85)',
-                zIndex: 9999,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: 20,
-                gap: 20,
-            }}
-        >
+        <div className="fixed inset-0 bg-black/85 z-[9999] flex flex-col items-center justify-center p-5 gap-5">
             {/* Close button */}
-            <div style={{ position: 'absolute', top: 16, left: 16 }}>
+            <div className="absolute top-4 left-4">
                 <Button
                     shape="circle"
                     icon={<FiX />}
@@ -85,14 +72,14 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onResult, onClose }) => {
                         type="file"
                         accept="image/*"
                         capture="environment"
-                        style={{ display: 'none' }}
+                        className="hidden"
                         onChange={handleFileChange}
                     />
                     <input
                         ref={fileInputRef}
                         type="file"
                         accept="image/*"
-                        style={{ display: 'none' }}
+                        className="hidden"
                         onChange={handleFileChange}
                     />
 
@@ -135,19 +122,11 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onResult, onClose }) => {
                     </Space>
 
                     {/* Tips */}
-                    <div
-                        style={{
-                            maxWidth: 300,
-                            background: 'rgba(255,255,255,0.1)',
-                            borderRadius: 12,
-                            padding: '14px 16px',
-                            marginTop: 8,
-                        }}
-                    >
+                    <div className="max-w-[300px] bg-white/10 rounded-[12px] px-4 py-3.5 mt-2">
                         <Text style={{ color: 'rgba(255,255,255,0.85)', fontFamily: 'Cairo, sans-serif', fontSize: 13 }}>
                             💡 نصائح للحصول على نتائج أفضل:
                         </Text>
-                        <ul style={{ color: 'rgba(255,255,255,0.7)', fontSize: 12, marginTop: 6, paddingRight: 16, fontFamily: 'Cairo, sans-serif' }}>
+                        <ul className="text-white/70 text-xs mt-1.5 pr-4 font-['Cairo',sans-serif]">
                             <li>أمسك الهاتف عمودياً فوق الإيصال مباشرةً</li>
                             <li>تأكد من وجود إضاءة كافية</li>
                             <li>تجنب الظلال على الإيصال</li>

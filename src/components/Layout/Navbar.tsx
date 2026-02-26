@@ -1,6 +1,6 @@
 import React from 'react';
 import { Layout, Button, Typography } from 'antd';
-import { BarsOutlined } from '@ant-design/icons';
+import { FiSearch } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 
 const { Header } = Layout;
@@ -25,9 +25,8 @@ const Navbar: React.FC = () => {
                 height: 64,
             }}
         >
-            {/* Brand */}
             <div
-                style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}
+                style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', flex: 1, minWidth: 0, paddingRight: 8 }}
                 onClick={() => navigate('/')}
             >
                 <div
@@ -46,7 +45,7 @@ const Navbar: React.FC = () => {
                 >
                     م
                 </div>
-                <div>
+                <div style={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
                     <Text
                         style={{
                             color: 'white',
@@ -55,31 +54,26 @@ const Navbar: React.FC = () => {
                             display: 'block',
                             lineHeight: 1.2,
                             fontFamily: 'Cairo, sans-serif',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
                         }}
                     >
                         إدارة المخزن
                     </Text>
-                    <Text
-                        style={{
-                            color: 'rgba(255,255,255,0.75)',
-                            fontSize: 11,
-                            fontFamily: 'Cairo, sans-serif',
-                        }}
-                    >
-                        شركة الحديثة للزجاج
-                    </Text>
+
                 </div>
             </div>
 
             {/* Search icon */}
             <Button
                 type="text"
-                icon={<BarsOutlined style={{ fontSize: 22 }} />}
+                icon={<FiSearch style={{ fontSize: 22 }} />}
                 style={{ color: 'white' }}
                 onClick={() => navigate('/search')}
                 title="البحث"
             />
-        </Header>
+        </Header >
     );
 };
 

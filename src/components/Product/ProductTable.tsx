@@ -1,11 +1,6 @@
 import React, { useState } from 'react';
 import { Table, Button, Popconfirm, Tag, Tooltip, Space, Typography } from 'antd';
-import {
-    EditOutlined,
-    DeleteOutlined,
-    SortAscendingOutlined,
-    SortDescendingOutlined,
-} from '@ant-design/icons';
+import { FiEdit, FiTrash2, FiArrowUp, FiArrowDown } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import {
     deleteDoc,
@@ -136,9 +131,9 @@ const ProductTable: React.FC<ProductTableProps> = ({
                             size="small"
                             icon={
                                 sortOrder === 'asc' ? (
-                                    <SortAscendingOutlined />
+                                    <FiArrowUp />
                                 ) : (
-                                    <SortDescendingOutlined />
+                                    <FiArrowDown />
                                 )
                             }
                             onClick={() => setSortOrder((s) => (s === 'asc' ? 'desc' : 'asc'))}
@@ -178,7 +173,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
                     <Tooltip title="تعديل">
                         <Button
                             type="text"
-                            icon={<EditOutlined />}
+                            icon={<FiEdit />}
                             size="small"
                             onClick={() => navigate(`/edit/${record.id}`)}
                             style={{ color: '#1677ff' }}
@@ -194,7 +189,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
                         <Tooltip title="حذف">
                             <Button
                                 type="text"
-                                icon={<DeleteOutlined />}
+                                icon={<FiTrash2 />}
                                 size="small"
                                 danger
                             />

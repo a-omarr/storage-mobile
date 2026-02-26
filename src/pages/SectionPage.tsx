@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button, Typography, Spin, Alert } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { FiPlus } from 'react-icons/fi';
 import type { SectionKey } from '../types/product';
 import { SECTION_MAP } from '../constants/sections';
 import { useSection } from '../hooks/useSection';
@@ -53,7 +53,7 @@ const SectionPage: React.FC = () => {
                 <Button
                     type="primary"
                     size="large"
-                    icon={<PlusOutlined />}
+                    icon={<FiPlus />}
                     onClick={() => navigate(`/add?section=${sectionKey}`)}
                     style={{
                         background: 'rgba(255,255,255,0.25)',

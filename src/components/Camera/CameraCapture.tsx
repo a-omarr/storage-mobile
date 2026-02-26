@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Button, Space, Typography } from 'antd';
-import { CameraOutlined, UploadOutlined, CloseOutlined } from '@ant-design/icons';
+import { FiCamera, FiUploadCloud, FiX } from 'react-icons/fi';
 import OCRProcessor from './OCRProcessor.tsx';
 import type { ParsedOCRData } from '../../utils/ocrParser.ts';
 
@@ -47,7 +47,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onResult, onClose }) => {
             <div style={{ position: 'absolute', top: 16, left: 16 }}>
                 <Button
                     shape="circle"
-                    icon={<CloseOutlined />}
+                    icon={<FiX />}
                     onClick={onClose}
                     style={{ background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white' }}
                 />
@@ -99,7 +99,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onResult, onClose }) => {
                     <Space direction="vertical" size={12} style={{ width: '100%', maxWidth: 300 }}>
                         <Button
                             size="large"
-                            icon={<CameraOutlined />}
+                            icon={<FiCamera />}
                             onClick={() => cameraInputRef.current?.click()}
                             style={{
                                 width: '100%',
@@ -117,7 +117,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onResult, onClose }) => {
                         </Button>
                         <Button
                             size="large"
-                            icon={<UploadOutlined />}
+                            icon={<FiUploadCloud />}
                             onClick={() => fileInputRef.current?.click()}
                             style={{
                                 width: '100%',

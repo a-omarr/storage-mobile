@@ -1,6 +1,6 @@
 import React from 'react';
 import { Input } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import { FiSearch } from 'react-icons/fi';
 
 interface SearchBarProps {
     value: string;
@@ -16,7 +16,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
     return (
         <Input
             size="large"
-            prefix={<SearchOutlined style={{ color: '#94a3b8', fontSize: 18 }} />}
+            prefix={<FiSearch style={{ color: '#94a3b8', fontSize: 18, marginLeft: 8 }} />}
             value={value}
             onChange={(e) => onChange(e.target.value)}
             placeholder={placeholder}

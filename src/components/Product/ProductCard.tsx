@@ -1,6 +1,6 @@
 import React from 'react';
 import { Descriptions, Tag, Button, Card, Space, Typography, Divider } from 'antd';
-import { EditOutlined, ArrowRightOutlined } from '@ant-design/icons';
+import { FiEdit, FiArrowRight } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import type { Product } from '../../types/product';
 import { SECTION_MAP } from '../../constants/sections';
@@ -39,7 +39,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 <Space style={{ marginBottom: 4 }}>
                     <Button
                         type="text"
-                        icon={<ArrowRightOutlined />}
+                        icon={<FiArrowRight />}
                         onClick={() => navigate(-1)}
                         style={{ color: 'rgba(255,255,255,0.8)', padding: 0 }}
                     />
@@ -126,7 +126,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                     <Button
                         type="primary"
-                        icon={<EditOutlined />}
+                        icon={<FiEdit />}
                         onClick={() => navigate(`/edit/${product.id}`)}
                         style={{ fontFamily: 'Cairo, sans-serif' }}
                     >

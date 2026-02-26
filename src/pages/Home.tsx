@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Row, Col, Typography, Spin, Card } from 'antd';
-import { WarningOutlined } from '@ant-design/icons';
+import { FiAlertTriangle } from 'react-icons/fi';
 import { useProducts } from '../hooks/useProducts';
 import { SECTIONS } from '../constants/sections';
 import { formatDate, daysOld } from '../utils/dateHelpers';
@@ -113,7 +113,7 @@ const Home: React.FC = () => {
                     bodyStyle={{ padding: '16px 20px' }}
                 >
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
-                        <WarningOutlined style={{ color: '#f59e0b', fontSize: 20 }} />
+                        <FiAlertTriangle style={{ color: '#f59e0b', fontSize: 20 }} />
                         <Text strong style={{ fontFamily: 'Cairo, sans-serif', fontSize: 15, color: '#92400e' }}>
                             أقدم المنتجات — يحتاج تصريف
                         </Text>

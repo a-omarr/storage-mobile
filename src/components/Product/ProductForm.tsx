@@ -10,7 +10,7 @@ import {
     Divider,
     Alert,
 } from 'antd';
-import { SaveOutlined, CameraOutlined } from '@ant-design/icons';
+import { FiSave, FiCamera } from 'react-icons/fi';
 import dayjs, { Dayjs } from 'dayjs';
 import { SECTIONS } from '../../constants/sections';
 import type { ProductFormData, SectionKey } from '../../types/product';
@@ -121,7 +121,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                     )}
                     <Button
                         size="large"
-                        icon={<CameraOutlined />}
+                        icon={<FiCamera />}
                         onClick={() => setShowCamera(true)}
                         style={{
                             width: '100%',
@@ -273,7 +273,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                         htmlType="submit"
                         size="large"
                         loading={loading}
-                        icon={<SaveOutlined />}
+                        icon={<FiSave />}
                         style={{
                             width: '100%',
                             height: 52,

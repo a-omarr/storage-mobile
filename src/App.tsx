@@ -4,10 +4,10 @@ import { ConfigProvider } from 'antd';
 import arEG from 'antd/locale/ar_EG';
 import AppLayout from './components/Layout/AppLayout';
 import Home from './pages/Home/Home';
-import SectionPage from './pages/SectionPage';
+import SectionPage from './pages/SectionPage/SectionPage';
 import AddProductPage from './pages/AddProductPage/AddProductPage';
 import EditProductPage from './pages/EditProductPage/EditProductPage';
-import SearchResultsPage from './pages/SearchResultsPage';
+import SearchResultsPage from './pages/SearchResultsPage/SearchResultsPage';
 import ProductDetailPage from './pages/ProductDetailPage/ProductDetailPage';
 import AllProductsPage from './pages/AllProductsPage/AllProductsPage';
 

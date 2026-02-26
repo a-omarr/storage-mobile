@@ -13,7 +13,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
     return (
         <Layout style={{ minHeight: '100vh', background: 'var(--color-bg)' }}>
             <Navbar />
-            <Layout style={{ marginTop: 64 }}>
+            <Layout hasSider style={{ marginTop: 64 }}>
                 <Sidebar />
                 <Content
                     style={{

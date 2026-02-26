@@ -200,40 +200,121 @@ const ProductTable: React.FC<ProductTableProps> = ({
         },
     ];
 
+
+
+    const renderMobileCards = () => (
+        <div className="mobile-only">
+            {sorted.map((record) => (
+                <div
+                    key={record.id}
+                    className="mobile-product-card"
+                    onClick={() => navigate(`/product/${record.id}`)}
+                >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10, borderBottom: '1px solid var(--color-border)', paddingBottom: 8 }}>
+                        <Text strong style={{ fontSize: 15 }}>{record.type} — {record.capacity}</Text>
+                        <Space>
+                            <Button
+                                type="text"
+                                icon={<FiEdit />}
+                                size="small"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    navigate(`/edit/${record.id}`);
+                                }}
+                                style={{ color: '#1677ff' }}
+                            />
+                            <Popconfirm
+                                title="هل أنت متأكد من الحذف؟"
+                                onConfirm={(e) => {
+                                    e?.stopPropagation();
+                                    handleDelete(record.id);
+                                }}
+                                onCancel={(e) => e?.stopPropagation()}
+                                okText="حذف"
+                                cancelText="إلغاء"
+                                okButtonProps={{ danger: true }}
+                            >
+                                <Button
+                                    type="text"
+                                    icon={<FiTrash2 />}
+                                    size="small"
+                                    danger
+                                    onClick={(e) => e.stopPropagation()}
+                                />
+                            </Popconfirm>
+                        </Space>
+                    </div>
+
+                    <div className="mobile-card-row">
+                        <span className="mobile-card-label">رقم الصنف:</span>
+                        <span className="mobile-card-value">{record.itemNo}</span>
+                    </div>
+                    <div className="mobile-card-row">
+                        <span className="mobile-card-label">الدفعة:</span>
+                        <span className="mobile-card-value">{record.batchNumber}</span>
+                    </div>
+                    <div className="mobile-card-row">
+                        <span className="mobile-card-label">بالتات:</span>
+                        <Text strong style={{ color: '#1677ff' }}>{record.numberOfPallet}</Text>
+                    </div>
+                    <div className="mobile-card-row">
+                        <span className="mobile-card-label">تاريخ الإنتاج:</span>
+                        <span>
+                            {formatDate(record.dateOfProduction)}
+                            {daysOld(record.dateOfProduction) > 365 && (
+                                <span className="oldest-badge" style={{ padding: '2px 6px', fontSize: 10, marginLeft: 4 }}>
+                                    {daysOld(record.dateOfProduction)} يوم
+                                </span>
+                            )}
+                        </span>
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+
     return (
         <div className="product-table-container">
-            <Table
-                dataSource={sorted}
-                columns={columns}
-                rowKey="id"
-                loading={loading}
-                scroll={{ x: 1100 }}
-                pagination={{
-                    pageSize: 20,
-                    showSizeChanger: true,
-                    pageSizeOptions: ['10', '20', '50', '100'],
-                    showTotal: (total) => `إجمالي ${total} منتج`,
-                    position: ['bottomCenter'],
-                }}
-                onRow={(record) => ({
-                    style: { cursor: 'pointer' },
-                    onClick: (e) => {
-                        // Don't navigate if clicking action buttons
-                        const target = e.target as HTMLElement;
-                        if (target.closest('.ant-btn') || target.closest('.ant-popover')) return;
-                        navigate(`/product/${record.id}`);
-                    },
-                })}
-                locale={{
-                    emptyText: (
-                        <div style={{ padding: 40, textAlign: 'center', color: 'var(--color-text-muted)' }}>
-                            <div style={{ fontSize: 40, marginBottom: 8 }}>📦</div>
-                            <div>لا توجد منتجات في هذا القسم</div>
-                        </div>
-                    ),
-                }}
-                size="middle"
-            />
+            <div className="desktop-only">
+                <Table
+                    dataSource={sorted}
+                    columns={columns}
+                    rowKey="id"
+                    loading={loading}
+                    scroll={{ x: 1100 }}
+                    pagination={{
+                        pageSize: 20,
+                        showSizeChanger: true,
+                        pageSizeOptions: ['10', '20', '50', '100'],
+                        showTotal: (total) => `إجمالي ${total} منتج`,
+                        position: ['bottomCenter'],
+                    }}
+                    onRow={(record) => ({
+                        style: { cursor: 'pointer' },
+                        onClick: (e) => {
+                            const target = e.target as HTMLElement;
+                            if (target.closest('.ant-btn') || target.closest('.ant-popover')) return;
+                            navigate(`/product/${record.id}`);
+                        },
+                    })}
+                    locale={{
+                        emptyText: (
+                            <div style={{ padding: 40, textAlign: 'center', color: 'var(--color-text-muted)' }}>
+                                <div style={{ fontSize: 40, marginBottom: 8 }}>📦</div>
+                                <div>لا توجد منتجات في هذا القسم</div>
+                            </div>
+                        ),
+                    }}
+                    size="middle"
+                />
+            </div>
+            {renderMobileCards()}
+            {products.length === 0 && !loading && (
+                <div className="mobile-only" style={{ padding: 40, textAlign: 'center', color: 'var(--color-text-muted)' }}>
+                    <div style={{ fontSize: 40, marginBottom: 8 }}>📦</div>
+                    <div>لا توجد منتجات</div>
+                </div>
+            )}
         </div>
     );
 };

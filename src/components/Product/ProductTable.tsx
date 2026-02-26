@@ -210,8 +210,22 @@ const ProductTable: React.FC<ProductTableProps> = ({
                     className="mobile-product-card"
                     onClick={() => navigate(`/product/${record.id}`)}
                 >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10, borderBottom: '1px solid var(--color-border)', paddingBottom: 8 }}>
-                        <Text strong style={{ fontSize: 15 }}>{record.type} — {record.capacity}</Text>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10, borderBottom: '1px solid var(--color-border)', paddingBottom: 8, alignItems: 'center' }}>
+                        <div>
+                            {showSection && (
+                                <div style={{ marginBottom: 4 }}>
+                                    {(() => {
+                                        const s = SECTION_MAP[record.section as keyof typeof SECTION_MAP];
+                                        return s ? (
+                                            <Tag color={s.color} style={{ fontSize: 10, lineHeight: '16px', fontWeight: 600 }}>
+                                                {s.label}
+                                            </Tag>
+                                        ) : null;
+                                    })()}
+                                </div>
+                            )}
+                            <Text strong style={{ fontSize: 15 }}>{record.type} — {record.capacity}</Text>
+                        </div>
                         <Space>
                             <Button
                                 type="text"

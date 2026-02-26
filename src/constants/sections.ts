@@ -1,0 +1,58 @@
+import type { SectionKey } from '../types/product';
+
+export interface SectionConfig {
+    key: SectionKey;
+    label: string;
+    color: string;
+    bgColor: string;
+    gradient: string;
+}
+
+export const SECTIONS: SectionConfig[] = [
+    {
+        key: 'A',
+        label: 'القسم أ',
+        color: '#1677ff',
+        bgColor: '#e6f4ff',
+        gradient: 'linear-gradient(135deg, #1677ff, #0958d9)',
+    },
+    {
+        key: 'B',
+        label: 'القسم ب',
+        color: '#52c41a',
+        bgColor: '#f6ffed',
+        gradient: 'linear-gradient(135deg, #52c41a, #389e0d)',
+    },
+    {
+        key: 'C',
+        label: 'القسم ج',
+        color: '#722ed1',
+        bgColor: '#f9f0ff',
+        gradient: 'linear-gradient(135deg, #722ed1, #531dab)',
+    },
+    {
+        key: 'D',
+        label: 'القسم د',
+        color: '#fa8c16',
+        bgColor: '#fff7e6',
+        gradient: 'linear-gradient(135deg, #fa8c16, #d46b08)',
+    },
+    {
+        key: 'THE_SIXTH',
+        label: 'السادس',
+        color: '#eb2f96',
+        bgColor: '#fff0f6',
+        gradient: 'linear-gradient(135deg, #eb2f96, #c41d7f)',
+    },
+    {
+        key: 'EYES',
+        label: 'العيون',
+        color: '#13c2c2',
+        bgColor: '#e6fffb',
+        gradient: 'linear-gradient(135deg, #13c2c2, #08979c)',
+    },
+];
+
+export const SECTION_MAP: Record<SectionKey, SectionConfig> = Object.fromEntries(
+    SECTIONS.map((s) => [s.key, s])
+) as Record<SectionKey, SectionConfig>;

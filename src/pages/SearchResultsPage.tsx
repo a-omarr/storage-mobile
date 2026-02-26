@@ -3,7 +3,7 @@ import { Typography } from 'antd';
 import { useProducts } from '../hooks/useProducts';
 import { useSearch } from '../hooks/useSearch';
 import SearchBar from '../components/Search/SearchBar';
-import ProductTable from '../components/Product/ProductTable';
+import ProductTable from '../components/Product/ProductTable/ProductTable';
 import { FiSearch, FiMeh } from 'react-icons/fi';
 
 const { Title, Text } = Typography;

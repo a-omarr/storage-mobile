@@ -4,7 +4,7 @@ import { Spin, Alert } from 'antd';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase/config';
 import type { Product } from '../types/product';
-import ProductCard from '../components/Product/ProductCard';
+import ProductCard from '../components/Product/ProductCard/ProductCard';
 
 const ProductDetailPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();

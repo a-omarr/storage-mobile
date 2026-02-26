@@ -5,7 +5,7 @@ import { FiPlus } from 'react-icons/fi';
 import type { SectionKey } from '../types/product';
 import { SECTION_MAP } from '../constants/sections';
 import { useSection } from '../hooks/useSection';
-import ProductTable from '../components/Product/ProductTable';
+import ProductTable from '../components/Product/ProductTable/ProductTable';
 
 const { Title, Text } = Typography;
 

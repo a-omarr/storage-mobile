@@ -4,7 +4,7 @@ import { Card, Typography, message, Popconfirm } from 'antd';
 import { collection, addDoc, Timestamp } from 'firebase/firestore';
 import { db } from '../firebase/config';
 import type { ProductFormData, SectionKey } from '../types/product';
-import ProductForm from '../components/Product/ProductForm';
+import ProductForm from '../components/Product/ProductForm/ProductForm';
 import { SECTION_MAP } from '../constants/sections';
 import { FiPlusCircle, FiX } from 'react-icons/fi';
 

@@ -5,7 +5,7 @@ import { doc, getDoc, updateDoc, Timestamp } from 'firebase/firestore';
 import { db } from '../firebase/config';
 import type { Product, ProductFormData } from '../types/product';
 import { SECTION_MAP } from '../constants/sections';
-import ProductForm from '../components/Product/ProductForm';
+import ProductForm from '../components/Product/ProductForm/ProductForm';
 
 import { FiEdit2 } from 'react-icons/fi';
 

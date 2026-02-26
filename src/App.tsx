@@ -8,7 +8,7 @@ import SectionPage from './pages/SectionPage';
 import AddProductPage from './pages/AddProductPage/AddProductPage';
 import EditProductPage from './pages/EditProductPage/EditProductPage';
 import SearchResultsPage from './pages/SearchResultsPage';
-import ProductDetailPage from './pages/ProductDetailPage';
+import ProductDetailPage from './pages/ProductDetailPage/ProductDetailPage';
 import AllProductsPage from './pages/AllProductsPage/AllProductsPage';
 
 const App: React.FC = () => {

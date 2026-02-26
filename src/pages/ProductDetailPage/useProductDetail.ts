@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Spin, Alert } from 'antd';
 import { doc, onSnapshot } from 'firebase/firestore';
-import { db } from '../firebase/config';
-import type { Product } from '../types/product';
-import ProductCard from '../components/Product/ProductCard/ProductCard';
+import { db } from '../../firebase/config';
+import type { Product } from '../../types/product';
 
-const ProductDetailPage: React.FC = () => {
+export const useProductDetail = () => {
     const { id } = useParams<{ id: string }>();
     const [product, setProduct] = useState<Product | null>(null);
     const [loading, setLoading] = useState(true);
@@ -32,25 +30,5 @@ const ProductDetailPage: React.FC = () => {
         return () => unsub();
     }, [id]);
 
-    if (loading) {
-        return (
-            <div className="flex justify-center py-20">
-                <Spin size="large" />
-            </div>
-        );
-    }
-
-    if (error || !product) {
-        return (
-            <Alert
-                type="error"
-                message={error || 'منتج غير موجود'}
-                style={{ fontFamily: 'Cairo, sans-serif' }}
-            />
-        );
-    }
-
-    return <ProductCard product={product} />;
+    return { product, loading, error };
 };
-
-export default ProductDetailPage;

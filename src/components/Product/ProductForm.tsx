@@ -219,28 +219,28 @@ const ProductForm: React.FC<ProductFormProps> = ({
                         name="qtyPerLayer"
                         rules={[{ required: true, message: 'مطلوب' }]}
                     >
-                        <InputNumber size="large" min={0} style={{ width: '100%' }} />
+                        <InputNumber size="large" min={0} style={{ width: '100%' }} placeholder="مثال: 12" />
                     </Form.Item>
                     <Form.Item
                         label={<span style={labelStyle}>عدد الطبقات</span>}
                         name="numberOfLayers"
                         rules={[{ required: true, message: 'مطلوب' }]}
                     >
-                        <InputNumber size="large" min={0} style={{ width: '100%' }} />
+                        <InputNumber size="large" min={0} style={{ width: '100%' }} placeholder="مثال: 5" />
                     </Form.Item>
                     <Form.Item
                         label={<span style={labelStyle}>قطع لكل بالت</span>}
                         name="piecesPerPallet"
                         rules={[{ required: true, message: 'مطلوب' }]}
                     >
-                        <InputNumber size="large" min={0} style={{ width: '100%' }} />
+                        <InputNumber size="large" min={0} style={{ width: '100%' }} placeholder="مثال: 60" />
                     </Form.Item>
                     <Form.Item
                         label={<span style={labelStyle}>عدد البالتات</span>}
                         name="numberOfPallet"
                         rules={[{ required: true, message: 'مطلوب' }]}
                     >
-                        <InputNumber size="large" min={0} style={{ width: '100%' }} />
+                        <InputNumber size="large" min={0} style={{ width: '100%' }} placeholder="مثال: 1" />
                     </Form.Item>
                 </div>
 

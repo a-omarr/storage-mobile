@@ -2,8 +2,9 @@ import React from 'react';
 import { Layout } from 'antd';
 import Navbar from './Navbar.tsx';
 import Sidebar from './Sidebar.tsx';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { SECTIONS } from '../../constants/sections';
+import { FiBox } from 'react-icons/fi';
 
 const { Content } = Layout;
 
@@ -14,6 +15,8 @@ interface AppLayoutProps {
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
     const navigate = useNavigate();
     const { section } = useParams<{ section?: string }>();
+    const location = useLocation();
+    const isAllProducts = location.pathname === '/all-products';
 
     return (
         <Layout style={{ minHeight: '100vh', background: 'var(--color-bg)' }}>
@@ -47,6 +50,14 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
                         </span>
                     </button>
                 ))}
+
+                {/* All Products Mobile Link */}
+                <button
+                    className={`flex flex-col items-center gap-1 text-[10px] font-['Cairo',sans-serif] border-0 bg-transparent cursor-pointer flex-1 ${isAllProducts ? 'text-[#1677ff]' : 'text-[#6b7c93]'}`}
+                    onClick={() => navigate('/all-products')}
+                >
+                    <FiBox className="text-2xl" />
+                </button>
             </div>
         </Layout>
     );

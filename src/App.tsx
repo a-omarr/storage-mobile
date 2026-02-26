@@ -9,6 +9,7 @@ import AddProductPage from './pages/AddProductPage';
 import EditProductPage from './pages/EditProductPage';
 import SearchResultsPage from './pages/SearchResultsPage';
 import ProductDetailPage from './pages/ProductDetailPage';
+import AllProductsPage from './pages/AllProductsPage';
 
 const App: React.FC = () => {
   return (
@@ -85,6 +86,14 @@ const App: React.FC = () => {
             element={
               <AppLayout>
                 <SearchResultsPage />
+              </AppLayout>
+            }
+          />
+          <Route
+            path="/all-products"
+            element={
+              <AppLayout>
+                <AllProductsPage />
               </AppLayout>
             }
           />

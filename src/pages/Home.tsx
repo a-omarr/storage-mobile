@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Typography, Spin, Card } from 'antd';
-import { FiAlertTriangle, FiPackage } from 'react-icons/fi';
+import { FiAlertTriangle, FiPackage, FiChevronLeft } from 'react-icons/fi';
 import { useProducts } from '../hooks/useProducts';
 import { SECTIONS } from '../constants/sections';
 import { formatDate, daysOld } from '../utils/dateHelpers';
@@ -111,11 +111,20 @@ const Home: React.FC = () => {
                     }}
                     bodyStyle={{ padding: '16px 20px' }}
                 >
-                    <div className="flex items-center gap-2 mb-3.5">
-                        <FiAlertTriangle style={{ color: '#f59e0b', fontSize: 20 }} />
-                        <Text strong style={{ fontFamily: 'Cairo, sans-serif', fontSize: 15, color: '#92400e' }}>
-                            أقدم المنتجات — يحتاج تصريف
-                        </Text>
+                    <div className="flex items-center justify-between mb-3.5">
+                        <div className="flex items-center gap-2">
+                            <FiAlertTriangle style={{ color: '#f59e0b', fontSize: 20 }} />
+                            <Text strong style={{ fontFamily: 'Cairo, sans-serif', fontSize: 15, color: '#92400e' }}>
+                                أقدم المنتجات — يحتاج تصريف
+                            </Text>
+                        </div>
+                        <button
+                            onClick={() => navigate('/all-products')}
+                            className="flex items-center gap-1 text-[#f59e0b] text-sm font-semibold font-['Cairo',sans-serif] bg-transparent border-0 cursor-pointer hover:text-[#d97706] transition-colors"
+                        >
+                            عرض الكل
+                            <FiChevronLeft size={16} />
+                        </button>
                     </div>
                     <div className="flex flex-col gap-2.5">
                         {oldest.map((p) => {

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useCallback } from 'react';
 import { Button, Space, Typography } from 'antd';
 import { FiCamera, FiUploadCloud, FiX, FiInfo } from 'react-icons/fi';
 import OCRProcessor from './OCRProcessor.tsx';
@@ -17,16 +17,30 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onResult, onClose }) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const cameraInputRef = useRef<HTMLInputElement>(null);
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
+
+        // Reset the input value so the same file can be re-selected later
+        e.target.value = '';
+
         const reader = new FileReader();
         reader.onload = () => {
             setImageDataUrl(reader.result as string);
             setProcessing(true);
         };
         reader.readAsDataURL(file);
-    };
+    }, []);
+
+    const handleRetry = useCallback(() => {
+        setImageDataUrl(null);
+        setProcessing(false);
+    }, []);
+
+    const handleOCRResult = useCallback((data: ParsedOCRData) => {
+        setProcessing(false);
+        onResult(data);
+    }, [onResult]);
 
     return (
         <div className="fixed inset-0 bg-black/85 z-[9999] flex flex-col items-center justify-center p-5 gap-5">
@@ -67,6 +81,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onResult, onClose }) => {
                     </Text>
 
                     {/* Hidden file inputs */}
+                    {/* Camera input: opens camera directly on mobile */}
                     <input
                         ref={cameraInputRef}
                         type="file"
@@ -75,6 +90,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onResult, onClose }) => {
                         className="hidden"
                         onChange={handleFileChange}
                     />
+                    {/* Gallery input: no capture attr → opens the file/gallery picker */}
                     <input
                         ref={fileInputRef}
                         type="file"
@@ -140,14 +156,8 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onResult, onClose }) => {
             {imageDataUrl && processing && (
                 <OCRProcessor
                     imageDataUrl={imageDataUrl}
-                    onResult={(data: ParsedOCRData) => {
-                        setProcessing(false);
-                        onResult(data);
-                    }}
-                    onError={() => {
-                        setProcessing(false);
-                        setImageDataUrl(null);
-                    }}
+                    onResult={handleOCRResult}
+                    onError={handleRetry}
                 />
             )}
         </div>

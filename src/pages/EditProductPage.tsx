@@ -7,6 +7,8 @@ import type { Product, ProductFormData } from '../types/product';
 import { SECTION_MAP } from '../constants/sections';
 import ProductForm from '../components/Product/ProductForm';
 
+import { FiEdit2 } from 'react-icons/fi';
+
 const { Title } = Typography;
 
 const EditProductPage: React.FC = () => {
@@ -90,7 +92,8 @@ const EditProductPage: React.FC = () => {
                 style={{ background: sectionConfig?.gradient || 'linear-gradient(135deg, #1677ff, #0958d9)' }}
             >
                 <Title level={4} style={{ color: 'white', margin: 0, fontFamily: 'Cairo, sans-serif' }}>
-                    ✏️ تعديل منتج — {product.type} {product.capacity}
+                    <FiEdit2 className="inline ml-2" />
+                    تعديل منتج — {product.type} {product.capacity}
                 </Title>
             </div>
 

@@ -4,6 +4,7 @@ import { useProducts } from '../hooks/useProducts';
 import { useSearch } from '../hooks/useSearch';
 import SearchBar from '../components/Search/SearchBar';
 import ProductTable from '../components/Product/ProductTable';
+import { FiSearch, FiMeh } from 'react-icons/fi';
 
 const { Title, Text } = Typography;
 
@@ -16,7 +17,8 @@ const SearchResultsPage: React.FC = () => {
             {/* Header */}
             <div className="bg-gradient-to-br from-[#1677ff] to-[#0958d9] rounded-[12px] px-6 py-4 mb-5">
                 <Title level={4} style={{ color: 'white', margin: 0, fontFamily: 'Cairo, sans-serif', marginBottom: 12 }}>
-                    🔍 البحث في المخزن
+                    <FiSearch className="inline ml-2" />
+                    البحث في المخزن
                 </Title>
                 <SearchBar
                     value={query}
@@ -28,14 +30,14 @@ const SearchResultsPage: React.FC = () => {
             {/* Results */}
             {!query ? (
                 <div className="text-center py-[60px] text-[#6b7c93] font-['Cairo',sans-serif]">
-                    <div className="text-[50px] mb-3">🔍</div>
+                    <FiSearch className="text-[50px] mb-3 mx-auto" />
                     <Text style={{ fontSize: 16, fontFamily: 'Cairo, sans-serif' }}>
                         ابدأ بالكتابة للبحث عن منتج في جميع الأقسام
                     </Text>
                 </div>
             ) : results.length === 0 ? (
                 <div className="text-center py-[60px] text-[#6b7c93] font-['Cairo',sans-serif]">
-                    <div className="text-[50px] mb-3">😕</div>
+                    <FiMeh className="text-[50px] mb-3 mx-auto" />
                     <Text style={{ fontSize: 16, fontFamily: 'Cairo, sans-serif' }}>
                         لم يُعثر على أي منتج مطابق لـ "{query}"
                     </Text>

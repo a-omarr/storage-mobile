@@ -7,6 +7,8 @@ import type { ProductFormData, SectionKey } from '../types/product';
 import ProductForm from '../components/Product/ProductForm';
 import { SECTION_MAP } from '../constants/sections';
 
+import { FiPlusCircle } from 'react-icons/fi';
+
 const { Title } = Typography;
 
 const AddProductPage: React.FC = () => {
@@ -51,7 +53,8 @@ const AddProductPage: React.FC = () => {
                 style={{ background: sectionConfig?.gradient || 'linear-gradient(135deg, #1677ff, #0958d9)' }}
             >
                 <Title level={4} style={{ color: 'white', margin: 0, fontFamily: 'Cairo, sans-serif' }}>
-                    ➕ إضافة منتج جديد{sectionConfig ? ` — ${sectionConfig.label}` : ''}
+                    <FiPlusCircle className="inline ml-2" />
+                    إضافة منتج جديد{sectionConfig ? ` — ${sectionConfig.label}` : ''}
                 </Title>
             </div>
 

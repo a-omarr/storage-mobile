@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Row, Col, Typography, Spin, Card } from 'antd';
-import { FiAlertTriangle } from 'react-icons/fi';
+import { Typography, Spin, Card } from 'antd';
+import { FiAlertTriangle, FiPackage } from 'react-icons/fi';
 import { useProducts } from '../hooks/useProducts';
 import { SECTIONS } from '../constants/sections';
 import { formatDate, daysOld } from '../utils/dateHelpers';
@@ -45,7 +45,7 @@ const Home: React.FC = () => {
                             {products.length}
                         </Title>
                     </div>
-                    <div className="text-[40px] opacity-30">📦</div>
+                    <FiPackage className="text-[40px] opacity-30" />
                 </div>
             </div>
 
@@ -53,53 +53,52 @@ const Home: React.FC = () => {
             <Title level={4} style={{ fontFamily: 'Cairo, sans-serif', marginBottom: 14 }}>
                 الأقسام
             </Title>
-            <Row gutter={[12, 12]} style={{ marginBottom: 28 }}>
+            <div className="grid max-[360px]:grid-cols-1 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 mb-7">
                 {SECTIONS.map((s) => {
                     const count = counts[s.key] || 0;
                     return (
-                        <Col xs={12} sm={8} md={6} key={s.key}>
+                        <div
+                            key={s.key}
+                            className="bg-white rounded-[12px] p-5 shadow-[0_1px_3px_rgba(0,0,0,0.08)] cursor-pointer transition-all duration-200 border-2 border-transparent hover:shadow-[0_4px_16px_rgba(0,0,0,0.10)] hover:border-[#1677ff] hover:-translate-y-0.5 active:translate-y-0"
+                            onClick={() => navigate(`/section/${s.key}`)}
+                        >
                             <div
-                                className="bg-white rounded-[12px] p-5 shadow-[0_1px_3px_rgba(0,0,0,0.08)] cursor-pointer transition-all duration-200 border-2 border-transparent hover:shadow-[0_4px_16px_rgba(0,0,0,0.10)] hover:border-[#1677ff] hover:-translate-y-0.5 active:translate-y-0"
-                                onClick={() => navigate(`/section/${s.key}`)}
+                                style={{
+                                    width: 44,
+                                    height: 44,
+                                    borderRadius: 12,
+                                    background: s.gradient,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    color: 'white',
+                                    fontWeight: 800,
+                                    fontSize: 18,
+                                    marginBottom: 10,
+                                    fontFamily: 'Cairo, sans-serif',
+                                }}
                             >
-                                <div
-                                    style={{
-                                        width: 44,
-                                        height: 44,
-                                        borderRadius: 12,
-                                        background: s.gradient,
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        color: 'white',
-                                        fontWeight: 800,
-                                        fontSize: 18,
-                                        marginBottom: 10,
-                                        fontFamily: 'Cairo, sans-serif',
-                                    }}
-                                >
-                                    {s.key === 'THE_SIXTH' ? 'س' : s.key === 'EYES' ? 'ع' : s.key}
-                                </div>
-                                <Text
-                                    style={{
-                                        display: 'block',
-                                        fontWeight: 700,
-                                        fontFamily: 'Cairo, sans-serif',
-                                        fontSize: 15,
-                                        marginBottom: 2,
-                                        color: 'var(--color-text)',
-                                    }}
-                                >
-                                    {s.label}
-                                </Text>
-                                <Text style={{ color: s.color, fontWeight: 600, fontFamily: 'Cairo, sans-serif' }}>
-                                    {count} منتج
-                                </Text>
+                                {s.key === 'THE_SIXTH' ? 'س' : s.key === 'EYES' ? 'ع' : s.key}
                             </div>
-                        </Col>
+                            <Text
+                                style={{
+                                    display: 'block',
+                                    fontWeight: 700,
+                                    fontFamily: 'Cairo, sans-serif',
+                                    fontSize: 15,
+                                    marginBottom: 2,
+                                    color: 'var(--color-text)',
+                                }}
+                            >
+                                {s.label}
+                            </Text>
+                            <Text style={{ color: s.color, fontWeight: 600, fontFamily: 'Cairo, sans-serif' }}>
+                                {count} منتج
+                            </Text>
+                        </div>
                     );
                 })}
-            </Row>
+            </div>
 
             {/* Oldest Products Widget */}
             {oldest.length > 0 && (
@@ -154,7 +153,7 @@ const Home: React.FC = () => {
 
             {products.length === 0 && (
                 <div className="text-center py-[60px] text-[#6b7c93]">
-                    <div className="text-[60px] mb-3">📦</div>
+                    <FiPackage className="text-[60px] mb-3 mx-auto" />
                     <Text style={{ fontFamily: 'Cairo, sans-serif', fontSize: 16 }}>
                         لا توجد منتجات مضافة بعد
                     </Text>

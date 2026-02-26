@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Button, Space, Typography } from 'antd';
-import { FiCamera, FiUploadCloud, FiX } from 'react-icons/fi';
+import { FiCamera, FiUploadCloud, FiX, FiInfo } from 'react-icons/fi';
 import OCRProcessor from './OCRProcessor.tsx';
 import type { ParsedOCRData } from '../../utils/ocrParser.ts';
 
@@ -124,7 +124,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onResult, onClose }) => {
                     {/* Tips */}
                     <div className="max-w-[300px] bg-white/10 rounded-[12px] px-4 py-3.5 mt-2">
                         <Text style={{ color: 'rgba(255,255,255,0.85)', fontFamily: 'Cairo, sans-serif', fontSize: 13 }}>
-                            💡 نصائح للحصول على نتائج أفضل:
+                            <FiInfo className="inline ml-1" /> نصائح للحصول على نتائج أفضل:
                         </Text>
                         <ul className="text-white/70 text-xs mt-1.5 pr-4 font-['Cairo',sans-serif]">
                             <li>أمسك الهاتف عمودياً فوق الإيصال مباشرةً</li>

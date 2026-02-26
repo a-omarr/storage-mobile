@@ -6,7 +6,6 @@ import {
     InputNumber,
     DatePicker,
     Button,
-    Space,
     Divider,
     Alert,
 } from 'antd';
@@ -38,7 +37,6 @@ const ProductForm: React.FC<ProductFormProps> = ({
     const [showCamera, setShowCamera] = useState(false);
     const [ocrSuccess, setOcrSuccess] = useState(false);
 
-    // When OCR returns data, fill the form fields
     const handleOCRResult = (data: ParsedOCRData) => {
         const updates: Record<string, any> = {};
         if (data.type) updates.type = data.type;
@@ -77,7 +75,6 @@ const ProductForm: React.FC<ProductFormProps> = ({
         await onSubmit(data);
     };
 
-    // Convert Date to dayjs for the initial form values
     const formInitials = initialValues
         ? {
             ...initialValues,
@@ -92,7 +89,6 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
     return (
         <>
-            {/* OCR Camera Modal */}
             {showCamera && (
                 <CameraCapture
                     onResult={handleOCRResult}
@@ -157,12 +153,12 @@ const ProductForm: React.FC<ProductFormProps> = ({
                 </Form.Item>
 
                 {/* Type + Capacity */}
-                <Space style={{ width: '100%' }} size={12}>
+                <div className="flex flex-col sm:flex-row gap-3">
                     <Form.Item
                         label={<span style={labelStyle}>نوع المنتج</span>}
                         name="type"
                         rules={[{ required: true, message: 'مطلوب' }]}
-                        style={{ flex: 1, minWidth: 0 }}
+                        className="flex-1 min-w-0 mb-0 sm:mb-6"
                     >
                         <Input size="large" placeholder="مثال: Bordeaux" />
                     </Form.Item>
@@ -170,19 +166,19 @@ const ProductForm: React.FC<ProductFormProps> = ({
                         label={<span style={labelStyle}>السعة</span>}
                         name="capacity"
                         rules={[{ required: true, message: 'مطلوب' }]}
-                        style={{ flex: 1, minWidth: 0 }}
+                        className="flex-1 min-w-0 mb-0 sm:mb-6"
                     >
                         <Input size="large" placeholder="مثال: 750 ML" />
                     </Form.Item>
-                </Space>
+                </div>
 
                 {/* Item No + Batch Number */}
-                <Space style={{ width: '100%' }} size={12}>
+                <div className="flex flex-col sm:flex-row gap-3">
                     <Form.Item
                         label={<span style={labelStyle}>رقم الصنف</span>}
                         name="itemNo"
                         rules={[{ required: true, message: 'مطلوب' }]}
-                        style={{ flex: 1, minWidth: 0 }}
+                        className="flex-1 min-w-0 mb-0 sm:mb-6"
                     >
                         <Input size="large" placeholder="مثال: 264" />
                     </Form.Item>
@@ -190,19 +186,19 @@ const ProductForm: React.FC<ProductFormProps> = ({
                         label={<span style={labelStyle}>رقم الدفعة</span>}
                         name="batchNumber"
                         rules={[{ required: true, message: 'مطلوب' }]}
-                        style={{ flex: 1, minWidth: 0 }}
+                        className="flex-1 min-w-0 mb-0 sm:mb-6"
                     >
                         <Input size="large" placeholder="مثال: 264-006" />
                     </Form.Item>
-                </Space>
+                </div>
 
                 {/* Color + Finish Type */}
-                <Space style={{ width: '100%' }} size={12}>
+                <div className="flex flex-col sm:flex-row gap-3">
                     <Form.Item
                         label={<span style={labelStyle}>اللون</span>}
                         name="color"
                         rules={[{ required: true, message: 'مطلوب' }]}
-                        style={{ flex: 1, minWidth: 0 }}
+                        className="flex-1 min-w-0 mb-0 sm:mb-6"
                     >
                         <Input size="large" placeholder="مثال: Flint" />
                     </Form.Item>
@@ -210,19 +206,18 @@ const ProductForm: React.FC<ProductFormProps> = ({
                         label={<span style={labelStyle}>نوع الغطاء</span>}
                         name="finishType"
                         rules={[{ required: true, message: 'مطلوب' }]}
-                        style={{ flex: 1, minWidth: 0 }}
+                        className="flex-1 min-w-0 mb-0 sm:mb-6"
                     >
                         <Input size="large" placeholder="مثال: CORK" />
                     </Form.Item>
-                </Space>
+                </div>
 
-                {/* Numeric fields */}
-                <Space style={{ width: '100%' }} size={12} wrap>
+                {/* Numeric fields — 2-col on sm, 1-col on xs */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <Form.Item
                         label={<span style={labelStyle}>كمية لكل طبقة</span>}
                         name="qtyPerLayer"
                         rules={[{ required: true, message: 'مطلوب' }]}
-                        style={{ flex: 1, minWidth: 140 }}
                     >
                         <InputNumber size="large" min={0} style={{ width: '100%' }} />
                     </Form.Item>
@@ -230,7 +225,6 @@ const ProductForm: React.FC<ProductFormProps> = ({
                         label={<span style={labelStyle}>عدد الطبقات</span>}
                         name="numberOfLayers"
                         rules={[{ required: true, message: 'مطلوب' }]}
-                        style={{ flex: 1, minWidth: 140 }}
                     >
                         <InputNumber size="large" min={0} style={{ width: '100%' }} />
                     </Form.Item>
@@ -238,7 +232,6 @@ const ProductForm: React.FC<ProductFormProps> = ({
                         label={<span style={labelStyle}>قطع لكل بالت</span>}
                         name="piecesPerPallet"
                         rules={[{ required: true, message: 'مطلوب' }]}
-                        style={{ flex: 1, minWidth: 140 }}
                     >
                         <InputNumber size="large" min={0} style={{ width: '100%' }} />
                     </Form.Item>
@@ -246,11 +239,10 @@ const ProductForm: React.FC<ProductFormProps> = ({
                         label={<span style={labelStyle}>عدد البالتات</span>}
                         name="numberOfPallet"
                         rules={[{ required: true, message: 'مطلوب' }]}
-                        style={{ flex: 1, minWidth: 140 }}
                     >
                         <InputNumber size="large" min={0} style={{ width: '100%' }} />
                     </Form.Item>
-                </Space>
+                </div>
 
                 {/* Date of Production */}
                 <Form.Item

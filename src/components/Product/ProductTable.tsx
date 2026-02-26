@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Table, Button, Popconfirm, Tag, Tooltip, Space, Typography } from 'antd';
-import { FiEdit, FiTrash2, FiArrowUp, FiArrowDown } from 'react-icons/fi';
+import { FiEdit, FiTrash2, FiArrowUp, FiArrowDown, FiPackage } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import {
     deleteDoc,
@@ -312,7 +312,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
                     locale={{
                         emptyText: (
                             <div className="py-10 text-center text-[#6b7c93]">
-                                <div className="text-[40px] mb-2">📦</div>
+                                <FiPackage className="text-[40px] mb-2 mx-auto" />
                                 <div>لا توجد منتجات في هذا القسم</div>
                             </div>
                         ),
@@ -323,7 +323,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
             {renderMobileCards()}
             {products.length === 0 && !loading && (
                 <div className="md:hidden py-10 text-center text-[#6b7c93]">
-                    <div className="text-[40px] mb-2">📦</div>
+                    <FiPackage className="text-[40px] mb-2 mx-auto" />
                     <div>لا توجد منتجات</div>
                 </div>
             )}

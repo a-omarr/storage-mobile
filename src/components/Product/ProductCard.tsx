@@ -1,6 +1,6 @@
 import React from 'react';
 import { Descriptions, Tag, Button, Card, Space, Typography, Divider } from 'antd';
-import { FiEdit, FiArrowRight } from 'react-icons/fi';
+import { FiEdit, FiArrowRight, FiAlertOctagon } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import type { Product } from '../../types/product';
 import { SECTION_MAP } from '../../constants/sections';
@@ -64,7 +64,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             <div className="p-6">
                 {isOld && (
                     <div className="bg-[#fef3c7] border border-[#f59e0b] rounded-lg px-4 py-2.5 mb-4 flex items-center gap-2">
-                        <span className="text-xl">⚠️</span>
+                        <FiAlertOctagon className="text-xl shrink-0" />
                         <Text style={{ color: '#92400e', fontWeight: 600, fontFamily: 'Cairo, sans-serif' }}>
                             تحذير: هذا المنتج عمره {days} يوم — الأقدم
                         </Text>

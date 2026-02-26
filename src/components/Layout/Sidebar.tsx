@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SECTIONS } from '../../constants/sections';
 import type { SectionKey } from '../../types/product';
+import { FiHome } from 'react-icons/fi';
 
 const Sidebar: React.FC = () => {
     const navigate = useNavigate();
@@ -16,10 +17,11 @@ const Sidebar: React.FC = () => {
                 style={{
                     borderColor: !section ? '#1677ff' : 'transparent',
                     background: !section ? '#e6f4ff' : 'transparent',
+                    color: !section ? '#1677ff' : '#6b7c93',
                 }}
                 title="الرئيسية"
             >
-                🏠
+                <FiHome />
             </button>
 
             <div className="w-8 h-px bg-[#e2e8f0] my-1" />

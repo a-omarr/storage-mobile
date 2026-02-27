@@ -30,6 +30,8 @@ const ProductTable: React.FC<Props> = ({
                 products={sorted}
                 loading={loading}
                 showSection={showSection}
+                sortOrder={sortOrder}
+                toggleSort={toggleSort}
             />
         </div>
     );

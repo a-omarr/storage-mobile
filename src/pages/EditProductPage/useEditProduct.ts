@@ -44,6 +44,7 @@ export const useEditProduct = () => {
                 ...data,
                 dateOfProduction: Timestamp.fromDate(data.dateOfProduction),
             });
+            navigator.vibrate?.(80);
             message.success('تم حفظ التعديلات بنجاح');
             navigate(`/section/${data.section}`);
         } catch (err) {

@@ -34,6 +34,7 @@ export const useAddProduct = () => {
                 dateOfProduction: Timestamp.fromDate(data.dateOfProduction),
                 createdAt: Timestamp.now(),
             });
+            navigator.vibrate?.(80);
             message.success('تم إضافة المنتج بنجاح');
             if (defaultSection) {
                 navigate(`/section/${defaultSection}`);

@@ -1,7 +1,7 @@
-import React, { useRef, useState, useCallback } from 'react';
+import React, { useRef, useState, useCallback, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Button, Typography } from 'antd';
-import { FiCamera, FiUploadCloud, FiX, FiInfo } from 'react-icons/fi';
+import { Button, Typography, Alert } from 'antd';
+import { FiCamera, FiUploadCloud, FiX, FiInfo, FiAlertCircle } from 'react-icons/fi';
 import OCRProcessor from './OCRProcessor.tsx';
 import type { ParsedOCRData } from '../../utils/ocrParser.ts';
 
@@ -15,13 +15,28 @@ interface CameraCaptureProps {
 const CameraCapture: React.FC<CameraCaptureProps> = ({ onResult, onClose }) => {
     const [imageDataUrl, setImageDataUrl] = useState<string | null>(null);
     const [processing, setProcessing] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [isOnline, setIsOnline] = useState(navigator.onLine);
+
     const fileInputRef = useRef<HTMLInputElement>(null);
     const cameraInputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        const handleOnline = () => setIsOnline(true);
+        const handleOffline = () => setIsOnline(false);
+        window.addEventListener('online', handleOnline);
+        window.addEventListener('offline', handleOffline);
+        return () => {
+            window.removeEventListener('online', handleOnline);
+            window.removeEventListener('offline', handleOffline);
+        };
+    }, []);
 
     const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
 
+        setError(null);
         // Reset the input value so the same file can be re-selected later
         e.target.value = '';
 
@@ -36,6 +51,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onResult, onClose }) => {
     const handleRetry = useCallback(() => {
         setImageDataUrl(null);
         setProcessing(false);
+        setError('تعذر تحليل الصورة، يرجى المحاولة مرة أخرى أو الإدخال يدوياً');
     }, []);
 
     const handleOCRResult = useCallback((data: ParsedOCRData) => {
@@ -61,12 +77,31 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onResult, onClose }) => {
 
             {!imageDataUrl && (
                 <div className="flex flex-col items-center w-full max-w-sm px-4">
+                    {error && (
+                        <Alert
+                            message={error}
+                            type="error"
+                            showIcon
+                            style={{ marginBottom: 20, borderRadius: 12, fontFamily: 'Cairo, sans-serif' }}
+                        />
+                    )}
+
+                    {!isOnline && (
+                        <Alert
+                            message="أنت غير متصل بالإنترنت"
+                            description="يتطلب تحميل محرك البحث (Tesseract) اتصالاً بالإنترنت عند أول استخدام."
+                            type="warning"
+                            showIcon
+                            icon={<FiAlertCircle />}
+                            style={{ marginBottom: 20, borderRadius: 12, fontFamily: 'Cairo, sans-serif' }}
+                        />
+                    )}
+
                     <Text className="text-white/70 text-sm font-['Cairo',sans-serif] text-center mb-6">
                         التقط صورة للإيصال أو اختر صورة من الجهاز
                     </Text>
 
                     {/* Hidden file inputs */}
-                    {/* Camera input: opens camera directly on mobile */}
                     <input
                         ref={cameraInputRef}
                         type="file"
@@ -75,7 +110,6 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onResult, onClose }) => {
                         className="hidden"
                         onChange={handleFileChange}
                     />
-                    {/* Gallery input: no capture attr → opens the file/gallery picker */}
                     <input
                         ref={fileInputRef}
                         type="file"

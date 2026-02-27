@@ -29,7 +29,8 @@ const ProductForm: React.FC<Props> = ({
         form,
         showCamera,
         setShowCamera,
-        ocrSuccess,
+        ocrFeedback,
+        setOcrFeedback,
         handleOCRResult,
         handleFinish,
         formInitials,
@@ -53,8 +54,9 @@ const ProductForm: React.FC<Props> = ({
                 requiredMark={false}
             >
                 <ProductFormCameraButton
-                    ocrSuccess={ocrSuccess}
+                    ocrFeedback={ocrFeedback}
                     onOpenCamera={() => setShowCamera(true)}
+                    onClearFeedback={() => setOcrFeedback({ status: null, message: '', missingFields: [] })}
                 />
                 <ProductFormBasicInfo />
                 <ProductFormIdentifiers />

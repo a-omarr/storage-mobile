@@ -10,6 +10,12 @@ interface UseProductFormProps {
     onSubmit: (data: ProductFormData) => Promise<void>;
 }
 
+export interface OCRFeedback {
+    status: 'success' | 'warning' | null;
+    message: string;
+    missingFields: string[];
+}
+
 export const useProductForm = ({
     initialValues,
     defaultSection,
@@ -17,26 +23,54 @@ export const useProductForm = ({
 }: UseProductFormProps) => {
     const [form] = Form.useForm();
     const [showCamera, setShowCamera] = useState(false);
-    const [ocrSuccess, setOcrSuccess] = useState(false);
+    const [ocrFeedback, setOcrFeedback] = useState<OCRFeedback>({ status: null, message: '', missingFields: [] });
 
     const handleOCRResult = (data: ParsedOCRData) => {
         const updates: Record<string, any> = {};
-        if (data.type) updates.type = data.type;
-        if (data.capacity) updates.capacity = data.capacity;
-        if (data.itemNo) updates.itemNo = data.itemNo;
-        if (data.batchNumber) updates.batchNumber = data.batchNumber;
-        if (data.color) updates.color = data.color;
-        if (data.finishType) updates.finishType = data.finishType;
-        if (data.qtyPerLayer !== undefined) updates.qtyPerLayer = data.qtyPerLayer;
-        if (data.numberOfLayers !== undefined) updates.numberOfLayers = data.numberOfLayers;
-        if (data.piecesPerPallet !== undefined) updates.piecesPerPallet = data.piecesPerPallet;
-        if (data.numberOfPallet !== undefined) updates.numberOfPallet = data.numberOfPallet;
-        if (data.dateOfProduction) updates.dateOfProduction = dayjs(data.dateOfProduction);
+        const fieldMap: Record<string, string> = {
+            type: 'النوع',
+            capacity: 'السعة',
+            itemNo: 'رقم الصنف',
+            batchNumber: 'رقم التشغيلة',
+            color: 'اللون',
+            finishType: 'نوع النهاية',
+            qtyPerLayer: 'الكمية في الطبقة',
+            numberOfLayers: 'عدد الطبقات',
+            piecesPerPallet: 'القطع في الطبلية',
+            numberOfPallet: 'عدد الطبالي',
+            dateOfProduction: 'تاريخ الإنتاج'
+        };
+
+        const missingFields: string[] = [];
+
+        Object.keys(fieldMap).forEach(key => {
+            const val = (data as any)[key];
+            if (val !== undefined && val !== null && val !== '') {
+                if (key === 'dateOfProduction') {
+                    updates[key] = dayjs(val);
+                } else {
+                    updates[key] = val;
+                }
+            } else {
+                missingFields.push(fieldMap[key]);
+            }
+        });
 
         form.setFieldsValue(updates);
         setShowCamera(false);
-        setOcrSuccess(true);
-        setTimeout(() => setOcrSuccess(false), 4000);
+
+        const confidence = data.confidence ?? 0;
+        const status = confidence >= 50 ? 'success' : 'warning';
+        const message = confidence >= 50
+            ? 'تم قراءة البيانات بنجاح ✓'
+            : 'تحقق من البيانات، قد تكون غير دقيقة ⚠️';
+
+        setOcrFeedback({ status, message, missingFields });
+
+        // Auto-clear feedback after 8 seconds if it's a success
+        if (status === 'success') {
+            setTimeout(() => setOcrFeedback(prev => ({ ...prev, status: null })), 8000);
+        }
     };
 
     const handleFinish = async (values: any) => {
@@ -71,7 +105,8 @@ export const useProductForm = ({
         form,
         showCamera,
         setShowCamera,
-        ocrSuccess,
+        ocrFeedback,
+        setOcrFeedback,
         handleOCRResult,
         handleFinish,
         formInitials,

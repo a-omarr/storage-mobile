@@ -18,6 +18,7 @@ export interface ParsedOCRData {
     piecesPerPallet?: number;
     numberOfPallet?: number;
     dateOfProduction?: Date;
+    confidence?: number; // Average confidence score 0-100
 }
 
 // ── Constants ─────────────────────────────────────────────────────────────────

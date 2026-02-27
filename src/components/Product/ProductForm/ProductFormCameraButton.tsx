@@ -1,21 +1,38 @@
 import React from 'react';
-import { Button, Alert, Divider } from 'antd';
+import { Button, Alert, Divider, Tag } from 'antd';
 import { FiCamera } from 'react-icons/fi';
+import type { OCRFeedback } from './useProductForm';
 
 interface Props {
-    ocrSuccess: boolean;
+    ocrFeedback: OCRFeedback;
     onOpenCamera: () => void;
+    onClearFeedback: () => void;
 }
 
-const ProductFormCameraButton: React.FC<Props> = ({ ocrSuccess, onOpenCamera }) => (
+const ProductFormCameraButton: React.FC<Props> = ({ ocrFeedback, onOpenCamera, onClearFeedback }) => (
     <div className="mb-5">
-        {ocrSuccess && (
+        {ocrFeedback.status && (
             <Alert
-                message="تم قراءة البيانات من الصورة بنجاح ✓"
-                type="success"
+                message={ocrFeedback.message}
+                type={ocrFeedback.status}
                 showIcon
                 closable
-                style={{ marginBottom: 12, fontFamily: 'Cairo, sans-serif' }}
+                onClose={onClearFeedback}
+                style={{ marginBottom: 16, fontFamily: 'Cairo, sans-serif', borderRadius: 12 }}
+                description={
+                    ocrFeedback.missingFields.length > 0 && (
+                        <div className="mt-2">
+                            <div className="text-[12px] mb-1 opacity-70">يُرجى إكمال الحقول التالية يدوياً:</div>
+                            <div className="flex flex-wrap gap-1">
+                                {ocrFeedback.missingFields.map(field => (
+                                    <Tag key={field} color="default" style={{ borderRadius: 4, fontSize: 11 }}>
+                                        {field}
+                                    </Tag>
+                                ))}
+                            </div>
+                        </div>
+                    )
+                }
             />
         )}
         <Button

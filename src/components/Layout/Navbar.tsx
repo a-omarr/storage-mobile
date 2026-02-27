@@ -47,8 +47,8 @@ const Navbar: React.FC = () => {
                 className="flex items-center gap-[10px] cursor-pointer flex-1 min-w-0 pr-2"
                 onClick={() => navigate('/')}
             >
-                <div className="w-9 h-9 bg-white/20 rounded-[10px] flex items-center justify-center font-extrabold text-lg text-white shrink-0">
-                    م
+                <div className="w-10 h-10 flex items-center justify-center p-1 shrink-0 overflow-hidden">
+                    <img src="/logo.svg" alt="مدير المخزن" className="w-full h-full object-contain" />
                 </div>
                 <div className="flex-1 min-w-0 overflow-hidden">
                     <Text

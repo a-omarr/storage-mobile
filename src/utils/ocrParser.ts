@@ -20,11 +20,28 @@ export interface ParsedOCRData {
     dateOfProduction?: Date;
 }
 
-// ── Row grouping ─────────────────────────────────────────────────────────────
+// ── Constants ─────────────────────────────────────────────────────────────────
 
 /**
- * Group words into rows by proximity of Y-center.
- * Uses a midpoint-based approach so words of different heights stay in the same row.
+ * Known multi-word column headers on the receipt.
+ * Order matters — longer/more specific headers first.
+ */
+const MULTI_WORD_HEADERS = [
+    'QUANTITY PER LAYER',
+    'NUMBER OF LAYERS',
+    'NUMBER OF PALLET',
+    'PIECES PER PALLET',
+    'DATE OF PRODUCTION',
+    'FINISH TYPE',
+    'BATCH NUMBER',
+    'ITEM NO',
+];
+
+// ── Row grouping ──────────────────────────────────────────────────────────────
+
+/**
+ * Groups words into rows by proximity of Y-center.
+ * Uses midpoint-based approach so words of different heights stay in the same row.
  */
 function groupByRows(words: OCRWord[], threshold = 20): OCRWord[][] {
     const rows: OCRWord[][] = [];
@@ -59,59 +76,78 @@ function rowText(row: OCRWord[]): string {
     return row.map(w => w.text).join(' ').trim();
 }
 
-// ── Column-aware value extraction ─────────────────────────────────────────────
+// ── Column boundary detection (FIX 3) ────────────────────────────────────────
 
 /**
- * Given a header word, find the word in the next row whose X-center is closest.
- * This correctly maps each column header to its specific value cell below it.
- * maxXDist: maximum horizontal distance (in scaled pixels) to consider a match.
+ * Creates column boundaries based on header word positions.
+ * Correctly handles multi-word headers like "QUANTITY PER LAYER" as a single column
+ * instead of creating a boundary per word.
  */
-function valueBelow(
-    headerWord: OCRWord,
-    nextRow: OCRWord[],
-    maxXDist = 300          // generous — columns can be wide, and 2× scale doubles all coords
-): string {
-    if (!nextRow || nextRow.length === 0) return '';
-    const hMidX = (headerWord.bbox.x0 + headerWord.bbox.x1) / 2;
+function getColumnBoundaries(row: OCRWord[]): { keyword: string; minX: number; maxX: number }[] {
+    const sorted = [...row].sort((a, b) => a.bbox.x0 - b.bbox.x0);
+    const usedIndices = new Set<number>();
+    const boundaries: { keyword: string; minX: number; maxX: number }[] = [];
 
-    let closest: OCRWord | null = null;
-    let minDist = Infinity;
+    for (let i = 0; i < sorted.length; i++) {
+        if (usedIndices.has(i)) continue;
 
-    for (const w of nextRow) {
-        const wMidX = (w.bbox.x0 + w.bbox.x1) / 2;
-        const dist = Math.abs(wMidX - hMidX);
-        if (dist < minDist && dist < maxXDist) {
-            minDist = dist;
-            closest = w;
+        // Check if this word starts a known multi-word header
+        let headerLength = 1;
+        const currentWordUp = sorted[i].text.toUpperCase();
+
+        for (const header of MULTI_WORD_HEADERS) {
+            const headerWords = header.split(' ');
+            if (currentWordUp !== headerWords[0]) continue;
+
+            // Check if the following words match the rest of the header
+            let match = true;
+            for (let k = 1; k < headerWords.length; k++) {
+                if (!sorted[i + k] || sorted[i + k].text.toUpperCase() !== headerWords[k]) {
+                    match = false;
+                    break;
+                }
+            }
+            if (match) {
+                headerLength = headerWords.length;
+                break;
+            }
         }
+
+        // Mark subsequent words of multi-word header as used
+        for (let k = 1; k < headerLength; k++) usedIndices.add(i + k);
+
+        // Column starts at the first word of the header
+        // Column ends just before the next unmerged header starts
+        const nextUnmergedIdx = i + headerLength;
+        const minX = sorted[i].bbox.x0 - 50;
+        const maxX = nextUnmergedIdx < sorted.length
+            ? sorted[nextUnmergedIdx].bbox.x0 - 30
+            : Infinity;
+
+        boundaries.push({ keyword: sorted[i].text, minX, maxX });
     }
 
-    return closest ? closest.text.trim() : '';
+    return boundaries;
 }
 
 /**
- * When the header spans multiple words (e.g., "QUANTITY PER LAYER"),
- * use the rightmost word as the anchor for column alignment.
+ * Extracts all words from the next row that fall within the specified X boundaries.
  */
-function valueBelowMulti(headerWords: OCRWord[], nextRow: OCRWord[]): string {
-    const rightmost = [...headerWords].sort((a, b) => b.bbox.x1 - a.bbox.x1)[0];
-    return valueBelow(rightmost, nextRow);
+function extractColumnValue(nextRow: OCRWord[], minX: number, maxX: number): string {
+    if (!nextRow) return '';
+    const wordsInColumn = nextRow.filter(w => {
+        const midX = (w.bbox.x0 + w.bbox.x1) / 2;
+        return midX > minX && midX < maxX;
+    });
+    return wordsInColumn.map(w => w.text).join(' ').trim();
 }
 
+// ── Fuzzy keyword matching ────────────────────────────────────────────────────
 
-
-// ── Fuzzy keyword matching ─────────────────────────────────────────────────────
-
-/**
- * Tesseract sometimes misreads headers (e.g., "BATCH" → "BATCK", "QUANTITY" → "OUANTITY").
- * Use fuzzy matching: check if the word contains at least N consecutive chars of the keyword,
- * or if the keyword is a subsequence of the word (allowing 1-char substitutions).
- */
 function fuzzyIncludes(haystack: string, needle: string, minMatch = 4): boolean {
     const h = haystack.toUpperCase();
     const n = needle.toUpperCase();
     if (h.includes(n)) return true;
-    // Check if n is a partial substring of h (at least minMatch chars matching)
     if (n.length >= minMatch) {
         for (let start = 0; start <= n.length - minMatch; start++) {
             if (h.includes(n.slice(start, start + minMatch))) return true;
@@ -120,43 +156,67 @@ function fuzzyIncludes(haystack: string, needle: string, minMatch = 4): boolean 
     return false;
 }
 
-function findHeaderWord(row: OCRWord[], keyword: string): OCRWord | undefined {
-    return row.find(w => fuzzyIncludes(w.text, keyword));
-}
-
 // ── Number extraction ─────────────────────────────────────────────────────────
 
 function extractNumber(str: string): number | undefined {
-    const match = str.replace(/,/g, '').replace(/O/g, '0').match(/\d+/);
+    // Replace common OCR mistakes: O→0, I→1, l→1
+    const cleaned = str.replace(/,/g, '').replace(/O/g, '0').replace(/[Il]/g, '1');
+    const match = cleaned.match(/\d+/);
     return match ? parseInt(match[0]) : undefined;
 }
 
-// ── Main parser ───────────────────────────────────────────────────────────────
+// ── Finish type extraction (FIX 1) ───────────────────────────────────────────
 
 /**
- * Parses Tesseract word-level results into structured product fields.
- * Designed for the MCG receipt layout:
- *
- *   ROW: [Product Name]   [Capacity e.g. 750 ML]
- *   ROW: BATCH NUMBER | Item No | COLOR | QUANTITY PER LAYER
- *   ROW: 264-006      | 264    | Flint | 233
- *   ROW: DATE OF PRODUCTION | CAPACITY | FINISH TYPE | NUMBER OF LAYERS
- *   ROW: 9/11/2024          | 750 CC   | CORK        | 7
- *   ROW: [icons - ignored]
- *   ROW: M.T./K.A.,H.O.    |          | PIECES PER PALLET
- *   ROW: (empty left)                  | 1631
- *   ROW: (empty left)                  | NUMBER OF PALLET
- *   ROW: (empty left)                  | 1108
+ * Extracts finish type from the DATE row value line.
+ * Handles multi-word finish types like "28 pp" and "TO 63" which the old
+ * alphabetic-only regex would miss entirely.
+ * Strategy: grab everything between the capacity value (e.g. "750 CC") and
+ * the layers number at the end of the line.
  */
+function extractFinishType(line: string): string | undefined {
+    // Pattern: <date> <capacity like "750 CC"> <finish type> <number of layers>
+    // We want the part between the capacity and the trailing number
+    const finishMatch = line.match(/(?:\d+\s*(?:CC|ML|CL|L))\s+(.+?)\s+\d+\s*$/i);
+    if (finishMatch) return finishMatch[1].trim();
+
+    // Fallback: pure alpha word like "CORK", "SCREW" — original approach
+    const words = line.split(/\s+/);
+    const finish = words.find(w =>
+        /^[A-Z]{3,}$/.test(w.toUpperCase()) &&
+        !/(ML|CC|CL|^L$|\d)/.test(w)
+    );
+    return finish ?? undefined;
+}
+
+// ── Item No extraction (FIX 2) ───────────────────────────────────────────────
+
+/**
+ * Extracts item no from the BATCH row value line.
+ * Old approach used a regex that could confuse item no with other numbers.
+ * New approach: batch is always first (has a hyphen), item no is always
+ * the immediate next standalone number after the batch.
+ */
+function extractItemNo(parts: string[], batchValue: string): string | undefined {
+    const batchIdx = parts.findIndex(p => p === batchValue);
+    if (batchIdx !== -1 && parts[batchIdx + 1]) {
+        const candidate = parts[batchIdx + 1];
+        if (/^\d{2,4}$/.test(candidate)) return candidate;
+    }
+    // Fallback: find first standalone number that isn't the batch
+    return parts.find(p => /^\d{2,4}$/.test(p) && p !== batchValue);
+}
+
+// ── Main positional parser ────────────────────────────────────────────────────
+
 export function parseOCRResult(words: OCRWord[]): ParsedOCRData {
     const result: ParsedOCRData = {};
     if (words.length === 0) return result;
 
     const rows = groupByRows(words, 20);
-
     console.log('[ocrParser] rows:', rows.map(r => rowText(r)));
 
-    // ── Product title: first row(s) with a capacity pattern ─────────────────
+    // ── Product title + capacity ──────────────────────────────────────────────
     for (let i = 0; i < Math.min(5, rows.length); i++) {
         const text = rowText(rows[i]);
         const capMatch = text.match(/(\d+(?:\.\d+)?)\s*(ML|CC|CL|L)\b/i);
@@ -168,136 +228,134 @@ export function parseOCRResult(words: OCRWord[]): ParsedOCRData {
         }
     }
 
-    // ── Scan rows for known headers, extract value from row below ────────────
+    // ── Scan rows using column boundaries ────────────────────────────────────
     for (let i = 0; i < rows.length - 1; i++) {
-        const text = rowText(rows[i]).toUpperCase();
+        const row = rows[i];
         const nextRow = rows[i + 1];
+        const text = rowText(row).toUpperCase();
+
+        const isHeaderRow =
+            fuzzyIncludes(text, 'BATCH') ||
+            fuzzyIncludes(text, 'DATE') ||
+            fuzzyIncludes(text, 'PIECE');
+
+        if (!isHeaderRow) continue;
+
+        const boundaries = getColumnBoundaries(row);
 
         // BATCH NUMBER
-        if (fuzzyIncludes(text, 'BATCH')) {
-            const hw = findHeaderWord(rows[i], 'BATCH');
-            if (hw) {
-                const val = valueBelow(hw, nextRow);
-                if (val && /[\d\-]/.test(val)) result.batchNumber = val;
-            }
+        const batchBounds = boundaries.find(b => fuzzyIncludes(b.keyword, 'BATCH'));
+        if (batchBounds) {
+            const val = extractColumnValue(nextRow, batchBounds.minX, batchBounds.maxX);
+            if (val && /[\d\-]/.test(val)) result.batchNumber = val.split(' ')[0];
         }
 
-        // ITEM NO / ALTERNATIVE NO
-        if (fuzzyIncludes(text, 'ITEM') || fuzzyIncludes(text, 'ALT')) {
-            const hw = findHeaderWord(rows[i], 'ITEM') ?? findHeaderWord(rows[i], 'ALT');
-            if (hw) {
-                const val = valueBelow(hw, nextRow);
-                if (val) result.itemNo = val.replace(/[^0-9\-]/g, '') || val;
+        // ITEM NO — position-based (FIX 2)
+        const itemBounds = boundaries.find(b =>
+            fuzzyIncludes(b.keyword, 'ITEM') || fuzzyIncludes(b.keyword, 'ALT')
+        );
+        if (itemBounds) {
+            const val = extractColumnValue(nextRow, itemBounds.minX, itemBounds.maxX);
+            if (val) {
+                const cleaned = val.replace(/[^0-9\-]/g, '');
+                if (cleaned) result.itemNo = cleaned;
             }
         }
 
         // COLOR
-        if (fuzzyIncludes(text, 'COLOR')) {
-            const hw = findHeaderWord(rows[i], 'COLOR');
-            if (hw) {
-                const val = valueBelow(hw, nextRow);
-                if (val) result.color = val;
-            }
+        const colorBounds = boundaries.find(b => fuzzyIncludes(b.keyword, 'COLOR'));
+        if (colorBounds && !result.color) {
+            const val = extractColumnValue(nextRow, colorBounds.minX, colorBounds.maxX);
+            if (val) result.color = val;
         }
 
-        // QUANTITY PER LAYER
-        if (fuzzyIncludes(text, 'QUANT') || fuzzyIncludes(text, 'QTY')) {
-            const hws = rows[i].filter(w =>
-                fuzzyIncludes(w.text, 'QUANT') ||
-                fuzzyIncludes(w.text, 'QTY') ||
-                fuzzyIncludes(w.text, 'LAYER')
-            );
-            if (hws.length > 0) {
-                const val = valueBelowMulti(hws, nextRow);
-                const num = extractNumber(val);
-                if (num !== undefined) result.qtyPerLayer = num;
-            }
+        // QUANTITY PER LAYER — now correctly treated as single column (FIX 3)
+        const qtyBounds = boundaries.find(b =>
+            fuzzyIncludes(b.keyword, 'QUANT') || fuzzyIncludes(b.keyword, 'QTY')
+        );
+        if (qtyBounds && !result.qtyPerLayer) {
+            const val = extractColumnValue(nextRow, qtyBounds.minX, Infinity);
+            const num = extractNumber(val);
+            if (num !== undefined) result.qtyPerLayer = num;
         }
 
         // DATE OF PRODUCTION
-        if (fuzzyIncludes(text, 'DATE')) {
-            const hw = findHeaderWord(rows[i], 'DATE');
-            if (hw) {
-                const val = valueBelow(hw, nextRow);
-                if (val) {
-                    const parsed = parseOCRDate(val);
-                    if (parsed) result.dateOfProduction = parsed;
-                }
+        const dateBounds = boundaries.find(b => fuzzyIncludes(b.keyword, 'DATE'));
+        if (dateBounds) {
+            const val = extractColumnValue(nextRow, dateBounds.minX, dateBounds.maxX);
+            if (val) {
+                const parsed = parseOCRDate(val);
+                if (parsed) result.dateOfProduction = parsed;
             }
         }
 
-        // CAPACITY (as column header, not title row)
-        if (fuzzyIncludes(text, 'CAPAC') && !result.capacity) {
-            const hw = findHeaderWord(rows[i], 'CAPAC');
-            if (hw) {
-                const val = valueBelow(hw, nextRow);
-                if (val) result.capacity = val;
-            }
+        // CAPACITY as column header (only if not already found from title row)
+        const capBounds = boundaries.find(b => fuzzyIncludes(b.keyword, 'CAPAC'));
+        if (capBounds && !result.capacity) {
+            const val = extractColumnValue(nextRow, capBounds.minX, capBounds.maxX);
+            if (val) result.capacity = val;
         }
 
-        // FINISH TYPE
-        if (fuzzyIncludes(text, 'FINISH')) {
-            const hw = findHeaderWord(rows[i], 'FINISH');
-            if (hw) {
-                const val = valueBelow(hw, nextRow);
-                if (val) result.finishType = val;
-            }
+        // FINISH TYPE — now uses improved extraction (FIX 1)
+        const finishBounds = boundaries.find(b => fuzzyIncludes(b.keyword, 'FINISH'));
+        if (finishBounds && !result.finishType) {
+            const val = extractColumnValue(nextRow, finishBounds.minX, finishBounds.maxX);
+            if (val) result.finishType = val;
         }
 
-        // NUMBER OF LAYERS (not QUANTITY PER LAYER)
-        if ((fuzzyIncludes(text, 'LAYER') || fuzzyIncludes(text, 'LAYERS')) &&
-            !fuzzyIncludes(text, 'QUANT') && !fuzzyIncludes(text, 'QTY')) {
-            const hw = findHeaderWord(rows[i], 'LAYER');
-            if (hw) {
-                const val = valueBelow(hw, nextRow);
-                const num = extractNumber(val);
-                if (num !== undefined) result.numberOfLayers = num;
-            }
+        // NUMBER OF LAYERS — now correctly single column (FIX 3)
+        const layerBounds = boundaries.find(b =>
+            fuzzyIncludes(b.keyword, 'LAYER') &&
+            !fuzzyIncludes(b.keyword, 'QUANT')
+        );
+        if (layerBounds && !result.numberOfLayers) {
+            const val = extractColumnValue(nextRow, layerBounds.minX, Infinity);
+            const num = extractNumber(val);
+            if (num !== undefined) result.numberOfLayers = num;
         }
 
-        // PIECES PER PALLET — value is the rightmost word in the next row
-        if (fuzzyIncludes(text, 'PIECE') || fuzzyIncludes(text, 'PCS')) {
-            const rightmost = nextRow[nextRow.length - 1];
-            if (rightmost) {
-                const num = extractNumber(rightmost.text);
-                if (num !== undefined) result.piecesPerPallet = num;
-            }
+        // PIECES PER PALLET — now correctly single column (FIX 3)
+        const piecesBounds = boundaries.find(b =>
+            fuzzyIncludes(b.keyword, 'PIECE') || fuzzyIncludes(b.keyword, 'PCS')
+        );
+        if (piecesBounds && !result.piecesPerPallet) {
+            const val = extractColumnValue(nextRow, piecesBounds.minX - 100, Infinity);
+            const num = extractNumber(val);
+            if (num !== undefined) result.piecesPerPallet = num;
         }
 
-        // NUMBER OF PALLET — value is the rightmost word in the next row
-        // Must NOT also match "PIECES PER PALLET"
-        if (fuzzyIncludes(text, 'PALLET') &&
-            !fuzzyIncludes(text, 'PIECE') && !fuzzyIncludes(text, 'PCS')) {
-            const rightmost = nextRow[nextRow.length - 1];
-            if (rightmost) {
-                const num = extractNumber(rightmost.text);
-                if (num !== undefined) result.numberOfPallet = num;
-            }
+        // NUMBER OF PALLET — now correctly single column (FIX 3)
+        const palletBounds = boundaries.find(b =>
+            fuzzyIncludes(b.keyword, 'PALLET') &&
+            !fuzzyIncludes(b.keyword, 'PIECE') &&
+            !fuzzyIncludes(b.keyword, 'PCS')
+        );
+        if (palletBounds && !result.numberOfPallet) {
+            const val = extractColumnValue(nextRow, palletBounds.minX - 100, Infinity);
+            const num = extractNumber(val);
+            if (num !== undefined) result.numberOfPallet = num;
         }
     }
 
     return result;
 }
 
-// ── Text-line fallback parser ──────────────────────────────────────────────────
+// ── Text-line fallback parser ─────────────────────────────────────────────────
 
 /**
- * Fallback parser used when data.blocks is null (Tesseract.js sometimes returns null blocks).
- * Parses data.text — the plain text string that Tesseract ALWAYS populates.
- *
- * Strategy: scan lines for known header keywords, grab value from the NEXT non-empty line.
- * This is less accurate than positional parsing (can't do column matching),
- * but reliable since the receipt always has the same row order.
+ * Fallback parser used when Tesseract returns null blocks.
+ * Parses data.text — the plain string Tesseract always populates.
+ * Less accurate than positional parsing but reliable for this known receipt format.
  */
 export function parseOCRText(rawText: string): ParsedOCRData {
     const result: ParsedOCRData = {};
     if (!rawText) return result;
 
-    // Strip lines that are clearly Arabic or just symbols/whitespace
+    // Keep only lines with Latin characters or digits — strips Arabic and blank lines
     const lines = rawText
         .split('\n')
         .map(l => l.trim())
-        .filter(l => l.length > 1 && /[A-Za-z0-9]/.test(l)); // keep only lines with latin/digits
+        .filter(l => l.length > 1 && /[A-Za-z0-9]/.test(l));
 
     const up = (s: string) => s.toUpperCase();
 
@@ -311,7 +369,7 @@ export function parseOCRText(rawText: string): ParsedOCRData {
     for (let i = 0; i < lines.length; i++) {
         const line = up(lines[i]);
 
-        // Product title + capacity — first line with "ML" or "CC"
+        // ── Product title + capacity ──────────────────────────────────────────
         if (!result.type) {
             const capMatch = lines[i].match(/(\d+(?:\.\d+)?)\s*(ML|CC|CL|L)\b/i);
             if (capMatch) {
@@ -321,22 +379,31 @@ export function parseOCRText(rawText: string): ParsedOCRData {
             }
         }
 
-        // BATCH NUMBER
+        // ── BATCH NUMBER row ──────────────────────────────────────────────────
+        // Value row: "264-006  264  Flint  233"
         if (fuzzyIncludes(line, 'BATCH') && !result.batchNumber) {
-            // The header row has all 4 headers: "BATCH NUMBER Item No COLOR QUANTITY PER LAYER"
-            // The next line has all 4 values: "264-006 264 Flint 233"
             const next = nextLine(i);
             if (next) {
                 const parts = next.split(/\s+/);
-                // BATCH value: looks like "264-006" (has a hyphen or multiple digits)
-                const batch = parts.find(p => /\d+[-]\d+/.test(p) || /^\d{3,}/.test(p));
+
+                // Batch: first token with a hyphen like "264-006"
+                const batch = parts.find(p => /\d+[-]\d+/.test(p));
                 if (batch) result.batchNumber = batch;
-                // Item No: a standalone number
-                const itemNo = parts.find(p => /^\d{2,4}$/.test(p) && p !== batch);
-                if (itemNo && !result.itemNo) result.itemNo = itemNo;
-                // Color: a word, not a number
-                const color = parts.find(p => /^[A-Za-z]+$/.test(p) && p.length > 2);
+
+                // Item No: token immediately after batch (FIX 2)
+                if (batch) {
+                    const itemNo = extractItemNo(parts, batch);
+                    if (itemNo && !result.itemNo) result.itemNo = itemNo;
+                }
+
+                // Color: first purely alphabetic word (length > 2), not a number
+                const color = parts.find(p =>
+                    /^[A-Za-z]+$/.test(p) &&
+                    p.length > 2 &&
+                    !['AND', 'FOR', 'THE', 'PER'].includes(p.toUpperCase())
+                );
                 if (color && !result.color) result.color = color;
+
                 // Qty per layer: last number on the line
                 const nums = parts.filter(p => /^\d+$/.test(p));
                 if (nums.length > 0 && !result.qtyPerLayer) {
@@ -345,45 +412,57 @@ export function parseOCRText(rawText: string): ParsedOCRData {
             }
         }
 
-        // DATE OF PRODUCTION
+        // ── DATE OF PRODUCTION row ────────────────────────────────────────────
+        // Value row: "9/11/2024  750 CC  CORK  7"
+        //            "5/8/2024   600 CC  28 pp  8"
+        //            "9/8/2025   325 cc  TO 63  16"
         if (fuzzyIncludes(line, 'DATE') && !result.dateOfProduction) {
             const next = nextLine(i);
             if (next) {
-                // Extract date pattern d/m/yyyy or dd/mm/yyyy
+                // Date
                 const dateMatch = next.match(/\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4}/);
                 if (dateMatch) {
                     const parsed = parseOCRDate(dateMatch[0]);
                     if (parsed) result.dateOfProduction = parsed;
                 }
-                // CAPACITY column is also on the next line — looks like "750 CC"
+
+                // Capacity (only if not found from title)
                 if (!result.capacity) {
                     const capMatch = next.match(/(\d+(?:\.\d+)?)\s*(ML|CC|CL|L)\b/i);
                     if (capMatch) result.capacity = `${capMatch[1]} ${capMatch[2].toUpperCase()}`;
                 }
-                // FINISH TYPE column — a word like "CORK", "SCREW"
-                const words = next.split(/\s+/);
-                const finish = words.find(w => /^[A-Z]{3,}$/.test(w.toUpperCase()) &&
-                    !/(ML|CC|CL|L|\d)/.test(w));
-                if (finish && !result.finishType) result.finishType = finish;
-                // NUMBER OF LAYERS — last number on the line
-                const nums = next.match(/\d+/g);
-                if (nums && nums.length > 0 && !result.numberOfLayers) {
-                    result.numberOfLayers = parseInt(nums[nums.length - 1]);
+
+                // Finish type — improved to catch "28 pp", "TO 63", "CORK" (FIX 1)
+                if (!result.finishType) {
+                    const finish = extractFinishType(next);
+                    if (finish) result.finishType = finish;
+                }
+
+                // Number of layers: last number on the line
+                const allNums = next.match(/\d+/g);
+                if (allNums && allNums.length > 0 && !result.numberOfLayers) {
+                    result.numberOfLayers = parseInt(allNums[allNums.length - 1]);
                 }
             }
         }
 
-        // PIECES PER PALLET
-        if ((fuzzyIncludes(line, 'PIECE') || fuzzyIncludes(line, 'PCS')) && !result.piecesPerPallet) {
+        // ── PIECES PER PALLET ─────────────────────────────────────────────────
+        if (
+            (fuzzyIncludes(line, 'PIECE') || fuzzyIncludes(line, 'PCS')) &&
+            !result.piecesPerPallet
+        ) {
             const next = nextLine(i);
             const num = extractNumber(next);
             if (num !== undefined) result.piecesPerPallet = num;
         }
 
-        // NUMBER OF PALLET (not pieces)
-        if (fuzzyIncludes(line, 'PALLET') &&
-            !fuzzyIncludes(line, 'PIECE') && !fuzzyIncludes(line, 'PCS') &&
-            !result.numberOfPallet) {
+        // ── NUMBER OF PALLET ──────────────────────────────────────────────────
+        if (
+            fuzzyIncludes(line, 'PALLET') &&
+            !fuzzyIncludes(line, 'PIECE') &&
+            !fuzzyIncludes(line, 'PCS') &&
+            !result.numberOfPallet
+        ) {
             const next = nextLine(i);
             const num = extractNumber(next);
             if (num !== undefined) result.numberOfPallet = num;

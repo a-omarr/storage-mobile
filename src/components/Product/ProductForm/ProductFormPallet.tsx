@@ -8,7 +8,7 @@ const ProductFormPallet: React.FC = () => (
         {[
             { label: 'كمية لكل طبقة', name: 'qtyPerLayer', placeholder: 'مثال: 12' },
             { label: 'عدد الطبقات', name: 'numberOfLayers', placeholder: 'مثال: 5' },
-            { label: 'قطع لكل بالت', name: 'piecesPerPallet', placeholder: 'مثال: 60' },
+            { label: 'قيمة التعبئة \ السعة', name: 'piecesPerPallet', placeholder: 'مثال: 60' },
             { label: 'عدد البالتات', name: 'numberOfPallet', placeholder: 'مثال: 1' },
         ].map(({ label, name, placeholder }) => (
             <Form.Item

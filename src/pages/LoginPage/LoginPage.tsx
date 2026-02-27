@@ -65,6 +65,7 @@ const LoginPage: React.FC = () => {
                     onFinish={onFinish}
                     size="large"
                     requiredMark={false}
+                    validateTrigger="onSubmit"
                 >
                     <Form.Item
                         name="email"

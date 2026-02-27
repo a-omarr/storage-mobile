@@ -1,0 +1,109 @@
+{
+  "hash": "975333f4",
+  "configHash": "2c405f81",
+  "lockfileHash": "70507181",
+  "browserHash": "98b90d1c",
+  "optimized": {
+    "react/jsx-dev-runtime": {
+      "src": "../../node_modules/react/jsx-dev-runtime.js",
+      "file": "react_jsx-dev-runtime.js",
+      "fileHash": "4ed9176b",
+      "needsInterop": true
+    },
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "135ba53f",
+      "needsInterop": true
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "b151e5c2",
+      "needsInterop": true
+    },
+    "react-router-dom": {
+      "src": "../../node_modules/react-router-dom/dist/index.mjs",
+      "file": "react-router-dom.js",
+      "fileHash": "432848ab",
+      "needsInterop": false
+    },
+    "antd": {
+      "src": "../../node_modules/antd/es/index.js",
+      "file": "antd.js",
+      "fileHash": "5a1e3619",
+      "needsInterop": false
+    },
+    "antd/locale/ar_EG": {
+      "src": "../../node_modules/antd/locale/ar_EG.js",
+      "file": "antd_locale_ar_EG.js",
+      "fileHash": "03843115",
+      "needsInterop": true
+    },
+    "firebase/firestore": {
+      "src": "../../node_modules/firebase/firestore/dist/esm/index.esm.js",
+      "file": "firebase_firestore.js",
+      "fileHash": "9ac2f106",
+      "needsInterop": false
+    },
+    "react-icons/fi": {
+      "src": "../../node_modules/react-icons/fi/index.mjs",
+      "file": "react-icons_fi.js",
+      "fileHash": "ea346902",
+      "needsInterop": false
+    },
+    "firebase/app": {
+      "src": "../../node_modules/firebase/app/dist/esm/index.esm.js",
+      "file": "firebase_app.js",
+      "fileHash": "9b52d540",
+      "needsInterop": false
+    },
+    "dayjs": {
+      "src": "../../node_modules/dayjs/dayjs.min.js",
+      "file": "dayjs.js",
+      "fileHash": "635da8ef",
+      "needsInterop": true
+    },
+    "tesseract.js": {
+      "src": "../../node_modules/tesseract.js/src/index.js",
+      "file": "tesseract__js.js",
+      "fileHash": "f753abd1",
+      "needsInterop": true
+    },
+    "firebase/auth": {
+      "src": "../../node_modules/firebase/auth/dist/esm/index.esm.js",
+      "file": "firebase_auth.js",
+      "fileHash": "64707b2d",
+      "needsInterop": false
+    },
+    "@ant-design/icons": {
+      "src": "../../node_modules/@ant-design/icons/es/index.js",
+      "file": "@ant-design_icons.js",
+      "fileHash": "cdacad43",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-TNBTCH4V": {
+      "file": "chunk-TNBTCH4V.js"
+    },
+    "chunk-TCU73CRL": {
+      "file": "chunk-TCU73CRL.js"
+    },
+    "chunk-USO6TZ7H": {
+      "file": "chunk-USO6TZ7H.js"
+    },
+    "chunk-MZXIUK7D": {
+      "file": "chunk-MZXIUK7D.js"
+    },
+    "chunk-7J7PNBLN": {
+      "file": "chunk-7J7PNBLN.js"
+    },
+    "chunk-W3PUVTET": {
+      "file": "chunk-W3PUVTET.js"
+    },
+    "chunk-7D4SUZUM": {
+      "file": "chunk-7D4SUZUM.js"
+    }
+  }
+}

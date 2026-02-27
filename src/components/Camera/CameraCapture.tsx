@@ -1,5 +1,6 @@
 import React, { useRef, useState, useCallback } from 'react';
-import { Button, Space, Typography } from 'antd';
+import { createPortal } from 'react-dom';
+import { Button, Typography } from 'antd';
 import { FiCamera, FiUploadCloud, FiX, FiInfo } from 'react-icons/fi';
 import OCRProcessor from './OCRProcessor.tsx';
 import type { ParsedOCRData } from '../../utils/ocrParser.ts';
@@ -42,7 +43,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onResult, onClose }) => {
         onResult(data);
     }, [onResult]);
 
-    return (
+    return createPortal(
         <div className="fixed inset-0 bg-black/85 z-[9999] flex flex-col items-center justify-center p-5 gap-5">
             {/* Close button */}
             <div className="absolute top-4 left-4">
@@ -54,29 +55,13 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onResult, onClose }) => {
                 />
             </div>
 
-            <Text
-                style={{
-                    color: 'white',
-                    fontSize: 20,
-                    fontWeight: 700,
-                    fontFamily: 'Cairo, sans-serif',
-                    textAlign: 'center',
-                }}
-            >
+            <Text className="text-white text-xl font-bold font-['Cairo',sans-serif] text-center">
                 مسح الإيصال
             </Text>
 
             {!imageDataUrl && (
-                <>
-                    <Text
-                        style={{
-                            color: 'rgba(255,255,255,0.7)',
-                            fontSize: 14,
-                            fontFamily: 'Cairo, sans-serif',
-                            textAlign: 'center',
-                            maxWidth: 280,
-                        }}
-                    >
+                <div className="flex flex-col items-center w-full max-w-sm px-4">
+                    <Text className="text-white/70 text-sm font-['Cairo',sans-serif] text-center mb-6">
                         التقط صورة للإيصال أو اختر صورة من الجهاز
                     </Text>
 
@@ -99,22 +84,12 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onResult, onClose }) => {
                         onChange={handleFileChange}
                     />
 
-                    <Space direction="vertical" size={12} style={{ width: '100%', maxWidth: 300 }}>
+                    <div className="flex flex-col gap-3 w-full mb-6">
                         <Button
                             size="large"
                             icon={<FiCamera />}
                             onClick={() => cameraInputRef.current?.click()}
-                            style={{
-                                width: '100%',
-                                height: 56,
-                                background: '#1677ff',
-                                border: 'none',
-                                color: 'white',
-                                borderRadius: 14,
-                                fontFamily: 'Cairo, sans-serif',
-                                fontSize: 16,
-                                fontWeight: 700,
-                            }}
+                            className="w-full h-14 bg-blue-600 hover:bg-blue-500 border-none text-white rounded-xl font-['Cairo',sans-serif] text-base font-bold shadow-lg"
                         >
                             التقاط صورة
                         </Button>
@@ -122,34 +97,25 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onResult, onClose }) => {
                             size="large"
                             icon={<FiUploadCloud />}
                             onClick={() => fileInputRef.current?.click()}
-                            style={{
-                                width: '100%',
-                                height: 56,
-                                background: 'rgba(255,255,255,0.15)',
-                                border: '1px solid rgba(255,255,255,0.3)',
-                                color: 'white',
-                                borderRadius: 14,
-                                fontFamily: 'Cairo, sans-serif',
-                                fontSize: 16,
-                            }}
+                            className="w-full h-14 bg-white/15 hover:bg-white/25 border border-white/30 text-white rounded-xl font-['Cairo',sans-serif] text-base backdrop-blur-sm transition-all"
                         >
                             اختر من المعرض
                         </Button>
-                    </Space>
+                    </div>
 
                     {/* Tips */}
-                    <div className="max-w-[300px] bg-white/10 rounded-[12px] px-4 py-3.5 mt-2">
-                        <Text style={{ color: 'rgba(255,255,255,0.85)', fontFamily: 'Cairo, sans-serif', fontSize: 13 }}>
-                            <FiInfo className="inline ml-1" /> نصائح للحصول على نتائج أفضل:
+                    <div className="w-full bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10 shadow-inner">
+                        <Text className="text-white/90 font-['Cairo',sans-serif] text-sm font-semibold flex items-center mb-2">
+                            <FiInfo className="ml-2 text-blue-400" /> نصائح للحصول على نتائج أفضل:
                         </Text>
-                        <ul className="text-white/70 text-xs mt-1.5 pr-4 font-['Cairo',sans-serif]">
+                        <ul className="text-white/70 text-xs space-y-2 pr-5 list-disc font-['Cairo',sans-serif]">
                             <li>أمسك الهاتف عمودياً فوق الإيصال مباشرةً</li>
                             <li>تأكد من وجود إضاءة كافية</li>
                             <li>تجنب الظلال على الإيصال</li>
                             <li>أملأ الإطار بالإيصال</li>
                         </ul>
                     </div>
-                </>
+                </div>
             )}
 
             {/* Image preview + OCR */}
@@ -160,7 +126,8 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onResult, onClose }) => {
                     onError={handleRetry}
                 />
             )}
-        </div>
+        </div>,
+        document.body
     );
 };
 

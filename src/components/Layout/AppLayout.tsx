@@ -6,6 +6,7 @@ import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { SECTIONS } from '../../constants/sections';
 import { FiBox } from 'react-icons/fi';
 import ErrorBoundary from '../Common/ErrorBoundary';
+import OfflineIndicator from '../Common/OfflineIndicator';
 
 const { Content } = Layout;
 
@@ -21,6 +22,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
 
     return (
         <Layout style={{ minHeight: '100vh', background: 'var(--color-bg)' }}>
+            <OfflineIndicator />
             <Navbar />
             <Layout hasSider style={{ marginTop: 64 }}>
                 <div className="hidden md:block">

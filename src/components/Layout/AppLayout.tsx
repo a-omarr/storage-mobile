@@ -5,6 +5,7 @@ import Sidebar from './Sidebar.tsx';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { SECTIONS } from '../../constants/sections';
 import { FiBox } from 'react-icons/fi';
+import ErrorBoundary from '../Common/ErrorBoundary';
 
 const { Content } = Layout;
 
@@ -33,7 +34,9 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
                     }}
                     className="pb-20 md:pb-0"
                 >
-                    <div className="max-w-[1200px] mx-auto p-4 md:pb-6 pb-20 page-enter">{children}</div>
+                    <ErrorBoundary>
+                        <div className="max-w-[1200px] mx-auto p-4 md:pb-6 pb-20 page-enter">{children}</div>
+                    </ErrorBoundary>
                 </Content>
             </Layout>
 

@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useCallback } from 'react';
 import { useAuth } from '../../firebase/AuthContext';
 import { message } from 'antd';
 
-// Set inactivity timeout (e.g., 30 minutes)
 const INACTIVITY_TIMEOUT_MS = 30 * 60 * 1000;
+const ACTIVITY_THROTTLE_MS = 5000;
 
 interface Props {
     children: React.ReactNode;
@@ -12,64 +12,52 @@ interface Props {
 const AutoLogout: React.FC<Props> = ({ children }) => {
     const { user, logout } = useAuth();
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const lastActivityRef = useRef<number>(Date.now());
 
     const resetTimer = useCallback(() => {
-        if (timerRef.current) {
-            clearTimeout(timerRef.current);
-        }
+        if (timerRef.current) clearTimeout(timerRef.current);
+        if (!user) return;
 
-        if (user) {
-            timerRef.current = setTimeout(async () => {
-                try {
-                    await logout();
-                    message.warning('تم تسجيل الخروج تلقائياً بسبب عدم النشاط');
-                } catch (error) {
-                    console.error('Auto-logout failed:', error);
-                }
-            }, INACTIVITY_TIMEOUT_MS);
-        }
+        timerRef.current = setTimeout(async () => {
+            try {
+                message.warning('تم تسجيل الخروج تلقائياً بسبب عدم النشاط');
+                await new Promise(res => setTimeout(res, 800));
+                await logout();
+            } catch (error) {
+                console.error('Auto-logout failed:', error);
+            }
+        }, INACTIVITY_TIMEOUT_MS);
     }, [user, logout]);
 
+    const handleUserActivity = useCallback(() => {
+        const now = Date.now();
+        if (now - lastActivityRef.current > ACTIVITY_THROTTLE_MS) {
+            lastActivityRef.current = now;
+            resetTimer();
+        }
+    }, [resetTimer]);
+
     useEffect(() => {
-        // Only set up listeners if the user is logged in
         if (!user) {
-            if (timerRef.current) {
-                clearTimeout(timerRef.current);
-            }
+            if (timerRef.current) clearTimeout(timerRef.current);
             return;
         }
 
-        // Initialize the timer
         resetTimer();
 
-        // Events that reset the inactivity timer
         const events = [
-            'mousedown',
-            'mousemove',
-            'keydown',
-            'scroll',
-            'touchstart'
+            'mousedown', 'mousemove', 'keydown',
+            'keypress', 'click', 'scroll',
+            'touchstart', 'touchmove',
         ];
 
-        const handleUserActivity = () => {
-            resetTimer();
-        };
+        events.forEach(e => window.addEventListener(e, handleUserActivity));
 
-        // Attach event listeners
-        events.forEach((event) => {
-            window.addEventListener(event, handleUserActivity);
-        });
-
-        // Cleanup
         return () => {
-            if (timerRef.current) {
-                clearTimeout(timerRef.current);
-            }
-            events.forEach((event) => {
-                window.removeEventListener(event, handleUserActivity);
-            });
+            if (timerRef.current) clearTimeout(timerRef.current);
+            events.forEach(e => window.removeEventListener(e, handleUserActivity));
         };
-    }, [user, resetTimer]);
+    }, [user, resetTimer, handleUserActivity]);
 
     return <>{children}</>;
 };

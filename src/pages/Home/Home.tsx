@@ -1,13 +1,10 @@
 import React from 'react';
-import { Typography } from 'antd';
-import { FiPackage } from 'react-icons/fi';
 import { useHome } from './useHome';
 import HomeStatsBar from './HomeStatsBar';
 import HomeSectionGrid from './HomeSectionGrid';
 import HomeOldestWidget from './HomeOldestWidget';
 import LoadingSkeleton from '../../components/Common/LoadingSkeleton';
-
-const { Text } = Typography;
+import EmptyIllustration from '../../components/Common/EmptyIllustration';
 
 const Home: React.FC = () => {
     const { products, loading, counts, oldest } = useHome();
@@ -27,14 +24,7 @@ const Home: React.FC = () => {
             <HomeStatsBar total={products.length} />
             <HomeSectionGrid counts={counts} />
             <HomeOldestWidget oldest={oldest} />
-            {products.length === 0 && (
-                <div className="text-center py-[60px] text-[#6b7c93]">
-                    <FiPackage className="text-[60px] mb-3 mx-auto" />
-                    <Text style={{ fontFamily: 'Cairo, sans-serif', fontSize: 16 }}>
-                        لا توجد منتجات مضافة بعد
-                    </Text>
-                </div>
-            )}
+            {products.length === 0 && <EmptyIllustration variant="home" />}
         </div>
     );
 };

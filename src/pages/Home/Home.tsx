@@ -1,10 +1,11 @@
 import React from 'react';
-import { Spin, Typography } from 'antd';
+import { Typography } from 'antd';
 import { FiPackage } from 'react-icons/fi';
 import { useHome } from './useHome';
 import HomeStatsBar from './HomeStatsBar';
 import HomeSectionGrid from './HomeSectionGrid';
 import HomeOldestWidget from './HomeOldestWidget';
+import LoadingSkeleton from '../../components/Common/LoadingSkeleton';
 
 const { Text } = Typography;
 
@@ -13,8 +14,10 @@ const Home: React.FC = () => {
 
     if (loading) {
         return (
-            <div className="flex justify-center py-20">
-                <Spin size="large" />
+            <div>
+                <LoadingSkeleton.Stats />
+                <LoadingSkeleton.Grid />
+                <LoadingSkeleton.Oldest />
             </div>
         );
     }

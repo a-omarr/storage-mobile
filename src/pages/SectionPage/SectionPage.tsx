@@ -1,8 +1,9 @@
 import React from 'react';
-import { Spin, Alert } from 'antd';
+import { Alert } from 'antd';
 import ProductTable from '../../components/Product/ProductTable/ProductTable';
 import SectionHeader from './SectionHeader';
 import { useSectionPage } from './useSectionPage';
+import LoadingSkeleton from '../../components/Common/LoadingSkeleton';
 
 const SectionPage: React.FC = () => {
     const { sectionConfig, products, loading, error, handleAddProduct } = useSectionPage();
@@ -37,9 +38,7 @@ const SectionPage: React.FC = () => {
             )}
 
             {loading ? (
-                <div className="flex justify-center py-[60px]">
-                    <Spin size="large" />
-                </div>
+                <LoadingSkeleton.Table />
             ) : (
                 <ProductTable products={products} loading={loading} />
             )}

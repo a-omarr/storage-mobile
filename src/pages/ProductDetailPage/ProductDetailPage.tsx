@@ -1,17 +1,14 @@
 import React from 'react';
-import { Spin, Alert } from 'antd';
+import { Alert } from 'antd';
 import ProductCard from '../../components/Product/ProductCard/ProductCard';
 import { useProductDetail } from './useProductDetail';
+import LoadingSkeleton from '../../components/Common/LoadingSkeleton';
 
 const ProductDetailPage: React.FC = () => {
     const { product, loading, error } = useProductDetail();
 
     if (loading) {
-        return (
-            <div className="flex justify-center py-20">
-                <Spin size="large" />
-            </div>
-        );
+        return <LoadingSkeleton.Detail />;
     }
 
     if (error || !product) {

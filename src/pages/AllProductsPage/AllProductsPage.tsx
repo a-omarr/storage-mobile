@@ -1,9 +1,10 @@
 import React from 'react';
-import { Spin, Typography } from 'antd';
+import { Typography } from 'antd';
 import { FiSearch } from 'react-icons/fi';
 import { useAllProducts } from './useAllProducts';
 import AllProductsHeader from './AllProductsHeader';
 import AllProductsItem from './AllProductsItem';
+import LoadingSkeleton from '../../components/Common/LoadingSkeleton';
 
 const { Text } = Typography;
 
@@ -22,9 +23,7 @@ const AllProductsPage: React.FC = () => {
             />
 
             {loading ? (
-                <div className="flex justify-center py-20">
-                    <Spin size="large" />
-                </div>
+                <LoadingSkeleton.AllProducts />
             ) : sorted.length === 0 ? (
                 <div className="text-center py-16 text-slate-400 bg-white rounded-2xl shadow-sm border border-slate-100">
                     <FiSearch className="text-[50px] mx-auto mb-3 opacity-20" />

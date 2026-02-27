@@ -15,7 +15,7 @@ const ProductCardBody: React.FC<Props> = ({ product }) => {
 
     return (
         <Descriptions
-            column={2}
+            column={{ xs: 1, sm: 1, md: 2, lg: 2, xl: 2, xxl: 2 }}
             bordered
             size="small"
             labelStyle={{

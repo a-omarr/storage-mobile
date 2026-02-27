@@ -47,7 +47,7 @@ export const getProductColumns = ({
         { title: 'كمية/طبقة', dataIndex: 'qtyPerLayer', key: 'qtyPerLayer', width: 90 },
         { title: 'طبقات', dataIndex: 'numberOfLayers', key: 'numberOfLayers', width: 75 },
         { title: 'قطع/بالت', dataIndex: 'piecesPerPallet', key: 'piecesPerPallet', width: 90 },
-        { title: 'عدد البالتات', dataIndex: 'numberOfPallet', key: 'numberOfPallet', width: 100 },
+        { title: 'رقم الطلبية', dataIndex: 'numberOfPallet', key: 'numberOfPallet', width: 100 },
         {
             title: (
                 <Space>

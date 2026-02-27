@@ -85,8 +85,8 @@ const ProductMobileCard: React.FC<Props> = ({ record, showSection }) => {
                 ))}
 
                 <div className="flex justify-between mb-1.5 text-[13px]">
-                    <span className="text-[#6b7c93] font-['Cairo',sans-serif]">بالتات:</span>
-                    <Text strong style={{ color: '#1677ff' }}>{record.numberOfPallet}</Text>
+                    <span className="text-[#6b7c93] font-['Cairo',sans-serif]">رقم الطلبية:</span>
+                    <Text className="font-semibold text-[#1a2332]">{record.numberOfPallet}</Text>
                 </div>
 
                 <div className="flex justify-between mb-1.5 text-[13px]">

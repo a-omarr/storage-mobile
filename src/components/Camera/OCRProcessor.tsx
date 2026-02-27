@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Spin, Typography, Button, Progress } from 'antd';
+import { Typography, Button, Progress } from 'antd';
+import { FiLoader } from 'react-icons/fi';
 import { createWorker, PSM } from 'tesseract.js';
 import { parseOCRResult, parseOCRText } from '../../utils/ocrParser';
 import type { ParsedOCRData } from '../../utils/ocrParser';
@@ -155,7 +156,7 @@ const OCRProcessor: React.FC<OCRProcessorProps> = ({ imageDataUrl, onResult, onE
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                 <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
-                    <Spin size="large" className="mb-4" />
+                    <FiLoader className="text-[60px] text-blue-400 mb-4 animate-spin opacity-80" />
                     <Text className="text-white text-lg font-bold font-['Cairo',sans-serif] block mb-1">
                         جاري تحليل البيانات...
                     </Text>

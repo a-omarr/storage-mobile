@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../../firebase/AuthContext';
-import { Spin } from 'antd';
+import LoadingSkeleton from '../Common/LoadingSkeleton';
 
 interface AdminRouteProps {
     children: React.ReactNode;
@@ -11,11 +11,7 @@ const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
     const { user, isAdmin, loading } = useAuth();
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-[#f8fafc]">
-                <Spin size="large" tip="جاري التحقق من الصلاحيات..." />
-            </div>
-        );
+        return <LoadingSkeleton.Page />;
     }
 
     if (!user) {

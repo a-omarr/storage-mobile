@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../firebase/AuthContext';
-import { Spin } from 'antd';
+import LoadingSkeleton from '../Common/LoadingSkeleton';
 
 interface ProtectedRouteProps {
     children: React.ReactNode;
@@ -12,11 +12,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     const location = useLocation();
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-[#f8fafc]">
-                <Spin size="large" tip="جاري التحقق..." />
-            </div>
-        );
+        return <LoadingSkeleton.Page />;
     }
 
     if (!user) {

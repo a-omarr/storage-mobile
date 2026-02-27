@@ -1,5 +1,6 @@
 import React from 'react';
-import { Spin, Alert, Card } from 'antd';
+import { Alert, Card } from 'antd';
+import LoadingSkeleton from '../../components/Common/LoadingSkeleton';
 import ProductForm from '../../components/Product/ProductForm/ProductForm';
 import EditProductHeader from './EditProductHeader';
 import { useEditProduct } from './useEditProduct';
@@ -11,11 +12,7 @@ const EditProductPage: React.FC = () => {
     } = useEditProduct();
 
     if (loading) {
-        return (
-            <div className="flex justify-center py-20">
-                <Spin size="large" />
-            </div>
-        );
+        return <LoadingSkeleton.Detail />;
     }
 
     if (error || !product) {

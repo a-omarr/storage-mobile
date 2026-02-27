@@ -87,6 +87,27 @@ const AllProductsSkeleton: React.FC = () => (
     </div>
 );
 
+// ── Full Page / Auth Check Skeleton ──────────────────────────────────────────
+const PageSkeleton: React.FC = () => (
+    <div className="min-h-screen bg-[#f8fafc] p-6">
+        <div className="max-w-[1200px] mx-auto">
+            <Skeleton.Input active size="large" style={{ width: 200, marginBottom: 24, display: 'block' }} />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="md:col-span-2">
+                    <Card style={{ borderRadius: 12, marginBottom: 24 }}>
+                        <Skeleton active paragraph={{ rows: 8 }} />
+                    </Card>
+                </div>
+                <div>
+                    <Card style={{ borderRadius: 12 }}>
+                        <Skeleton active paragraph={{ rows: 4 }} />
+                    </Card>
+                </div>
+            </div>
+        </div>
+    </div>
+);
+
 // ── Named exports ─────────────────────────────────────────────────────────────
 const LoadingSkeleton = {
     Stats: StatsSkeleton,
@@ -95,6 +116,7 @@ const LoadingSkeleton = {
     Detail: DetailSkeleton,
     Oldest: OldestSkeleton,
     AllProducts: AllProductsSkeleton,
+    Page: PageSkeleton,
 };
 
 export default LoadingSkeleton;

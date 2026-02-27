@@ -10,6 +10,10 @@ import EditProductPage from './pages/EditProductPage/EditProductPage';
 import SearchResultsPage from './pages/SearchResultsPage/SearchResultsPage';
 import ProductDetailPage from './pages/ProductDetailPage/ProductDetailPage';
 import AllProductsPage from './pages/AllProductsPage/AllProductsPage';
+import LoginPage from './pages/LoginPage/LoginPage';
+import { AuthProvider } from './firebase/AuthContext';
+import ProtectedRoute from './components/Auth/ProtectedRoute';
+import AdminRoute from './components/Auth/AdminRoute';
 
 const App: React.FC = () => {
   return (
@@ -39,67 +43,84 @@ const App: React.FC = () => {
         },
       }}
     >
-      <BrowserRouter>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <AppLayout>
-                <Home />
-              </AppLayout>
-            }
-          />
-          <Route
-            path="/section/:section"
-            element={
-              <AppLayout>
-                <SectionPage />
-              </AppLayout>
-            }
-          />
-          <Route
-            path="/add"
-            element={
-              <AppLayout>
-                <AddProductPage />
-              </AppLayout>
-            }
-          />
-          <Route
-            path="/edit/:id"
-            element={
-              <AppLayout>
-                <EditProductPage />
-              </AppLayout>
-            }
-          />
-          <Route
-            path="/product/:id"
-            element={
-              <AppLayout>
-                <ProductDetailPage />
-              </AppLayout>
-            }
-          />
-          <Route
-            path="/search"
-            element={
-              <AppLayout>
-                <SearchResultsPage />
-              </AppLayout>
-            }
-          />
-          <Route
-            path="/all-products"
-            element={
-              <AppLayout>
-                <AllProductsPage />
-              </AppLayout>
-            }
-          />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <AppLayout>
+                    <Home />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/section/:section"
+              element={
+                <ProtectedRoute>
+                  <AppLayout>
+                    <SectionPage />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/add"
+              element={
+                <AdminRoute>
+                  <AppLayout>
+                    <AddProductPage />
+                  </AppLayout>
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/edit/:id"
+              element={
+                <AdminRoute>
+                  <AppLayout>
+                    <EditProductPage />
+                  </AppLayout>
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/product/:id"
+              element={
+                <ProtectedRoute>
+                  <AppLayout>
+                    <ProductDetailPage />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/search"
+              element={
+                <ProtectedRoute>
+                  <AppLayout>
+                    <SearchResultsPage />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/all-products"
+              element={
+                <ProtectedRoute>
+                  <AppLayout>
+                    <AllProductsPage />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
     </ConfigProvider>
   );
 };

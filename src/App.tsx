@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
-import { ConfigProvider } from 'antd';
+import { ConfigProvider, App as AntdApp } from 'antd';
 import arEG from 'antd/locale/ar_EG';
 import { antdTheme } from './constants/antdTheme';
 import AppLayout from './components/Layout/AppLayout';
@@ -22,40 +22,42 @@ import ErrorBoundary from './components/Common/ErrorBoundary';
 const App: React.FC = () => {
   return (
     <ConfigProvider direction="rtl" locale={arEG} theme={antdTheme}>
-      <ErrorBoundary>
-        <AuthProvider>
-          <BrowserRouter>
-            <AutoLogout>
-              <Routes>
-                <Route path="/login" element={<LoginPage />} />
+      <AntdApp>
+        <ErrorBoundary>
+          <AuthProvider>
+            <BrowserRouter>
+              <AutoLogout>
+                <Routes>
+                  <Route path="/login" element={<LoginPage />} />
 
-                <Route element={
-                  <ProtectedRoute>
-                    <AppLayout><Outlet /></AppLayout>
-                  </ProtectedRoute>
-                }>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/section/:section" element={<SectionPage />} />
-                  <Route path="/product/:id" element={<ProductDetailPage />} />
-                  <Route path="/search" element={<SearchResultsPage />} />
-                  <Route path="/all-products" element={<AllProductsPage />} />
-                </Route>
+                  <Route element={
+                    <ProtectedRoute>
+                      <AppLayout><Outlet /></AppLayout>
+                    </ProtectedRoute>
+                  }>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/section/:section" element={<SectionPage />} />
+                    <Route path="/product/:id" element={<ProductDetailPage />} />
+                    <Route path="/search" element={<SearchResultsPage />} />
+                    <Route path="/all-products" element={<AllProductsPage />} />
+                  </Route>
 
-                <Route element={
-                  <AdminRoute>
-                    <AppLayout><Outlet /></AppLayout>
-                  </AdminRoute>
-                }>
-                  <Route path="/add" element={<AddProductPage />} />
-                  <Route path="/edit/:id" element={<EditProductPage />} />
-                </Route>
+                  <Route element={
+                    <AdminRoute>
+                      <AppLayout><Outlet /></AppLayout>
+                    </AdminRoute>
+                  }>
+                    <Route path="/add" element={<AddProductPage />} />
+                    <Route path="/edit/:id" element={<EditProductPage />} />
+                  </Route>
 
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
-            </AutoLogout>
-          </BrowserRouter>
-        </AuthProvider>
-      </ErrorBoundary>
+                  <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+              </AutoLogout>
+            </BrowserRouter>
+          </AuthProvider>
+        </ErrorBoundary>
+      </AntdApp>
     </ConfigProvider>
   );
 };

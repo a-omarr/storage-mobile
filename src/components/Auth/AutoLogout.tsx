@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useCallback } from 'react';
 import { useAuth } from '../../firebase/AuthContext';
-import { message } from 'antd';
+import { App } from 'antd';
 
 const INACTIVITY_TIMEOUT_MS = 30 * 60 * 1000;
 const ACTIVITY_THROTTLE_MS = 5000;
@@ -11,6 +11,7 @@ interface Props {
 
 const AutoLogout: React.FC<Props> = ({ children }) => {
     const { user, logout } = useAuth();
+    const { message } = App.useApp();
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const lastActivityRef = useRef<number>(Date.now());
 
@@ -27,7 +28,7 @@ const AutoLogout: React.FC<Props> = ({ children }) => {
                 console.error('Auto-logout failed:', error);
             }
         }, INACTIVITY_TIMEOUT_MS);
-    }, [user, logout]);
+    }, [user, logout, message]);
 
     const handleUserActivity = useCallback(() => {
         const now = Date.now();

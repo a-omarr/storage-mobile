@@ -88,10 +88,10 @@ const ProductForm: React.FC<Props> = ({
 
                         {isAdvancedOpen && (
                             <div className="mt-4 pt-4 border-t border-gray-100 italic-fields">
-                                <ProductFormDate inventory={2} />
                                 <ProductFormIdentifiers inventory={2} />
                                 <ProductFormDetails inventory={2} />
                                 <ProductFormPallet inventory={2} />
+                                <ProductFormDate inventory={2} />
                             </div>
                         )}
                     </div>

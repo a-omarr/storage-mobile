@@ -7,6 +7,10 @@ export const useProductSort = (products: Product[]) => {
     const sorted = [...products].sort((a, b) => {
         const ta = a.dateOfProduction ? new Date(a.dateOfProduction).getTime() : 0;
         const tb = b.dateOfProduction ? new Date(b.dateOfProduction).getTime() : 0;
+
+        if (ta === 0 && tb !== 0) return 1;
+        if (tb === 0 && ta !== 0) return -1;
+
         return sortOrder === 'asc' ? ta - tb : tb - ta;
     });
 

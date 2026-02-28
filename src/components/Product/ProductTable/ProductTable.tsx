@@ -26,8 +26,13 @@ const ProductTable: React.FC<Props> = ({
     const { selectedIds, toggleSelection, toggleAll, clearSelection } = useProductSelection();
     const { handleBulkDelete } = useProductDelete();
 
+    const handleRefresh = () => {
+        clearSelection();
+        onRefresh?.();
+    };
+
     const onBulkDelete = async () => {
-        const success = await handleBulkDelete(selectedIds, { onRefresh, currentSection });
+        const success = await handleBulkDelete(selectedIds, { onRefresh: handleRefresh, currentSection });
         if (success) {
             clearSelection();
         }
@@ -44,7 +49,7 @@ const ProductTable: React.FC<Props> = ({
                 selectedIds={selectedIds}
                 toggleSelection={toggleSelection}
                 toggleAll={toggleAll}
-                onRefresh={onRefresh}
+                onRefresh={handleRefresh}
                 currentSection={currentSection}
             />
             <ProductMobileList
@@ -56,7 +61,7 @@ const ProductTable: React.FC<Props> = ({
                 selectedIds={selectedIds}
                 toggleSelection={toggleSelection}
                 toggleAll={toggleAll}
-                onRefresh={onRefresh}
+                onRefresh={handleRefresh}
                 currentSection={currentSection}
             />
 

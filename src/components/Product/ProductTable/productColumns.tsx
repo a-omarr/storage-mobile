@@ -135,7 +135,7 @@ export const getProductColumns = ({
                                     cancelText: 'إلغاء',
                                     onOk: () => {
                                         const activeSection = currentSection || (record as any).displaySection;
-                                        handleDelete(record.id, { currentSection: activeSection, onRefresh });
+                                        return handleDelete(record.id, { currentSection: activeSection, onRefresh });
                                     },
                                     centered: true,
                                     style: { fontFamily: 'Cairo, sans-serif' },

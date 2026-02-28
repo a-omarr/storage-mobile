@@ -32,13 +32,15 @@ export const useAllProducts = () => {
         );
     });
 
-    const sorted = [...filtered]
-        .filter((p) => p.dateOfProduction)
-        .sort((a, b) => {
-            const ta = a.dateOfProduction ? new Date(a.dateOfProduction).getTime() : 0;
-            const tb = b.dateOfProduction ? new Date(b.dateOfProduction).getTime() : 0;
-            return sortOrder === 'asc' ? ta - tb : tb - ta;
-        });
+    const sorted = [...filtered].sort((a, b) => {
+        const ta = a.dateOfProduction ? new Date(a.dateOfProduction).getTime() : 0;
+        const tb = b.dateOfProduction ? new Date(b.dateOfProduction).getTime() : 0;
+
+        if (ta === 0 && tb !== 0) return 1;
+        if (tb === 0 && ta !== 0) return -1;
+
+        return sortOrder === 'asc' ? ta - tb : tb - ta;
+    });
 
     const toggleSort = () => setSortOrder((o) => (o === 'asc' ? 'desc' : 'asc'));
 

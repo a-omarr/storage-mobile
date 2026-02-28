@@ -1,4 +1,5 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { Button, App } from 'antd';
 import { FiTrash2 } from 'react-icons/fi';
 
@@ -28,8 +29,8 @@ const BulkDeleteBar: React.FC<Props> = ({ selectedCount, onDelete, onCancel }) =
         });
     };
 
-    return (
-        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-white rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100 px-6 py-4 flex items-center gap-6 min-w-[320px] max-w-[90vw] animate-[slideUp_0.3s_ease-out]">
+    return createPortal(
+        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[9999] bg-white rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.2)] border border-gray-100 px-6 py-4 flex items-center gap-6 min-w-[320px] max-w-[90vw] animate-[slideUp_0.3s_ease-out]">
             <div className="flex flex-col">
                 <span className="font-['Cairo'] text-sm text-gray-500">تم تحديد</span>
                 <span className="font-['Cairo'] font-bold text-lg text-blue-600 leading-none">{selectedCount} عناصر</span>
@@ -54,7 +55,8 @@ const BulkDeleteBar: React.FC<Props> = ({ selectedCount, onDelete, onCancel }) =
                     حذف المحدد
                 </Button>
             </div>
-        </div>
+        </div>,
+        document.body
     );
 };
 

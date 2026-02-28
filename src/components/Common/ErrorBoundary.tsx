@@ -30,10 +30,10 @@ class ErrorBoundary extends Component<Props, State> {
     };
 
     render() {
-        if (this.state.hasError) {
-            if (this.props.fallback) return this.props.fallback;
-
-            return (
+        return this.state.hasError ? (
+            this.props.fallback ? (
+                <>{this.props.fallback}</>
+            ) : (
                 <Result
                     status="error"
                     title={
@@ -56,10 +56,10 @@ class ErrorBoundary extends Component<Props, State> {
                         </Button>
                     }
                 />
-            );
-        }
-
-        return this.props.children;
+            )
+        ) : (
+            <>{this.props.children}</>
+        );
     }
 }
 

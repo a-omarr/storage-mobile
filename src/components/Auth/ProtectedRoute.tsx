@@ -11,16 +11,13 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     const { user, loading } = useAuth();
     const location = useLocation();
 
-    if (loading) {
-        return <LoadingSkeleton.Page />;
-    }
-
-    if (!user) {
-        // Redirect to the login page, but save the current location they were trying to go to
-        return <Navigate to="/login" state={{ from: location }} replace />;
-    }
-
-    return <>{children}</>;
+    return loading ? (
+        <LoadingSkeleton.Page />
+    ) : !user ? (
+        <Navigate to="/login" state={{ from: location }} replace />
+    ) : (
+        <>{children}</>
+    );
 };
 
 export default ProtectedRoute;

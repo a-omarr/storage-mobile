@@ -14,9 +14,7 @@ interface Props {
 const HomeOldestWidget: React.FC<Props> = ({ oldest }) => {
     const navigate = useNavigate();
 
-    if (oldest.length === 0) return null;
-
-    return (
+    return oldest.length === 0 ? null : (
         <Card
             style={{
                 borderRadius: 'var(--radius-md)',

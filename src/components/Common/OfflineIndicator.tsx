@@ -17,9 +17,7 @@ const OfflineIndicator: React.FC = () => {
         };
     }, []);
 
-    if (!isOffline) return null;
-
-    return (
+    return !isOffline ? null : (
         <div className="fixed top-0 left-0 right-0 z-[2000] animate-in slide-in-from-top duration-300">
             <div className="bg-[#ef4444] text-white px-4 py-2 flex items-center justify-center gap-2 shadow-md">
                 <WifiOutlined className="animate-pulse" />

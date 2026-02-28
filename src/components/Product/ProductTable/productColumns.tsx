@@ -31,13 +31,12 @@ export const getProductColumns = ({
             key: 'sections',
             width: 120,
             render: (sections: string[], record: any) => {
-                if (record.displaySection) {
-                    const s = SECTION_MAP[record.displaySection as keyof typeof SECTION_MAP];
-                    return s ? <Tag color={s.color} style={{ fontWeight: 600, margin: 0 }}>{s.label}</Tag> : null;
-                }
+                const displaySectionKey = record.displaySection;
+                const s = displaySectionKey ? SECTION_MAP[displaySectionKey as keyof typeof SECTION_MAP] : null;
 
-                if (!sections || !Array.isArray(sections)) return null;
-                return (
+                return displaySectionKey ? (
+                    s ? <Tag color={s.color} style={{ fontWeight: 600, margin: 0 }}>{s.label}</Tag> : null
+                ) : (!sections || !Array.isArray(sections)) ? null : (
                     <Space size={[0, 4]} wrap>
                         {sections.map(val => {
                             const s = SECTION_MAP[val as keyof typeof SECTION_MAP];

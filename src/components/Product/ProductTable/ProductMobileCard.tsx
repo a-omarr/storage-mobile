@@ -74,8 +74,7 @@ const ProductMobileCard: React.FC<Props> = ({ record, showSection, isSelected = 
                                 <div className="mb-1 flex flex-wrap gap-1">
                                     {(record as any).displaySection ? (
                                         (() => {
-                                            const secKey = (record as any).displaySection;
-                                            const s = SECTION_MAP[secKey as keyof typeof SECTION_MAP];
+                                            const s = SECTION_MAP[(record as any).displaySection as keyof typeof SECTION_MAP];
                                             return s ? (
                                                 <Tag color={s.color} style={{ fontSize: 10, lineHeight: '16px', fontWeight: 600, margin: 0 }}>
                                                     {s.label}

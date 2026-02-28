@@ -10,20 +10,15 @@ interface AdminRouteProps {
 const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
     const { user, isAdmin, loading } = useAuth();
 
-    if (loading) {
-        return <LoadingSkeleton.Page />;
-    }
-
-    if (!user) {
-        return <Navigate to="/login" replace />;
-    }
-
-    if (!isAdmin) {
-        // Not an admin, redirect to home page
-        return <Navigate to="/" replace />;
-    }
-
-    return <>{children}</>;
+    return loading ? (
+        <LoadingSkeleton.Page />
+    ) : !user ? (
+        <Navigate to="/login" replace />
+    ) : !isAdmin ? (
+        <Navigate to="/" replace />
+    ) : (
+        <>{children}</>
+    );
 };
 
 export default AdminRoute;

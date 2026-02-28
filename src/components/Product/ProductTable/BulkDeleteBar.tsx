@@ -19,7 +19,9 @@ const BulkDeleteBar: React.FC<Props> = ({ selectedCount, onDelete, onCancel }) =
             okText: 'نعم، احذف',
             cancelText: 'تراجع',
             okType: 'danger',
-            onOk: onDelete,
+            onOk: () => {
+                return onDelete();
+            },
             centered: true,
             style: { fontFamily: 'Cairo, sans-serif' },
             okButtonProps: { style: { fontFamily: 'Cairo, sans-serif' }, danger: true },

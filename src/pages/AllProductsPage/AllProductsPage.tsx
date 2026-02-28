@@ -12,6 +12,18 @@ const AllProductsPage: React.FC = () => {
     const { selectedIds, toggleSelection, clearSelection } = useProductSelection();
     const { handleBulkDelete } = useProductDelete();
 
+    const handleRefresh = () => {
+        clearSelection();
+        refresh();
+    };
+
+    const onBulkDelete = async () => {
+        const success = await handleBulkDelete(selectedIds, { onRefresh: handleRefresh });
+        if (success) {
+            clearSelection();
+        }
+    };
+
     return (
         <div className="pb-10">
             <AllProductsHeader
@@ -46,7 +58,7 @@ const AllProductsPage: React.FC = () => {
 
                     <BulkDeleteBar
                         selectedCount={selectedIds.length}
-                        onDelete={() => handleBulkDelete(selectedIds, { onRefresh: refresh })}
+                        onDelete={onBulkDelete}
                         onCancel={clearSelection}
                     />
                 </div>

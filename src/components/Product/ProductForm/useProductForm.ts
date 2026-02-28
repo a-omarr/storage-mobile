@@ -9,6 +9,7 @@ interface UseProductFormProps {
     initialValues?: Partial<ProductFormData>;
     defaultSections?: SectionKey[];
     onSubmit: (data: ProductFormData) => Promise<void>;
+    inventory?: 1 | 2;
 }
 
 export interface OCRFeedback {
@@ -21,17 +22,18 @@ export const useProductForm = ({
     initialValues,
     defaultSections = [],
     onSubmit,
+    inventory,
 }: UseProductFormProps) => {
     const [form] = Form.useForm();
     const [showCamera, setShowCamera] = useState(false);
     const [ocrFeedback, setOcrFeedback] = useState<OCRFeedback>({ status: null, message: '', missingFields: [] });
 
     // Watch sections to determine inventory
-    const sections = Form.useWatch<SectionKey[]>('sections', form) || defaultSections;
+    const sectionsWatch = Form.useWatch<SectionKey[]>('sections', form) || defaultSections;
 
-    // Logic: If any selected section belongs to Inventory 1, treat as Inventory 1 (strict).
-    // Otherwise, if all are Inventory 2, treat as Inventory 2 (collapsed).
-    const selectedInventory: 1 | 2 = sections.some(s => SECTION_MAP[s]?.inventory === 1) ? 1 : 2;
+    // Logic: If explicit inventory is passed (Edit mode), use it. 
+    // Otherwise derive from selected sections (Add mode).
+    const selectedInventory: 1 | 2 = inventory || (sectionsWatch.some(s => SECTION_MAP[s]?.inventory === 2) ? 2 : 1);
 
     const handleOCRResult = (data: ParsedOCRData) => {
         const updates: Record<string, any> = {};

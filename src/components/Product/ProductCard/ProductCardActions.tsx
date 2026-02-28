@@ -57,7 +57,7 @@ const ProductCardActions: React.FC<Props> = ({ productId }) => {
             <Button
                 type="primary"
                 icon={<FiEdit />}
-                onClick={() => navigate(`/edit/${productId}`)}
+                onClick={() => navigate(`/edit/${productId}${urlSection ? `?section=${urlSection}` : ''}`)}
                 style={{ fontFamily: 'Cairo, sans-serif' }}
             >
                 تعديل المنتج

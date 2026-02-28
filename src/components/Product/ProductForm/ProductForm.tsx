@@ -18,6 +18,7 @@ interface Props {
     onSubmit: (data: ProductFormData) => Promise<void>;
     loading?: boolean;
     isEdit?: boolean;
+    inventory?: 1 | 2;
 }
 
 const ProductForm: React.FC<Props> = ({
@@ -26,6 +27,7 @@ const ProductForm: React.FC<Props> = ({
     onSubmit,
     loading = false,
     isEdit = false,
+    inventory,
 }) => {
     const {
         form,
@@ -37,7 +39,7 @@ const ProductForm: React.FC<Props> = ({
         handleFinish,
         formInitials,
         selectedInventory,
-    } = useProductForm({ initialValues, defaultSections, onSubmit });
+    } = useProductForm({ initialValues, defaultSections, onSubmit, inventory });
 
     const [isAdvancedOpen, setIsAdvancedOpen] = useState(isEdit); // Open by default on edit
 
@@ -64,7 +66,7 @@ const ProductForm: React.FC<Props> = ({
                     onClearFeedback={() => setOcrFeedback({ status: null, message: '', missingFields: [] })}
                 />
 
-                <ProductFormBasicInfo inventory={selectedInventory} />
+                <ProductFormBasicInfo inventory={selectedInventory} isEdit={isEdit} />
 
                 {/* For Inventory 1, Date is at the top. For Inventory 2, it's in Advanced. */}
                 {selectedInventory === 1 ? (

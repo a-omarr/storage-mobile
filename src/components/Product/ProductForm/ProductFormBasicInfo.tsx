@@ -7,17 +7,25 @@ const labelStyle = { fontFamily: 'Cairo, sans-serif', fontWeight: 600 };
 
 interface Props {
     inventory?: 1 | 2;
+    isEdit?: boolean;
 }
 
-const ProductFormBasicInfo: React.FC<Props> = ({ inventory = 1 }) => (
+const ProductFormBasicInfo: React.FC<Props> = ({ inventory = 1, isEdit = false }) => (
     <>
         <Form.Item
             label={<span style={labelStyle}>الأقسام</span>}
             name="sections"
             rules={[{ required: true, message: 'يرجى اختيار قسم واحد على الأقل' }]}
+            tooltip={isEdit ? 'لا يمكن تعديل الأقسام من هنا. استخدم زر الحذف لإزالة المنتج من قسم محدد.' : undefined}
         >
-            <Select mode="multiple" size="large" placeholder="اختر الأقسام" style={{ fontFamily: 'Cairo, sans-serif' }}>
-                {SECTIONS.map((s) => (
+            <Select
+                mode="multiple"
+                size="large"
+                placeholder="اختر الأقسام"
+                style={{ fontFamily: 'Cairo, sans-serif' }}
+                disabled={isEdit}
+            >
+                {(isEdit ? SECTIONS.filter(s => s.inventory === inventory) : SECTIONS).map((s) => (
                     <Option key={s.key} value={s.key}>{s.label}</Option>
                 ))}
             </Select>

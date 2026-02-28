@@ -151,6 +151,19 @@ export async function updateProduct(
     await saveWebStore();
 }
 
+/** Update only the sections list of a product (all other fields unchanged) */
+export async function updateProductSectionsOnly(
+    id: string,
+    sections: SectionKey[]
+): Promise<void> {
+    const db = await getDB();
+    await db.run(
+        `UPDATE products SET sections = ? WHERE id = ?;`,
+        [JSON.stringify(sections), id]
+    );
+    await saveWebStore();
+}
+
 /** Delete a product entirely */
 export async function deleteProduct(id: string): Promise<void> {
     const db = await getDB();

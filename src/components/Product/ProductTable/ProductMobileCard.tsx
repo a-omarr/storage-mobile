@@ -103,7 +103,11 @@ const ProductMobileCard: React.FC<Props> = ({ record, showSection, isSelected = 
                             type="text"
                             icon={<FiEdit />}
                             size="small"
-                            onClick={(e) => { e.stopPropagation(); navigate(`/edit/${record.id}`); }}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                const activeSection = currentSection || (record as any).displaySection;
+                                navigate(`/edit/${record.id}${activeSection ? `?section=${activeSection}` : ''}`);
+                            }}
                             style={{ color: '#1677ff' }}
                         />
                         <Button

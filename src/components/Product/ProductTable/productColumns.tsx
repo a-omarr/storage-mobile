@@ -79,7 +79,10 @@ export const getProductColumns = ({
                             type="text"
                             icon={<FiEdit />}
                             size="small"
-                            onClick={() => navigate(`/edit/${record.id}`)}
+                            onClick={() => {
+                                const activeSection = currentSection || (record as any).displaySection;
+                                navigate(`/edit/${record.id}${activeSection ? `?section=${activeSection}` : ''}`);
+                            }}
                             style={{ color: '#1677ff' }}
                         />
                     </Tooltip>

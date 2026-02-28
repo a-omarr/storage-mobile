@@ -8,7 +8,7 @@ import { useEditProduct } from './useEditProduct';
 const EditProductPage: React.FC = () => {
     const {
         product, loading, saving, error,
-        sectionConfig, initialValues, handleSubmit, handleCancel
+        sectionConfig, initialValues, handleSubmit, handleCancel, inventory
     } = useEditProduct();
 
     return loading ? (
@@ -39,6 +39,7 @@ const EditProductPage: React.FC = () => {
                     onSubmit={handleSubmit}
                     loading={saving}
                     isEdit
+                    inventory={inventory}
                 />
             </Card>
         </div>

@@ -23,6 +23,11 @@ CREATE TABLE IF NOT EXISTS products (
   dateOfProduction TEXT,
   createdAt        TEXT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS app_settings (
+  key   TEXT PRIMARY KEY,
+  value TEXT NOT NULL
+);
 `;
 
 let _db: SQLiteDBConnection | null = null;
@@ -82,6 +87,19 @@ export async function getDB(): Promise<SQLiteDBConnection> {
             console.log('Migration: Added inventory column');
         } catch (e) {
             // Column already exists
+        }
+
+        // Migration: Create app_settings table if missing
+        try {
+            await _db.execute(`
+                CREATE TABLE IF NOT EXISTS app_settings (
+                  key   TEXT PRIMARY KEY,
+                  value TEXT NOT NULL
+                );
+            `);
+            console.log('Migration: Created app_settings table');
+        } catch (e) {
+            // Already exists
         }
     } else {
         throw new Error('Failed to create or retrieve SQLite connection.');

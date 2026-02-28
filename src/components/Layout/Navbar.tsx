@@ -1,8 +1,9 @@
 import React from 'react';
 import { Layout, Button, Typography, Dropdown } from 'antd';
 import type { MenuProps } from 'antd';
-import { FiSearch, FiSettings, FiDownload, FiUpload } from 'react-icons/fi';
+import { FiSearch, FiSettings, FiDownload, FiUpload, FiLock } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../auth/AuthContext';
 import { useDataExport } from '../../hooks/useDataExport';
 import { useDataImport } from '../../hooks/useDataImport';
 
@@ -11,6 +12,7 @@ const { Text } = Typography;
 
 const Navbar: React.FC = () => {
     const navigate = useNavigate();
+    const { lock } = useAuth();
     const { exportData, isExporting } = useDataExport();
 
     // Refresh the page or navigate home after a successful import
@@ -85,6 +87,14 @@ const Navbar: React.FC = () => {
                         loading={isExporting || isImporting}
                     />
                 </Dropdown>
+
+                <Button
+                    type="text"
+                    icon={<FiLock style={{ fontSize: 22 }} />}
+                    style={{ color: 'white' }}
+                    onClick={lock}
+                    title="قفل التطبيق"
+                />
 
                 <Button
                     type="text"

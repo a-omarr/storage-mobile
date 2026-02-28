@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Card, Form, Input, Button, message, Typography } from 'antd';
 import { UserOutlined, LockOutlined, LoginOutlined, GoogleOutlined } from '@ant-design/icons';
-import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
-import { auth, googleProvider } from '../../firebase/config';
+import { signInWithEmailAndPassword, signInWithPopup, signOut } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import { auth, googleProvider, db } from '../../firebase/config';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const { Title, Text } = Typography;
@@ -15,12 +16,25 @@ const LoginPage: React.FC = () => {
     // Get the redirect path from state, or default to home
     const from = location.state?.from?.pathname || '/';
 
+    const checkAdminAndNavigate = async (uid: string) => {
+        const adminDocRef = doc(db, 'admins', uid);
+        const adminDoc = await getDoc(adminDocRef);
+
+        if (adminDoc.exists()) {
+            message.success('تم تسجيل الدخول بنجاح');
+            navigate(from, { replace: true });
+        } else {
+            // Not an admin - sign them out immediately
+            await signOut(auth);
+            message.error('عذراً، هذا الحساب غير مصرح له بالدخول. يرجى التواصل مع المسؤول.');
+        }
+    };
+
     const onFinish = async (values: any) => {
         setLoading(true);
         try {
-            await signInWithEmailAndPassword(auth, values.email, values.password);
-            message.success('تم تسجيل الدخول بنجاح');
-            navigate(from, { replace: true });
+            const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
+            await checkAdminAndNavigate(userCredential.user.uid);
         } catch (error: any) {
             handleAuthError(error);
         } finally {
@@ -31,9 +45,8 @@ const LoginPage: React.FC = () => {
     const handleGoogleSignIn = async () => {
         setLoading(true);
         try {
-            await signInWithPopup(auth, googleProvider);
-            message.success('تم تسجيل الدخول بواسطة Google');
-            navigate(from, { replace: true });
+            const userCredential = await signInWithPopup(auth, googleProvider);
+            await checkAdminAndNavigate(userCredential.user.uid);
         } catch (error: any) {
             handleAuthError(error);
         } finally {

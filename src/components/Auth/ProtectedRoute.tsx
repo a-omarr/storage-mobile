@@ -8,12 +8,12 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-    const { user, loading } = useAuth();
+    const { user, isAdmin, loading } = useAuth();
     const location = useLocation();
 
     return loading ? (
         <LoadingSkeleton.Page />
-    ) : !user ? (
+    ) : (!user || !isAdmin) ? (
         <Navigate to="/login" state={{ from: location }} replace />
     ) : (
         <>{children}</>

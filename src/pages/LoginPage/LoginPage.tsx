@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Card, Form, Input, Button, message, Typography } from 'antd';
-import { UserOutlined, LockOutlined, LoginOutlined } from '@ant-design/icons';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../firebase/config';
+import { UserOutlined, LockOutlined, LoginOutlined, GoogleOutlined } from '@ant-design/icons';
+import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { auth, googleProvider } from '../../firebase/config';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const { Title, Text } = Typography;
@@ -20,19 +20,37 @@ const LoginPage: React.FC = () => {
         try {
             await signInWithEmailAndPassword(auth, values.email, values.password);
             message.success('تم تسجيل الدخول بنجاح');
-            // Navigate back to where they came from
             navigate(from, { replace: true });
         } catch (error: any) {
-            console.error('Login error:', error);
-            if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-                message.error('البريد الإلكتروني أو كلمة المرور غير صحيحة');
-            } else if (error.code === 'auth/too-many-requests') {
-                message.error('تم حظر الحساب مؤقتاً بسبب محاولات كثيرة خاطئة. يرجى المحاولة لاحقاً.');
-            } else {
-                message.error('حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مرة أخرى.');
-            }
+            handleAuthError(error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleGoogleSignIn = async () => {
+        setLoading(true);
+        try {
+            await signInWithPopup(auth, googleProvider);
+            message.success('تم تسجيل الدخول بواسطة Google');
+            navigate(from, { replace: true });
+        } catch (error: any) {
+            handleAuthError(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleAuthError = (error: any) => {
+        console.error('Auth error:', error);
+        if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+            message.error('البريد الإلكتروني أو كلمة المرور غير صحيحة');
+        } else if (error.code === 'auth/too-many-requests') {
+            message.error('تم حظر الحساب مؤقتاً بسبب محاولات كثيرة خاطئة. يرجى المحاولة لاحقاً.');
+        } else if (error.code === 'auth/popup-closed-by-user') {
+            message.info('تم إغلاق نافذة تسجيل الدخول');
+        } else {
+            message.error('حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مرة أخرى.');
         }
     };
 
@@ -95,7 +113,7 @@ const LoginPage: React.FC = () => {
                         />
                     </Form.Item>
 
-                    <Form.Item className="mb-0">
+                    <Form.Item className="mb-4">
                         <Button
                             type="primary"
                             htmlType="submit"
@@ -106,6 +124,24 @@ const LoginPage: React.FC = () => {
                             تسجيل الدخول
                         </Button>
                     </Form.Item>
+
+                    <div className="relative my-6 text-center">
+                        <div className="absolute inset-0 flex items-center">
+                            <div className="w-full border-t border-gray-200"></div>
+                        </div>
+                        <span className="relative px-4 bg-white text-gray-400 text-sm">أو</span>
+                    </div>
+
+                    <Button
+                        icon={<GoogleOutlined />}
+                        block
+                        size="large"
+                        onClick={handleGoogleSignIn}
+                        disabled={loading}
+                        className="h-12 rounded-xl border-gray-200 hover:border-blue-400 hover:text-blue-500 font-medium transition-all"
+                    >
+                        تسجيل الدخول بواسطة Google
+                    </Button>
                 </Form>
             </Card>
         </div>

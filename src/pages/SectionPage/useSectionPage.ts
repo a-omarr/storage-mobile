@@ -33,7 +33,8 @@ export const useSectionPage = () => {
                 const results = snap.docs.map((doc) => ({
                     id: doc.id,
                     ...doc.data(),
-                })) as Product[];
+                    displaySection: sectionKey,
+                })) as unknown as Product[];
                 setProducts(results);
                 setLoading(false);
             },

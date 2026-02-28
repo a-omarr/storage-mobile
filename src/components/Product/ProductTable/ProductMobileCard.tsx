@@ -32,7 +32,12 @@ const ProductMobileCard: React.FC<Props> = ({ record, showSection, isSelected = 
             okText: 'حذف',
             okType: 'danger',
             cancelText: 'إلغاء',
-            onOk: () => handleDelete(record.id),
+            onOk: () => {
+                const compoundId = (record as any).displaySection
+                    ? `${record.id}::${(record as any).displaySection}`
+                    : record.id;
+                handleDelete(compoundId);
+            },
             centered: true,
             style: { fontFamily: 'Cairo, sans-serif' },
             okButtonProps: { style: { fontFamily: 'Cairo, sans-serif' }, danger: true },

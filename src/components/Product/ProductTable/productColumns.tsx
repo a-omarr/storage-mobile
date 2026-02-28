@@ -1,4 +1,4 @@
-import { Button, Popconfirm, Space, Tag, Tooltip, Typography } from 'antd';
+import { Button, Space, Tag, Tooltip, Typography } from 'antd';
 import { FiArrowDown, FiArrowUp, FiEdit, FiTrash2 } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import type { Product } from '../../../types/product';
@@ -13,6 +13,7 @@ interface ColumnsOptions {
     toggleSort: () => void;
     handleDelete: (id: string) => void;
     navigate: ReturnType<typeof useNavigate>;
+    modal: any;
 }
 
 export const getProductColumns = ({
@@ -21,6 +22,7 @@ export const getProductColumns = ({
     toggleSort,
     handleDelete,
     navigate,
+    modal,
 }: ColumnsOptions) => {
     const columns: any[] = [
         ...(showSection ? [{
@@ -113,17 +115,28 @@ export const getProductColumns = ({
                             style={{ color: '#1677ff' }}
                         />
                     </Tooltip>
-                    <Popconfirm
-                        title="هل أنت متأكد من الحذف؟"
-                        onConfirm={() => handleDelete(record.id)}
-                        okText="حذف"
-                        cancelText="إلغاء"
-                        okButtonProps={{ danger: true }}
-                    >
-                        <Tooltip title="حذف">
-                            <Button type="text" icon={<FiTrash2 />} size="small" danger />
-                        </Tooltip>
-                    </Popconfirm>
+                    <Tooltip title="حذف">
+                        <Button
+                            type="text"
+                            icon={<FiTrash2 />}
+                            size="small"
+                            danger
+                            onClick={() => {
+                                modal.confirm({
+                                    title: 'هل أنت متأكد من الحذف؟',
+                                    content: `${record.type} — ${record.capacity}`,
+                                    okText: 'حذف',
+                                    okType: 'danger',
+                                    cancelText: 'إلغاء',
+                                    onOk: () => handleDelete(record.id),
+                                    centered: true,
+                                    style: { fontFamily: 'Cairo, sans-serif' },
+                                    okButtonProps: { style: { fontFamily: 'Cairo, sans-serif' }, danger: true },
+                                    cancelButtonProps: { style: { fontFamily: 'Cairo, sans-serif' } },
+                                });
+                            }}
+                        />
+                    </Tooltip>
                 </Space>
             ),
         },

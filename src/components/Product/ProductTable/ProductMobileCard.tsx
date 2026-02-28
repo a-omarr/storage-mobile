@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Tag, Typography, Checkbox, Modal, Space } from 'antd';
+import { Button, Tag, Typography, Checkbox, App, Space } from 'antd';
 import { FiEdit, FiTrash2 } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import type { Product } from '../../../types/product';
@@ -20,19 +20,23 @@ interface Props {
 const ProductMobileCard: React.FC<Props> = ({ record, showSection, isSelected = false, onToggleSelect }) => {
     const navigate = useNavigate();
     const { handleDelete } = useProductDelete();
+    const { modal } = App.useApp();
 
     const days = record.dateOfProduction ? daysOld(record.dateOfProduction) : 0;
     const isOld = days > 365;
 
     const onSwipeDelete = () => {
-        Modal.confirm({
+        modal.confirm({
             title: 'هل أنت متأكد من حذف هذا المنتج؟',
             content: `${record.type} — ${record.capacity}`,
             okText: 'حذف',
             okType: 'danger',
             cancelText: 'إلغاء',
             onOk: () => handleDelete(record.id),
-            style: { fontFamily: 'Cairo, sans-serif' }
+            centered: true,
+            style: { fontFamily: 'Cairo, sans-serif' },
+            okButtonProps: { style: { fontFamily: 'Cairo, sans-serif' }, danger: true },
+            cancelButtonProps: { style: { fontFamily: 'Cairo, sans-serif' } },
         });
     };
 

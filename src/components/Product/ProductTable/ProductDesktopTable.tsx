@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table } from 'antd';
+import { Table, App } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import type { Product } from '../../../types/product';
 import { getProductColumns } from './productColumns';
@@ -23,9 +23,10 @@ const ProductDesktopTable: React.FC<Props> = ({
 }) => {
     const navigate = useNavigate();
     const { handleDelete } = useProductDelete();
+    const { modal } = App.useApp();
 
     const columns = getProductColumns({
-        showSection, sortOrder, toggleSort, handleDelete, navigate
+        showSection, sortOrder, toggleSort, handleDelete, navigate, modal
     });
 
     return (

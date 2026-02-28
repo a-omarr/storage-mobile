@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Popconfirm } from 'antd';
+import { Button, App } from 'antd';
 import { FiEdit, FiTrash2 } from 'react-icons/fi';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useProductDelete } from '../ProductTable/useProductDelete';
@@ -12,6 +12,7 @@ const ProductCardActions: React.FC<Props> = ({ productId }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const { handleDelete } = useProductDelete();
+    const { modal } = App.useApp();
 
     // Get the current section to handle partial deletion if needed
     const searchParams = new URLSearchParams(location.search);
@@ -25,23 +26,31 @@ const ProductCardActions: React.FC<Props> = ({ productId }) => {
         }
     };
 
+    const showConfirm = () => {
+        modal.confirm({
+            title: 'هل أنت متأكد من حذف هذا المنتج؟',
+            content: 'لن تتمكن من التراجع عن هذا الإجراء.',
+            okText: 'حذف',
+            okType: 'danger',
+            cancelText: 'إلغاء',
+            onOk: onDelete,
+            centered: true,
+            style: { fontFamily: 'Cairo, sans-serif' },
+            okButtonProps: { style: { fontFamily: 'Cairo, sans-serif' } },
+            cancelButtonProps: { style: { fontFamily: 'Cairo, sans-serif' } },
+        });
+    };
+
     return (
         <div className="flex justify-end gap-3 items-center">
-            <Popconfirm
-                title="هل أنت متأكد من حذف هذا المنتج؟"
-                onConfirm={onDelete}
-                okText="حذف"
-                cancelText="إلغاء"
-                okButtonProps={{ danger: true }}
+            <Button
+                danger
+                icon={<FiTrash2 />}
+                onClick={showConfirm}
+                style={{ fontFamily: 'Cairo, sans-serif' }}
             >
-                <Button
-                    danger
-                    icon={<FiTrash2 />}
-                    style={{ fontFamily: 'Cairo, sans-serif' }}
-                >
-                    حذف المنتج
-                </Button>
-            </Popconfirm>
+                حذف المنتج
+            </Button>
 
             <Button
                 type="primary"

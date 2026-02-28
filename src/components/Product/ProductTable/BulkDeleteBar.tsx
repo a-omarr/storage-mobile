@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Popconfirm } from 'antd';
+import { Button, App } from 'antd';
 import { FiTrash2 } from 'react-icons/fi';
 
 interface Props {
@@ -9,7 +9,24 @@ interface Props {
 }
 
 const BulkDeleteBar: React.FC<Props> = ({ selectedCount, onDelete, onCancel }) => {
+    const { modal } = App.useApp();
+
     if (selectedCount === 0) return null;
+
+    const showDeleteConfirm = () => {
+        modal.confirm({
+            title: `حذف ${selectedCount} عناصر`,
+            content: 'هل أنت متأكد من حذف هذه العناصر نهائياً؟ لا يمكن التراجع عن هذا الإجراء.',
+            okText: 'نعم، احذف',
+            cancelText: 'تراجع',
+            okType: 'danger',
+            onOk: onDelete,
+            centered: true,
+            style: { fontFamily: 'Cairo, sans-serif' },
+            okButtonProps: { style: { fontFamily: 'Cairo, sans-serif' }, danger: true },
+            cancelButtonProps: { style: { fontFamily: 'Cairo, sans-serif' } },
+        });
+    };
 
     return (
         <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-white rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100 px-6 py-4 flex items-center gap-6 min-w-[320px] max-w-[90vw] animate-[slideUp_0.3s_ease-out]">
@@ -27,25 +44,15 @@ const BulkDeleteBar: React.FC<Props> = ({ selectedCount, onDelete, onCancel }) =
                     إلغاء
                 </Button>
 
-                <Popconfirm
-                    title={`حذف ${selectedCount} عناصر`}
-                    description="هل أنت متأكد من حذف هذه العناصر نهائياً؟ لا يمكن التراجع عن هذا الإجراء."
-                    onConfirm={onDelete}
-                    okText="نعم، احذف"
-                    cancelText="تراجع"
-                    okButtonProps={{ danger: true, className: "font-['Cairo']" }}
-                    cancelButtonProps={{ className: "font-['Cairo']" }}
-                    placement="topRight"
+                <Button
+                    type="primary"
+                    danger
+                    icon={<FiTrash2 />}
+                    onClick={showDeleteConfirm}
+                    className="font-['Cairo'] rounded-lg shadow-sm hover:shadow-md transition-all flex items-center"
                 >
-                    <Button
-                        type="primary"
-                        danger
-                        icon={<FiTrash2 />}
-                        className="font-['Cairo'] rounded-lg shadow-sm hover:shadow-md transition-all flex items-center"
-                    >
-                        حذف المحدد
-                    </Button>
-                </Popconfirm>
+                    حذف المحدد
+                </Button>
             </div>
         </div>
     );

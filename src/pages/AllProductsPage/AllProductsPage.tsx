@@ -3,9 +3,21 @@ import AllProductsHeader from './AllProductsHeader';
 import AllProductsItem from './AllProductsItem';
 import LoadingSkeleton from '../../components/Common/LoadingSkeleton';
 import EmptyIllustration from '../../components/Common/EmptyIllustration';
+import { useProductSelection } from '../../hooks/useProductSelection';
+import BulkDeleteBar from '../../components/Product/ProductTable/BulkDeleteBar';
+import { useProductDelete } from '../../components/Product/ProductTable/useProductDelete';
 
 const AllProductsPage: React.FC = () => {
     const { sorted, loading, sortOrder, toggleSort, searchTerm, setSearchTerm } = useAllProducts();
+    const { selectedIds, toggleSelection, clearSelection } = useProductSelection();
+    const { handleBulkDelete } = useProductDelete();
+
+    const onBulkDelete = async () => {
+        const success = await handleBulkDelete(selectedIds);
+        if (success) {
+            clearSelection();
+        }
+    };
 
     return (
         <div className="pb-10">
@@ -26,10 +38,24 @@ const AllProductsPage: React.FC = () => {
                     message={searchTerm ? 'لا توجد نتائج تطابق بحثك' : 'لا توجد منتجات مضافة بعد'}
                 />
             ) : (
-                <div className="flex flex-col gap-3">
-                    {sorted.map((p) => (
-                        <AllProductsItem key={p.id} product={p} />
-                    ))}
+                <div className="flex flex-col gap-3 relative pb-16">
+                    {sorted.map((p: any) => {
+                        const compoundKey = p.displaySection ? `${p.id}::${p.displaySection}` : p.id;
+                        return (
+                            <AllProductsItem
+                                key={compoundKey}
+                                product={p}
+                                isSelected={selectedIds.includes(compoundKey)}
+                                onToggleSelect={() => toggleSelection(compoundKey)}
+                            />
+                        );
+                    })}
+
+                    <BulkDeleteBar
+                        selectedCount={selectedIds.length}
+                        onDelete={onBulkDelete}
+                        onCancel={clearSelection}
+                    />
                 </div>
             )}
         </div>

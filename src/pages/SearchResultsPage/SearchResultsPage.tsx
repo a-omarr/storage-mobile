@@ -41,7 +41,11 @@ const SearchResultsPage: React.FC = () => {
                     }}>
                         تم العثور على {results.length} نتيجة
                     </Text>
-                    <ProductTable products={results} loading={loading} showSection />
+                    <ProductTable
+                        products={results}
+                        loading={loading}
+                        showSection
+                    />
                 </div>
             )}
         </div>

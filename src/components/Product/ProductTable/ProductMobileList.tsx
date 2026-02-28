@@ -11,9 +11,15 @@ interface Props {
     showSection: boolean;
     sortOrder: 'asc' | 'desc';
     toggleSort: () => void;
+    selectedIds: string[];
+    toggleSelection: (id: string) => void;
+    toggleAll: (ids: string[]) => void;
 }
 
-const ProductMobileList: React.FC<Props> = ({ products, loading, showSection, sortOrder, toggleSort }) => (
+const ProductMobileList: React.FC<Props> = ({
+    products, loading, showSection, sortOrder, toggleSort,
+    selectedIds, toggleSelection
+}) => (
     <div className="md:hidden">
         {!loading && products.length > 0 && (
             <div className="flex justify-between items-center px-4 py-3 bg-gray-50 border-b border-gray-100">
@@ -31,13 +37,18 @@ const ProductMobileList: React.FC<Props> = ({ products, loading, showSection, so
             </div>
         )}
         {!loading && products.length === 0 && <ProductEmptyState />}
-        {products.map((record: any) => (
-            <ProductMobileCard
-                key={record.displaySection ? `${record.id}-${record.displaySection}` : record.id}
-                record={record}
-                showSection={showSection}
-            />
-        ))}
+        {products.map((record: any) => {
+            const compoundKey = record.displaySection ? `${record.id}::${record.displaySection}` : record.id;
+            return (
+                <ProductMobileCard
+                    key={compoundKey}
+                    record={record}
+                    showSection={showSection}
+                    isSelected={selectedIds.includes(compoundKey)}
+                    onToggleSelect={() => toggleSelection(compoundKey)}
+                />
+            );
+        })}
     </div>
 );
 

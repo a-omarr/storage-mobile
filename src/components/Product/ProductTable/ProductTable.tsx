@@ -3,6 +3,9 @@ import type { Product } from '../../../types/product';
 import { useProductSort } from './useProductSort';
 import ProductDesktopTable from './ProductDesktopTable';
 import ProductMobileList from './ProductMobileList';
+import { useProductSelection } from '../../../hooks/useProductSelection';
+import BulkDeleteBar from './BulkDeleteBar';
+import { useProductDelete } from './useProductDelete';
 
 interface Props {
     products: Product[];
@@ -16,15 +19,27 @@ const ProductTable: React.FC<Props> = ({
     showSection = false,
 }) => {
     const { sorted, sortOrder, toggleSort } = useProductSort(products);
+    const { selectedIds, toggleSelection, toggleAll, clearSelection } = useProductSelection();
+    const { handleBulkDelete } = useProductDelete();
+
+    const onBulkDelete = async () => {
+        const success = await handleBulkDelete(selectedIds);
+        if (success) {
+            clearSelection();
+        }
+    };
 
     return (
-        <div className="bg-white rounded-[12px] shadow-[0_1px_3px_rgba(0,0,0,0.08)] overflow-hidden">
+        <div className="bg-white rounded-[12px] shadow-[0_1px_3px_rgba(0,0,0,0.08)] overflow-hidden relative">
             <ProductDesktopTable
                 products={sorted}
                 loading={loading}
                 showSection={showSection}
                 sortOrder={sortOrder}
                 toggleSort={toggleSort}
+                selectedIds={selectedIds}
+                toggleSelection={toggleSelection}
+                toggleAll={toggleAll}
             />
             <ProductMobileList
                 products={sorted}
@@ -32,6 +47,15 @@ const ProductTable: React.FC<Props> = ({
                 showSection={showSection}
                 sortOrder={sortOrder}
                 toggleSort={toggleSort}
+                selectedIds={selectedIds}
+                toggleSelection={toggleSelection}
+                toggleAll={toggleAll}
+            />
+
+            <BulkDeleteBar
+                selectedCount={selectedIds.length}
+                onDelete={onBulkDelete}
+                onCancel={clearSelection}
             />
         </div>
     );

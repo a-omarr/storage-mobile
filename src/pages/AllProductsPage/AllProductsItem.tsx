@@ -4,14 +4,17 @@ import { useNavigate } from 'react-router-dom';
 import type { Product } from '../../types/product';
 import { SECTION_MAP } from '../../constants/sections';
 import { formatDate, daysOld } from '../../utils/dateHelpers';
+import { Checkbox } from 'antd';
 
 const { Text } = Typography;
 
 interface Props {
     product: Product & { displaySection?: string };
+    isSelected?: boolean;
+    onToggleSelect?: () => void;
 }
 
-const AllProductsItem: React.FC<Props> = ({ product: p }) => {
+const AllProductsItem: React.FC<Props> = ({ product: p, isSelected = false, onToggleSelect }) => {
     const navigate = useNavigate();
     const days = daysOld(p.dateOfProduction);
     const isOld = days > 365;
@@ -20,11 +23,27 @@ const AllProductsItem: React.FC<Props> = ({ product: p }) => {
 
     return (
         <div
-            onClick={() => navigate(`/product/${p.id}`)}
-            className="bg-white rounded-[12px] px-5 py-4 shadow-sm border-2 border-transparent hover:border-blue-500/30 hover:shadow-md transition-all duration-200 cursor-pointer flex items-center justify-between gap-4 group"
+            onClick={(e) => {
+                const target = e.target as HTMLElement;
+                if (target.closest('.ant-checkbox-wrapper')) return;
+                const queryParam = p.displaySection ? `?section=${p.displaySection}` : '';
+                navigate(`/product/${p.id}${queryParam}`);
+            }}
+            className={`rounded-[12px] px-5 py-4 shadow-sm border-2 border-transparent transition-all duration-200 cursor-pointer flex items-center justify-between gap-4 group ${isSelected ? 'bg-blue-50/50 hover:bg-blue-50/60 border-blue-500/30' : 'bg-white hover:border-blue-500/30 hover:shadow-md'}`}
         >
             {/* Section badge + product name */}
             <div className="flex items-center gap-3 min-w-0">
+                {onToggleSelect && (
+                    <div className="pt-1 pl-1">
+                        <Checkbox
+                            checked={isSelected}
+                            onChange={(e) => {
+                                e.stopPropagation();
+                                onToggleSelect();
+                            }}
+                        />
+                    </div>
+                )}
                 <div
                     className="w-10 h-10 rounded-[10px] flex items-center justify-center text-white font-bold text-sm shrink-0 font-['Cairo',sans-serif] group-hover:scale-110 transition-transform"
                     style={{ background: section?.gradient || '#2563eb' }}

@@ -1,8 +1,8 @@
 import React from 'react';
 import { Space, Button, Tag, Typography } from 'antd';
 import { FiArrowRight } from 'react-icons/fi';
-import { useNavigate } from 'react-router-dom';
-import type { Product } from '../../../types/product';
+import { useNavigate, useLocation } from 'react-router-dom';
+import type { Product, SectionKey } from '../../../types/product';
 import { SECTION_MAP } from '../../../constants/sections';
 
 const { Title, Text } = Typography;
@@ -13,7 +13,13 @@ interface Props {
 
 const ProductCardHeader: React.FC<Props> = ({ product }) => {
     const navigate = useNavigate();
-    const firstSectionKey = product.sections?.[0] as keyof typeof SECTION_MAP | undefined;
+    const location = useLocation();
+
+    const searchParams = new URLSearchParams(location.search);
+    const urlSection = searchParams.get('section');
+    const validUrlSection = urlSection && product.sections?.includes(urlSection as SectionKey) ? urlSection : undefined;
+
+    const firstSectionKey = (validUrlSection || product.sections?.[0]) as keyof typeof SECTION_MAP | undefined;
     const section = firstSectionKey ? SECTION_MAP[firstSectionKey] : undefined;
 
     return (

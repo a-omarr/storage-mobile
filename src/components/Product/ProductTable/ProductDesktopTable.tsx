@@ -12,10 +12,14 @@ interface Props {
     showSection: boolean;
     sortOrder: 'asc' | 'desc';
     toggleSort: () => void;
+    selectedIds: string[];
+    toggleSelection: (id: string) => void;
+    toggleAll: (ids: string[]) => void;
 }
 
 const ProductDesktopTable: React.FC<Props> = ({
-    products, loading, showSection, sortOrder, toggleSort
+    products, loading, showSection, sortOrder, toggleSort,
+    selectedIds, toggleAll
 }) => {
     const navigate = useNavigate();
     const { handleDelete } = useProductDelete();
@@ -29,7 +33,14 @@ const ProductDesktopTable: React.FC<Props> = ({
             <Table
                 dataSource={products}
                 columns={columns}
-                rowKey={(record: any) => record.displaySection ? `${record.id}-${record.displaySection}` : record.id}
+                rowKey={(record: any) => record.displaySection ? `${record.id}::${record.displaySection}` : record.id}
+                rowSelection={{
+                    selectedRowKeys: selectedIds,
+                    onChange: (selectedRowKeys) => {
+                        // toggleAll handles bulk replacement of the selection state
+                        toggleAll(selectedRowKeys as string[]);
+                    },
+                }}
                 loading={loading}
                 scroll={{ x: 1100 }}
                 pagination={{
@@ -44,7 +55,8 @@ const ProductDesktopTable: React.FC<Props> = ({
                     onClick: (e) => {
                         const target = e.target as HTMLElement;
                         if (target.closest('.ant-btn') || target.closest('.ant-popover')) return;
-                        navigate(`/product/${record.id}`);
+                        const queryParam = record.displaySection ? `?section=${record.displaySection}` : '';
+                        navigate(`/product/${record.id}${queryParam}`);
                     },
                 })}
                 locale={{ emptyText: <ProductEmptyState /> }}

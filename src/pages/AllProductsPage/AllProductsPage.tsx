@@ -9,8 +9,13 @@ import { useProductDelete } from '../../components/Product/ProductTable/useProdu
 
 const AllProductsPage: React.FC = () => {
     const { sorted, loading, sortOrder, toggleSort, searchTerm, setSearchTerm, refresh } = useAllProducts();
-    const { selectedIds, toggleSelection, clearSelection } = useProductSelection();
+    const { selectedIds, toggleSelection, toggleAll, clearSelection } = useProductSelection();
     const { handleBulkDelete } = useProductDelete();
+
+    const allKeys = sorted.map((p: any) =>
+        p.displaySection ? `${p.id}::${p.displaySection}` : p.id
+    );
+    const allSelected = allKeys.length > 0 && selectedIds.length === allKeys.length;
 
     const handleRefresh = () => {
         clearSelection();
@@ -33,6 +38,9 @@ const AllProductsPage: React.FC = () => {
                 toggleSort={toggleSort}
                 searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}
+                onSelectAll={() => toggleAll(allKeys)}
+                allSelected={allSelected}
+                hasItems={sorted.length > 0}
             />
 
             {loading ? (

@@ -1,4 +1,5 @@
 import { useProducts } from '../../hooks/useProducts';
+import type { Product } from '../../types/product';
 
 export const useHome = () => {
     const { products, loading } = useProducts();
@@ -14,11 +15,20 @@ export const useHome = () => {
         }
     }
 
-    const oldest = [...products]
-        .filter((p) => p.dateOfProduction)
+    // Expand each product into one entry per section so that a product
+    // added to A, B, C, D shows up as four independent cards in the oldest widget.
+    const expandedBySection: (Product & { displaySection: string })[] = [];
+    for (const p of products) {
+        if (!p.dateOfProduction) continue;
+        for (const section of (p.sections ?? [])) {
+            expandedBySection.push({ ...p, displaySection: section });
+        }
+    }
+
+    const oldest = expandedBySection
         .sort((a, b) => {
-            const dateA = a.dateOfProduction ? new Date(a.dateOfProduction).getTime() : 0;
-            const dateB = b.dateOfProduction ? new Date(b.dateOfProduction).getTime() : 0;
+            const dateA = new Date(a.dateOfProduction!).getTime();
+            const dateB = new Date(b.dateOfProduction!).getTime();
             return dateA - dateB;
         })
         .slice(0, 5);

@@ -15,8 +15,9 @@ interface Props {
 const HomeOldestItem: React.FC<Props> = ({ product: p }) => {
     const navigate = useNavigate();
     const days = daysOld(p.dateOfProduction);
-    const firstSectionKey = p.sections?.[0];
-    const section = SECTIONS.find((s) => s.key === firstSectionKey);
+    // displaySection is injected by useHome's per-section expansion
+    const sectionKey = (p as any).displaySection ?? p.sections?.[0];
+    const section = SECTIONS.find((s) => s.key === sectionKey);
 
     // Determine urgency color
     const getUrgencyColor = (d: number) => {
@@ -30,7 +31,7 @@ const HomeOldestItem: React.FC<Props> = ({ product: p }) => {
 
     return (
         <div
-            onClick={() => navigate(`/product/${p.id}`)}
+            onClick={() => navigate(`/product/${p.id}${sectionKey ? `?section=${sectionKey}` : ''}`)}
             className="group relative flex flex-col justify-between cursor-pointer bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.1)] transition-all duration-300 w-[200px] h-[140px] p-4 overflow-hidden border-0 border-r-4"
             style={{ borderRightColor: colors.border }}
         >

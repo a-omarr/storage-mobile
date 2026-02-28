@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Input, Typography } from 'antd';
-import { FiArrowRight, FiArrowUp, FiArrowDown, FiClock, FiSearch } from 'react-icons/fi';
+import { FiArrowRight, FiArrowUp, FiArrowDown, FiClock, FiSearch, FiCheckSquare, FiSquare } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 
 const { Title, Text } = Typography;
@@ -12,10 +12,13 @@ interface Props {
     toggleSort: () => void;
     searchTerm: string;
     setSearchTerm: (val: string) => void;
+    onSelectAll: () => void;
+    allSelected: boolean;
+    hasItems: boolean;
 }
 
 const AllProductsHeader: React.FC<Props> = ({
-    total, loading, sortOrder, toggleSort, searchTerm, setSearchTerm
+    total, loading, sortOrder, toggleSort, searchTerm, setSearchTerm, onSelectAll, allSelected, hasItems
 }) => {
     const navigate = useNavigate();
 
@@ -42,23 +45,44 @@ const AllProductsHeader: React.FC<Props> = ({
                     </div>
                 </div>
 
-                <Button
-                    onClick={toggleSort}
-                    icon={sortOrder === 'asc' ? <FiArrowUp /> : <FiArrowDown />}
-                    style={{
-                        background: 'rgba(255,255,255,0.2)',
-                        border: '1px solid rgba(255,255,255,0.4)',
-                        color: 'white',
-                        fontFamily: 'Cairo, sans-serif',
-                        borderRadius: 10,
-                        fontWeight: 600,
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 6,
-                    }}
-                >
-                    {sortOrder === 'asc' ? 'الأقدم أولاً' : 'الأحدث أولاً'}
-                </Button>
+                <div className="flex items-center gap-2">
+                    {hasItems && (
+                        <Button
+                            onClick={onSelectAll}
+                            icon={allSelected ? <FiCheckSquare /> : <FiSquare />}
+                            style={{
+                                background: allSelected ? 'rgba(239,68,68,0.25)' : 'rgba(255,255,255,0.2)',
+                                border: `1px solid ${allSelected ? 'rgba(239,68,68,0.6)' : 'rgba(255,255,255,0.4)'}`,
+                                color: 'white',
+                                fontFamily: 'Cairo, sans-serif',
+                                borderRadius: 10,
+                                fontWeight: 600,
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 6,
+                            }}
+                        >
+                            {allSelected ? 'إلغاء التحديد' : 'تحديد الكل'}
+                        </Button>
+                    )}
+                    <Button
+                        onClick={toggleSort}
+                        icon={sortOrder === 'asc' ? <FiArrowUp /> : <FiArrowDown />}
+                        style={{
+                            background: 'rgba(255,255,255,0.2)',
+                            border: '1px solid rgba(255,255,255,0.4)',
+                            color: 'white',
+                            fontFamily: 'Cairo, sans-serif',
+                            borderRadius: 10,
+                            fontWeight: 600,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 6,
+                        }}
+                    >
+                        {sortOrder === 'asc' ? 'الأقدم أولاً' : 'الأحدث أولاً'}
+                    </Button>
+                </div>
             </div>
 
             <Input

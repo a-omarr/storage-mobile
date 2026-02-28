@@ -67,13 +67,12 @@ const ProductForm: React.FC<Props> = ({
                 <ProductFormBasicInfo inventory={selectedInventory} />
 
                 {/* For Inventory 1, Date is at the top. For Inventory 2, it's in Advanced. */}
-                {selectedInventory === 1 && <ProductFormDate inventory={1} />}
-
                 {selectedInventory === 1 ? (
                     <>
                         <ProductFormIdentifiers />
                         <ProductFormDetails />
                         <ProductFormPallet />
+                        <ProductFormDate inventory={1} />
                     </>
                 ) : (
                     <div className="mt-2 mb-6">

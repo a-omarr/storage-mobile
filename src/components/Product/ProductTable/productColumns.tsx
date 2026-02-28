@@ -68,43 +68,6 @@ export const getProductColumns = ({
         { title: 'قطع/بالت', dataIndex: 'piecesPerPallet', key: 'piecesPerPallet', width: 90 },
         { title: 'رقم الطلبية', dataIndex: 'numberOfPallet', key: 'numberOfPallet', width: 100 },
         {
-            title: (
-                <Space>
-                    <span>تاريخ الإنتاج</span>
-                    <Tooltip title={sortOrder === 'asc' ? 'الأقدم أولاً' : 'الأحدث أولاً'}>
-                        <Button
-                            type="text"
-                            size="small"
-                            icon={sortOrder === 'asc' ? <FiArrowUp /> : <FiArrowDown />}
-                            onClick={toggleSort}
-                            style={{ padding: 4 }}
-                        />
-                    </Tooltip>
-                </Space>
-            ),
-            dataIndex: 'dateOfProduction',
-            key: 'dateOfProduction',
-            width: 130,
-            render: (ts: any) => {
-                const days = daysOld(ts);
-                const isOld = days > 365;
-                return (
-                    <div>
-                        <Text style={{ color: isOld ? '#ef4444' : 'inherit', fontWeight: isOld ? 600 : 400 }}>
-                            {formatDate(ts)}
-                        </Text>
-                        {isOld && (
-                            <div>
-                                <span className="bg-gradient-to-br from-[#fef3c7] to-[#fde68a] border border-[#f59e0b] rounded-lg px-2.5 py-1 text-xs text-[#92400e] font-semibold">
-                                    {days} يوم
-                                </span>
-                            </div>
-                        )}
-                    </div>
-                );
-            },
-        },
-        {
             title: 'إجراءات',
             key: 'actions',
             width: 90,
@@ -147,6 +110,43 @@ export const getProductColumns = ({
                     </Tooltip>
                 </Space>
             ),
+        },
+        {
+            title: (
+                <Space>
+                    <span>تاريخ الإنتاج</span>
+                    <Tooltip title={sortOrder === 'asc' ? 'الأقدم أولاً' : 'الأحدث أولاً'}>
+                        <Button
+                            type="text"
+                            size="small"
+                            icon={sortOrder === 'asc' ? <FiArrowUp /> : <FiArrowDown />}
+                            onClick={toggleSort}
+                            style={{ padding: 4 }}
+                        />
+                    </Tooltip>
+                </Space>
+            ),
+            dataIndex: 'dateOfProduction',
+            key: 'dateOfProduction',
+            width: 130,
+            render: (ts: any) => {
+                const days = daysOld(ts);
+                const isOld = days > 365;
+                return (
+                    <div>
+                        <Text style={{ color: isOld ? '#ef4444' : 'inherit', fontWeight: isOld ? 600 : 400 }}>
+                            {formatDate(ts)}
+                        </Text>
+                        {isOld && (
+                            <div>
+                                <span className="bg-gradient-to-br from-[#fef3c7] to-[#fde68a] border border-[#f59e0b] rounded-lg px-2.5 py-1 text-xs text-[#92400e] font-semibold">
+                                    {days} يوم
+                                </span>
+                            </div>
+                        )}
+                    </div>
+                );
+            },
         },
     ];
 

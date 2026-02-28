@@ -62,9 +62,13 @@ export const useEditProduct = () => {
 
     const sectionConfig = product && product.sections?.length ? SECTION_MAP[product.sections[0] as keyof typeof SECTION_MAP] : null;
 
+    const handleCancel = () => {
+        navigate(-1);
+    };
+
     const initialValues: Partial<ProductFormData> | undefined = product
         ? { ...product, dateOfProduction: product.dateOfProduction?.toDate() ?? null }
         : undefined;
 
-    return { product, loading, saving, error, sectionConfig, initialValues, handleSubmit };
+    return { product, loading, saving, error, sectionConfig, initialValues, handleSubmit, handleCancel };
 };

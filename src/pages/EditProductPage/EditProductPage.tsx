@@ -8,7 +8,7 @@ import { useEditProduct } from './useEditProduct';
 const EditProductPage: React.FC = () => {
     const {
         product, loading, saving, error,
-        sectionConfig, initialValues, handleSubmit
+        sectionConfig, initialValues, handleSubmit, handleCancel
     } = useEditProduct();
 
     if (loading) {
@@ -30,6 +30,7 @@ const EditProductPage: React.FC = () => {
             <EditProductHeader
                 gradient={sectionConfig?.gradient || 'linear-gradient(135deg, #1677ff, #0958d9)'}
                 productName={`${product.type} ${product.capacity}`}
+                onCancel={handleCancel}
             />
             <Card
                 style={{

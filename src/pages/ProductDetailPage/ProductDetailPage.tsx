@@ -7,21 +7,17 @@ import LoadingSkeleton from '../../components/Common/LoadingSkeleton';
 const ProductDetailPage: React.FC = () => {
     const { product, loading, error } = useProductDetail();
 
-    if (loading) {
-        return <LoadingSkeleton.Detail />;
-    }
-
-    if (error || !product) {
-        return (
-            <Alert
-                type="error"
-                message={error || 'منتج غير موجود'}
-                style={{ fontFamily: 'Cairo, sans-serif' }}
-            />
-        );
-    }
-
-    return <ProductCard product={product} />;
+    return loading ? (
+        <LoadingSkeleton.Detail />
+    ) : (error || !product) ? (
+        <Alert
+            type="error"
+            message={error || 'منتج غير موجود'}
+            style={{ fontFamily: 'Cairo, sans-serif' }}
+        />
+    ) : (
+        <ProductCard product={product} />
+    );
 };
 
 export default ProductDetailPage;

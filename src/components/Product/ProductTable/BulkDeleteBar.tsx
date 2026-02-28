@@ -12,8 +12,6 @@ interface Props {
 const BulkDeleteBar: React.FC<Props> = ({ selectedCount, onDelete, onCancel }) => {
     const { modal } = App.useApp();
 
-    if (selectedCount === 0) return null;
-
     const showDeleteConfirm = () => {
         modal.confirm({
             title: `حذف ${selectedCount} عناصر`,
@@ -29,7 +27,7 @@ const BulkDeleteBar: React.FC<Props> = ({ selectedCount, onDelete, onCancel }) =
         });
     };
 
-    return createPortal(
+    return selectedCount === 0 ? null : createPortal(
         <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[9999] bg-white rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.2)] border border-gray-100 px-6 py-4 flex items-center gap-6 min-w-[320px] max-w-[90vw] animate-[slideUp_0.3s_ease-out]">
             <div className="flex flex-col">
                 <span className="font-['Cairo'] text-sm text-gray-500">تم تحديد</span>

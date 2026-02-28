@@ -9,17 +9,13 @@ import EmptyIllustration from '../../components/Common/EmptyIllustration';
 const Home: React.FC = () => {
     const { products, loading: dataLoading, counts, oldest } = useHome();
 
-    if (dataLoading) {
-        return (
-            <div>
-                <LoadingSkeleton.Stats />
-                <LoadingSkeleton.Grid />
-                <LoadingSkeleton.Oldest />
-            </div>
-        );
-    }
-
-    return (
+    return dataLoading ? (
+        <div>
+            <LoadingSkeleton.Stats />
+            <LoadingSkeleton.Grid />
+            <LoadingSkeleton.Oldest />
+        </div>
+    ) : (
         <div>
             <HomeStatsBar total={products.length} />
             <HomeSectionGrid counts={counts} />

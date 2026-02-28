@@ -8,18 +8,14 @@ import LoadingSkeleton from '../../components/Common/LoadingSkeleton';
 const SectionPage: React.FC = () => {
     const { sectionConfig, products, loading, error, handleAddProduct } = useSectionPage();
 
-    if (!sectionConfig) {
-        return (
-            <Alert
-                type="error"
-                message="قسم غير موجود"
-                description="الرجاء الرجوع للصفحة الرئيسية"
-                style={{ fontFamily: 'Cairo, sans-serif' }}
-            />
-        );
-    }
-
-    return (
+    return !sectionConfig ? (
+        <Alert
+            type="error"
+            message="قسم غير موجود"
+            description="الرجاء الرجوع للصفحة الرئيسية"
+            style={{ fontFamily: 'Cairo, sans-serif' }}
+        />
+    ) : (
         <div>
             <SectionHeader
                 label={sectionConfig.label}

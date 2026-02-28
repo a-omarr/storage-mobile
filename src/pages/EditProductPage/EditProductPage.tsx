@@ -11,21 +11,15 @@ const EditProductPage: React.FC = () => {
         sectionConfig, initialValues, handleSubmit, handleCancel
     } = useEditProduct();
 
-    if (loading) {
-        return <LoadingSkeleton.Detail />;
-    }
-
-    if (error || !product) {
-        return (
-            <Alert
-                type="error"
-                message={error || 'منتج غير موجود'}
-                style={{ fontFamily: 'Cairo, sans-serif' }}
-            />
-        );
-    }
-
-    return (
+    return loading ? (
+        <LoadingSkeleton.Detail />
+    ) : (error || !product) ? (
+        <Alert
+            type="error"
+            message={error || 'منتج غير موجود'}
+            style={{ fontFamily: 'Cairo, sans-serif' }}
+        />
+    ) : (
         <div>
             <EditProductHeader
                 gradient={sectionConfig?.gradient || 'linear-gradient(135deg, #1677ff, #0958d9)'}

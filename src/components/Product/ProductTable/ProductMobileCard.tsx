@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Tag, Typography, Checkbox, App, Space } from 'antd';
 import { FiEdit, FiTrash2 } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
-import type { Product } from '../../../types/product';
+import type { Product, SectionKey } from '../../../types/product';
 import { SECTION_MAP } from '../../../constants/sections';
 import { formatDate, daysOld } from '../../../utils/dateHelpers';
 import { useProductDelete } from './useProductDelete';
@@ -15,9 +15,11 @@ interface Props {
     showSection: boolean;
     isSelected?: boolean;
     onToggleSelect?: () => void;
+    onRefresh?: () => void;
+    currentSection?: SectionKey;
 }
 
-const ProductMobileCard: React.FC<Props> = ({ record, showSection, isSelected = false, onToggleSelect }) => {
+const ProductMobileCard: React.FC<Props> = ({ record, showSection, isSelected = false, onToggleSelect, onRefresh, currentSection }) => {
     const navigate = useNavigate();
     const { handleDelete } = useProductDelete();
     const { modal } = App.useApp();
@@ -33,10 +35,8 @@ const ProductMobileCard: React.FC<Props> = ({ record, showSection, isSelected = 
             okType: 'danger',
             cancelText: 'إلغاء',
             onOk: () => {
-                const compoundId = (record as any).displaySection
-                    ? `${record.id}::${(record as any).displaySection}`
-                    : record.id;
-                handleDelete(compoundId);
+                const activeSection = currentSection || (record as any).displaySection;
+                handleDelete(record.id, { currentSection: activeSection, onRefresh });
             },
             centered: true,
             style: { fontFamily: 'Cairo, sans-serif' },

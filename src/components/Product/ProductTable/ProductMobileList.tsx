@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from 'antd';
 import { FiArrowUp, FiArrowDown } from 'react-icons/fi';
-import type { Product } from '../../../types/product';
+import type { Product, SectionKey } from '../../../types/product';
 import ProductMobileCard from './ProductMobileCard';
 import ProductEmptyState from './ProductEmptyState';
 
@@ -14,11 +14,13 @@ interface Props {
     selectedIds: string[];
     toggleSelection: (id: string) => void;
     toggleAll: (ids: string[]) => void;
+    onRefresh?: () => void;
+    currentSection?: SectionKey;
 }
 
 const ProductMobileList: React.FC<Props> = ({
     products, loading, showSection, sortOrder, toggleSort,
-    selectedIds, toggleSelection
+    selectedIds, toggleSelection, onRefresh, currentSection
 }) => (
     <div className="md:hidden">
         {!loading && products.length > 0 && (
@@ -46,6 +48,8 @@ const ProductMobileList: React.FC<Props> = ({
                     showSection={showSection}
                     isSelected={selectedIds.includes(compoundKey)}
                     onToggleSelect={() => toggleSelection(compoundKey)}
+                    onRefresh={onRefresh}
+                    currentSection={currentSection}
                 />
             );
         })}

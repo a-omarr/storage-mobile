@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table, App } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import type { Product } from '../../../types/product';
+import type { Product, SectionKey } from '../../../types/product';
 import { getProductColumns } from './productColumns';
 import ProductEmptyState from './ProductEmptyState';
 import { useProductDelete } from './useProductDelete';
@@ -15,18 +15,20 @@ interface Props {
     selectedIds: string[];
     toggleSelection: (id: string) => void;
     toggleAll: (ids: string[]) => void;
+    onRefresh?: () => void;
+    currentSection?: SectionKey;
 }
 
 const ProductDesktopTable: React.FC<Props> = ({
     products, loading, showSection, sortOrder, toggleSort,
-    selectedIds, toggleAll
+    selectedIds, toggleAll, onRefresh, currentSection
 }) => {
     const navigate = useNavigate();
     const { handleDelete } = useProductDelete();
     const { modal } = App.useApp();
 
     const columns = getProductColumns({
-        showSection, sortOrder, toggleSort, handleDelete, navigate, modal
+        showSection, sortOrder, toggleSort, handleDelete, onRefresh, currentSection, navigate, modal
     });
 
     return (

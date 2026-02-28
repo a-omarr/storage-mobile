@@ -19,8 +19,10 @@ const ProductCardActions: React.FC<Props> = ({ productId }) => {
     const urlSection = searchParams.get('section');
 
     const onDelete = async () => {
-        const compoundId = urlSection ? `${productId}::${urlSection}` : productId;
-        const success = await handleDelete(compoundId);
+        const success = await handleDelete(productId, {
+            currentSection: urlSection as any,
+            hideMessage: false
+        });
         if (success) {
             navigate(urlSection ? `/section/${urlSection}` : '/');
         }

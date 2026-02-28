@@ -1,78 +1,108 @@
 import { message } from 'antd';
-import { deleteProduct, removeProductSection, getProductById, updateProduct } from '../../../db/productService';
+import { deleteProduct, removeProductSection, getProductById } from '../../../db/productService';
 import type { SectionKey } from '../../../types/product';
 
 export const useProductDelete = () => {
-    const handleDelete = async (compoundId: string, hideMessage = false) => {
+    const handleDelete = async (
+        idOrCompound: string,
+        options?: {
+            currentSection?: SectionKey;
+            onRefresh?: () => void;
+            hideMessage?: boolean;
+        }
+    ) => {
         try {
-            const [id, sectionToRemove] = compoundId.split('::');
+            console.log('--- START DELETE ---');
+            const [productId, idSegmentSection] = idOrCompound.split('::');
+            const activeSection = options?.currentSection || (idSegmentSection as SectionKey);
 
-            if (sectionToRemove) {
-                await removeProductSection(id, sectionToRemove as SectionKey);
+            console.log('[handleDelete] Input:', idOrCompound);
+            console.log('[handleDelete] Active Section Context:', activeSection);
+
+            if (!activeSection) {
+                console.log('[handleDelete] ACTION: FULL DELETE (no section context found)');
+                await deleteProduct(productId);
             } else {
-                await deleteProduct(id);
+                const product = await getProductById(productId);
+                if (!product) {
+                    console.error('[handleDelete] ERROR: Product not found in DB!');
+                } else {
+                    console.log('[handleDelete] DB DATA FOR ID:', {
+                        id: product.id,
+                        type: product.type,
+                        sections: product.sections
+                    });
+
+                    if (product.sections.length === 1) {
+                        console.log('[handleDelete] ACTION: FULL DELETE (only 1 section in DB array)');
+                        await deleteProduct(productId);
+                    } else if (!product.sections.includes(activeSection)) {
+                        console.warn('[handleDelete] WARNING: target section not found in product.sections. Falling back to full delete.');
+                        await deleteProduct(productId);
+                    } else {
+                        console.log('[handleDelete] ACTION: REMOVE SECTION ONLY:', activeSection);
+                        await removeProductSection(productId, activeSection);
+                    }
+                }
             }
 
             navigator.vibrate?.(60);
-            if (!hideMessage) message.success('تم الحذف بنجاح');
+            if (!options?.hideMessage) message.success('تم الحذف بنجاح');
+            options?.onRefresh?.();
+            console.log('--- END DELETE SUCCESS ---');
             return true;
         } catch (err) {
             navigator.vibrate?.([100, 50, 100]);
-            console.error('Delete error:', err);
-            if (!hideMessage) message.error('فشل في الحذف');
+            console.error('[handleDelete] EXCEPTION:', err);
+            if (!options?.hideMessage) message.error('فشل في الحذف');
             return false;
         }
     };
 
-    const handleBulkDelete = async (compoundIds: string[]) => {
-        if (compoundIds.length === 0) return true;
+    const handleBulkDelete = async (
+        productIds: string[],
+        options?: {
+            currentSection?: SectionKey;
+            onRefresh?: () => void;
+        }
+    ) => {
+        if (productIds.length === 0) return true;
 
         try {
-            // Group operations by true document ID
-            const operationsByDocId: Record<string, string[]> = {};
+            console.log('--- START BULK DELETE ---');
+            console.log('[handleBulkDelete] IDs:', productIds);
+            console.log('[handleBulkDelete] currentSection:', options?.currentSection);
 
-            compoundIds.forEach((compoundId) => {
-                const [id, sectionToRemove] = compoundId.split('::');
-                if (!operationsByDocId[id]) {
-                    operationsByDocId[id] = [];
-                }
-                if (sectionToRemove) {
-                    operationsByDocId[id].push(sectionToRemove);
-                } else {
-                    operationsByDocId[id].push('__DELETE_ALL__');
-                }
-            });
+            // Sequential for-of to avoid race conditions on the same product record
+            for (const idOrCompound of productIds) {
+                const [id, idSegmentSection] = idOrCompound.split('::');
+                const activeSection = options?.currentSection || (idSegmentSection as SectionKey);
 
-            const promises = Object.entries(operationsByDocId).map(async ([id, sectionsToRemove]) => {
-                if (sectionsToRemove.includes('__DELETE_ALL__')) {
+                if (!activeSection) {
+                    console.log(`[handleBulkDelete] ID ${id}: FULL DELETE (no context)`);
                     await deleteProduct(id);
-                    return;
-                }
-
-                const product = await getProductById(id);
-                if (product) {
-                    const newSections = product.sections.filter(
-                        (s) => !sectionsToRemove.includes(s)
-                    );
-
-                    if (newSections.length === 0) {
-                        await deleteProduct(id);
-                    } else {
-                        await updateProduct(id, {
-                            ...product,
-                            sections: newSections,
-                            dateOfProduction: product.dateOfProduction ? new Date(product.dateOfProduction) : null,
-                        });
+                } else {
+                    const product = await getProductById(id);
+                    if (product) {
+                        console.log(`[handleBulkDelete] ID ${id} context ${activeSection}, DB sections:`, product.sections);
+                        if (product.sections.length === 1) {
+                            console.log(`[handleBulkDelete] ID ${id}: FULL DELETE (1 section)`);
+                            await deleteProduct(id);
+                        } else {
+                            console.log(`[handleBulkDelete] ID ${id}: REMOVE SECTION ONLY (${activeSection})`);
+                            await removeProductSection(id, activeSection);
+                        }
                     }
                 }
-            });
+            }
 
-            await Promise.all(promises);
             navigator.vibrate?.([60, 60]);
-            message.success(`تم حذف ${compoundIds.length} عناصر بنجاح`);
+            message.success(`تم حذف ${productIds.length} عناصر بنجاح`);
+            options?.onRefresh?.();
+            console.log('--- END BULK DELETE SUCCESS ---');
             return true;
         } catch (err) {
-            console.error('Bulk delete error:', err);
+            console.error('[handleBulkDelete] EXCEPTION:', err);
             message.error('فشل في حذف بعض أو كل العناصر المحددة');
             return false;
         }

@@ -1,7 +1,7 @@
 import { Button, Space, Tag, Tooltip, Typography } from 'antd';
 import { FiArrowDown, FiArrowUp, FiEdit, FiTrash2 } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
-import type { Product } from '../../../types/product';
+import type { Product, SectionKey } from '../../../types/product';
 import { SECTION_MAP } from '../../../constants/sections';
 import { formatDate, daysOld } from '../../../utils/dateHelpers';
 
@@ -11,7 +11,9 @@ interface ColumnsOptions {
     showSection: boolean;
     sortOrder: 'asc' | 'desc';
     toggleSort: () => void;
-    handleDelete: (id: string) => void;
+    handleDelete: (id: string, options?: { currentSection?: SectionKey; onRefresh?: () => void }) => void;
+    onRefresh?: () => void;
+    currentSection?: SectionKey;
     navigate: ReturnType<typeof useNavigate>;
     modal: any;
 }
@@ -21,10 +23,14 @@ export const getProductColumns = ({
     sortOrder,
     toggleSort,
     handleDelete,
+    onRefresh,
+    currentSection,
     navigate,
     modal,
 }: ColumnsOptions) => {
     const columns: any[] = [
+        // ... (omitting lines 28-122 for brevity, but they stay same mapping)
+        // Actually I need to match the range correctly.
         ...(showSection ? [{
             title: 'الأقسام',
             dataIndex: 'sections',
@@ -128,10 +134,8 @@ export const getProductColumns = ({
                                     okType: 'danger',
                                     cancelText: 'إلغاء',
                                     onOk: () => {
-                                        const compoundId = (record as any).displaySection
-                                            ? `${record.id}::${(record as any).displaySection}`
-                                            : record.id;
-                                        handleDelete(compoundId);
+                                        const activeSection = currentSection || (record as any).displaySection;
+                                        handleDelete(record.id, { currentSection: activeSection, onRefresh });
                                     },
                                     centered: true,
                                     style: { fontFamily: 'Cairo, sans-serif' },

@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Product } from '../../../types/product';
+import type { Product, SectionKey } from '../../../types/product';
 import { useProductSort } from './useProductSort';
 import ProductDesktopTable from './ProductDesktopTable';
 import ProductMobileList from './ProductMobileList';
@@ -11,19 +11,23 @@ interface Props {
     products: Product[];
     loading?: boolean;
     showSection?: boolean;
+    onRefresh?: () => void;
+    currentSection?: SectionKey;
 }
 
 const ProductTable: React.FC<Props> = ({
     products,
     loading = false,
     showSection = false,
+    onRefresh,
+    currentSection,
 }) => {
     const { sorted, sortOrder, toggleSort } = useProductSort(products);
     const { selectedIds, toggleSelection, toggleAll, clearSelection } = useProductSelection();
     const { handleBulkDelete } = useProductDelete();
 
     const onBulkDelete = async () => {
-        const success = await handleBulkDelete(selectedIds);
+        const success = await handleBulkDelete(selectedIds, { onRefresh, currentSection });
         if (success) {
             clearSelection();
         }
@@ -40,6 +44,8 @@ const ProductTable: React.FC<Props> = ({
                 selectedIds={selectedIds}
                 toggleSelection={toggleSelection}
                 toggleAll={toggleAll}
+                onRefresh={onRefresh}
+                currentSection={currentSection}
             />
             <ProductMobileList
                 products={sorted}
@@ -50,6 +56,8 @@ const ProductTable: React.FC<Props> = ({
                 selectedIds={selectedIds}
                 toggleSelection={toggleSelection}
                 toggleAll={toggleAll}
+                onRefresh={onRefresh}
+                currentSection={currentSection}
             />
 
             <BulkDeleteBar

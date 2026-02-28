@@ -6,7 +6,7 @@ import { useSectionPage } from './useSectionPage';
 import LoadingSkeleton from '../../components/Common/LoadingSkeleton';
 
 const SectionPage: React.FC = () => {
-    const { sectionConfig, products, loading, error, handleAddProduct } = useSectionPage();
+    const { sectionKey, sectionConfig, products, loading, error, handleAddProduct, refresh } = useSectionPage();
 
     return !sectionConfig ? (
         <Alert
@@ -36,7 +36,12 @@ const SectionPage: React.FC = () => {
             {loading ? (
                 <LoadingSkeleton.Table />
             ) : (
-                <ProductTable products={products} loading={loading} />
+                <ProductTable
+                    products={products}
+                    loading={loading}
+                    onRefresh={refresh}
+                    currentSection={sectionKey}
+                />
             )}
         </div>
     );

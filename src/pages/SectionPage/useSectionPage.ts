@@ -13,6 +13,9 @@ export const useSectionPage = () => {
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [tick, setTick] = useState(0);
+
+    const refresh = () => setTick(t => t + 1);
 
     useEffect(() => {
         if (!sectionKey) {
@@ -26,7 +29,9 @@ export const useSectionPage = () => {
         getProductsBySection(sectionKey)
             .then((results) => {
                 if (!cancelled) {
-                    setProducts(results);
+                    // Attach displaySection for context-aware operations
+                    const mapped = results.map(p => ({ ...p, displaySection: sectionKey }));
+                    setProducts(mapped);
                     setLoading(false);
                 }
             })
@@ -38,12 +43,12 @@ export const useSectionPage = () => {
             });
 
         return () => { cancelled = true; };
-    }, [sectionKey]);
+    }, [sectionKey, tick]);
 
     const handleAddProduct = () => {
         navigate(`/add?section=${sectionKey}`);
     };
 
-    return { sectionKey, sectionConfig, products, loading, error, handleAddProduct };
+    return { sectionKey, sectionConfig, products, loading, error, handleAddProduct, refresh };
 };
 

@@ -6,17 +6,21 @@ interface ProductsState {
     products: Product[];
     loading: boolean;
     error: string | null;
+    refresh: () => void;
 }
 
 /**
  * Fetch ALL products, ordered by dateOfProduction ascending
  */
 export function useProducts(): ProductsState {
-    const [state, setState] = useState<ProductsState>({
+    const [tick, setTick] = useState(0);
+    const [state, setState] = useState<Omit<ProductsState, 'refresh'>>({
         products: [],
         loading: true,
         error: null,
     });
+
+    const refresh = () => setTick((t) => t + 1);
 
     useEffect(() => {
         let cancelled = false;
@@ -33,9 +37,9 @@ export function useProducts(): ProductsState {
             });
 
         return () => { cancelled = true; };
-    }, []);
+    }, [tick]);
 
-    return state;
+    return { ...state, refresh };
 }
 
 /**

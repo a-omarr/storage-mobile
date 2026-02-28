@@ -8,16 +8,9 @@ import BulkDeleteBar from '../../components/Product/ProductTable/BulkDeleteBar';
 import { useProductDelete } from '../../components/Product/ProductTable/useProductDelete';
 
 const AllProductsPage: React.FC = () => {
-    const { sorted, loading, sortOrder, toggleSort, searchTerm, setSearchTerm } = useAllProducts();
+    const { sorted, loading, sortOrder, toggleSort, searchTerm, setSearchTerm, refresh } = useAllProducts();
     const { selectedIds, toggleSelection, clearSelection } = useProductSelection();
     const { handleBulkDelete } = useProductDelete();
-
-    const onBulkDelete = async () => {
-        const success = await handleBulkDelete(selectedIds);
-        if (success) {
-            clearSelection();
-        }
-    };
 
     return (
         <div className="pb-10">
@@ -53,7 +46,7 @@ const AllProductsPage: React.FC = () => {
 
                     <BulkDeleteBar
                         selectedCount={selectedIds.length}
-                        onDelete={onBulkDelete}
+                        onDelete={() => handleBulkDelete(selectedIds, { onRefresh: refresh })}
                         onCancel={clearSelection}
                     />
                 </div>

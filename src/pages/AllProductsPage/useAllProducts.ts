@@ -3,7 +3,7 @@ import { useProducts } from '../../hooks/useProducts';
 import { SECTION_MAP } from '../../constants/sections';
 
 export const useAllProducts = () => {
-    const { products, loading } = useProducts();
+    const { products, loading, refresh } = useProducts();
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
     const [searchTerm, setSearchTerm] = useState('');
 
@@ -42,5 +42,5 @@ export const useAllProducts = () => {
 
     const toggleSort = () => setSortOrder((o) => (o === 'asc' ? 'desc' : 'asc'));
 
-    return { sorted, loading, sortOrder, toggleSort, searchTerm, setSearchTerm };
+    return { sorted, loading, sortOrder, toggleSort, searchTerm, setSearchTerm, refresh };
 };

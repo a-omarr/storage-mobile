@@ -7,7 +7,7 @@ import LoadingSkeleton from '../../components/Common/LoadingSkeleton';
 import EmptyIllustration from '../../components/Common/EmptyIllustration';
 
 const Home: React.FC = () => {
-    const { products, loading: dataLoading, counts, oldest } = useHome();
+    const { products, loading: dataLoading, counts, oldest, totalCount } = useHome();
 
     return dataLoading ? (
         <div>
@@ -17,9 +17,11 @@ const Home: React.FC = () => {
         </div>
     ) : (
         <div>
-            <HomeStatsBar total={products.length} />
+            <HomeStatsBar total={totalCount} />
+            <div className="mb-8">
+                <HomeOldestWidget oldest={oldest} />
+            </div>
             <HomeSectionGrid counts={counts} />
-            <HomeOldestWidget oldest={oldest} />
             {products.length === 0 && <EmptyIllustration variant="home" />}
         </div>
     );

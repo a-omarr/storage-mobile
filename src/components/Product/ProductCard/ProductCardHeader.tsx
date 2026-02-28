@@ -13,7 +13,8 @@ interface Props {
 
 const ProductCardHeader: React.FC<Props> = ({ product }) => {
     const navigate = useNavigate();
-    const section = SECTION_MAP[product.section];
+    const firstSectionKey = product.sections?.[0] as keyof typeof SECTION_MAP | undefined;
+    const section = firstSectionKey ? SECTION_MAP[firstSectionKey] : undefined;
 
     return (
         <div
@@ -36,7 +37,7 @@ const ProductCardHeader: React.FC<Props> = ({ product }) => {
                         fontFamily: 'Cairo, sans-serif',
                     }}
                 >
-                    {section?.label || product.section}
+                    {section?.label || firstSectionKey || 'غير محدد'}
                 </Tag>
             </Space>
             <Title level={3} style={{ color: 'white', margin: 0, fontFamily: 'Cairo, sans-serif' }}>

@@ -29,7 +29,7 @@ const ProductDesktopTable: React.FC<Props> = ({
             <Table
                 dataSource={products}
                 columns={columns}
-                rowKey="id"
+                rowKey={(record: any) => record.displaySection ? `${record.id}-${record.displaySection}` : record.id}
                 loading={loading}
                 scroll={{ x: 1100 }}
                 pagination={{

@@ -7,9 +7,9 @@ import LoadingSkeleton from '../../components/Common/LoadingSkeleton';
 import EmptyIllustration from '../../components/Common/EmptyIllustration';
 
 const Home: React.FC = () => {
-    const { products, loading, counts, oldest } = useHome();
+    const { products, loading: dataLoading, counts, oldest } = useHome();
 
-    if (loading) {
+    if (dataLoading) {
         return (
             <div>
                 <LoadingSkeleton.Stats />

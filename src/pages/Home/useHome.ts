@@ -5,7 +5,11 @@ export const useHome = () => {
 
     const counts: Record<string, number> = {};
     for (const p of products) {
-        counts[p.section] = (counts[p.section] || 0) + 1;
+        if (p.sections && Array.isArray(p.sections)) {
+            for (const section of p.sections) {
+                counts[section] = (counts[section] || 0) + 1;
+            }
+        }
     }
 
     const oldest = [...products]

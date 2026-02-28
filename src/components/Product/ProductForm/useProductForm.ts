@@ -6,7 +6,7 @@ import type { ParsedOCRData } from '../../../utils/ocrParser';
 
 interface UseProductFormProps {
     initialValues?: Partial<ProductFormData>;
-    defaultSection?: SectionKey;
+    defaultSections?: SectionKey[];
     onSubmit: (data: ProductFormData) => Promise<void>;
 }
 
@@ -18,7 +18,7 @@ export interface OCRFeedback {
 
 export const useProductForm = ({
     initialValues,
-    defaultSection,
+    defaultSections = [],
     onSubmit,
 }: UseProductFormProps) => {
     const [form] = Form.useForm();
@@ -75,7 +75,7 @@ export const useProductForm = ({
 
     const handleFinish = async (values: any) => {
         const data: ProductFormData = {
-            section: values.section,
+            sections: values.sections || [],
             type: values.type?.trim(),
             capacity: values.capacity?.trim(),
             itemNo: values.itemNo?.trim(),
@@ -97,9 +97,9 @@ export const useProductForm = ({
             dateOfProduction: initialValues.dateOfProduction
                 ? dayjs(initialValues.dateOfProduction)
                 : undefined,
-            section: initialValues.section || defaultSection,
+            sections: initialValues.sections || defaultSections,
         }
-        : { section: defaultSection };
+        : { sections: defaultSections };
 
     return {
         form,

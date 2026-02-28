@@ -23,7 +23,7 @@ const AddProductPage: React.FC = () => {
                 bodyStyle={{ padding: '24px' }}
             >
                 <ProductForm
-                    defaultSection={defaultSection || undefined}
+                    defaultSections={defaultSection ? [defaultSection] : undefined}
                     onSubmit={handleSubmit}
                     loading={loading}
                 />

@@ -23,7 +23,7 @@ export const useSectionPage = () => {
 
         const q = query(
             collection(db, 'products'),
-            where('section', '==', sectionKey),
+            where('sections', 'array-contains', sectionKey),
             orderBy('dateOfProduction', 'asc')
         );
 

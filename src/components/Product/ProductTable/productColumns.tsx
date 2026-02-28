@@ -24,15 +24,27 @@ export const getProductColumns = ({
 }: ColumnsOptions) => {
     const columns: any[] = [
         ...(showSection ? [{
-            title: 'القسم',
-            dataIndex: 'section',
-            key: 'section',
-            width: 80,
-            render: (val: string) => {
-                const s = SECTION_MAP[val as keyof typeof SECTION_MAP];
-                return s ? (
-                    <Tag color={s.color} style={{ fontWeight: 600 }}>{s.label}</Tag>
-                ) : val;
+            title: 'الأقسام',
+            dataIndex: 'sections',
+            key: 'sections',
+            width: 120,
+            render: (sections: string[], record: any) => {
+                if (record.displaySection) {
+                    const s = SECTION_MAP[record.displaySection as keyof typeof SECTION_MAP];
+                    return s ? <Tag color={s.color} style={{ fontWeight: 600, margin: 0 }}>{s.label}</Tag> : null;
+                }
+
+                if (!sections || !Array.isArray(sections)) return null;
+                return (
+                    <Space size={[0, 4]} wrap>
+                        {sections.map(val => {
+                            const s = SECTION_MAP[val as keyof typeof SECTION_MAP];
+                            return s ? (
+                                <Tag key={val} color={s.color} style={{ fontWeight: 600 }}>{s.label}</Tag>
+                            ) : null;
+                        })}
+                    </Space>
+                );
             },
         }] : []),
         {

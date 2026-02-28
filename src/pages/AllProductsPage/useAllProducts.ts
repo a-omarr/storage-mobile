@@ -7,12 +7,27 @@ export const useAllProducts = () => {
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
     const [searchTerm, setSearchTerm] = useState('');
 
-    const filtered = products.filter((p) => {
+    const flattenedProducts = products.flatMap(p => {
+        if (!p.sections || p.sections.length === 0) {
+            // Handle edge case where a product has no section
+            return [{ ...p, displaySection: null as any }];
+        }
+        return p.sections.map(sec => ({
+            ...p,
+            displaySection: sec
+        }));
+    });
+
+    const filtered = flattenedProducts.filter((p) => {
         const term = searchTerm.toLowerCase();
+        const sectionMatch = p.displaySection
+            ? (SECTION_MAP[p.displaySection as keyof typeof SECTION_MAP]?.label || '').toLowerCase().includes(term)
+            : false;
+
         return (
             p.type.toLowerCase().includes(term) ||
             p.batchNumber.toLowerCase().includes(term) ||
-            (SECTION_MAP[p.section as keyof typeof SECTION_MAP]?.label || '').toLowerCase().includes(term)
+            sectionMatch
         );
     });
 

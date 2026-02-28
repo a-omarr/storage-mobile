@@ -46,7 +46,12 @@ export const useEditProduct = () => {
             });
             navigator.vibrate?.(80);
             message.success('تم حفظ التعديلات بنجاح');
-            navigate(`/section/${data.section}`);
+            const defaultSection = data.sections && data.sections.length > 0 ? data.sections[0] : null;
+            if (defaultSection) {
+                navigate(`/section/${defaultSection}`);
+            } else {
+                navigate(`/`);
+            }
         } catch (err) {
             console.error('Edit error:', err);
             message.error('حدث خطأ أثناء الحفظ');
@@ -55,7 +60,7 @@ export const useEditProduct = () => {
         }
     };
 
-    const sectionConfig = product ? SECTION_MAP[product.section as keyof typeof SECTION_MAP] : null;
+    const sectionConfig = product && product.sections?.length ? SECTION_MAP[product.sections[0] as keyof typeof SECTION_MAP] : null;
 
     const initialValues: Partial<ProductFormData> | undefined = product
         ? { ...product, dateOfProduction: product.dateOfProduction?.toDate() ?? null }

@@ -14,7 +14,8 @@ interface Props {
 const HomeOldestItem: React.FC<Props> = ({ product: p }) => {
     const navigate = useNavigate();
     const days = daysOld(p.dateOfProduction);
-    const section = SECTIONS.find((s) => s.key === p.section);
+    const firstSectionKey = p.sections?.[0];
+    const section = SECTIONS.find((s) => s.key === firstSectionKey);
 
     return (
         <div

@@ -8,11 +8,11 @@ const labelStyle = { fontFamily: 'Cairo, sans-serif', fontWeight: 600 };
 const ProductFormBasicInfo: React.FC = () => (
     <>
         <Form.Item
-            label={<span style={labelStyle}>القسم</span>}
-            name="section"
-            rules={[{ required: true, message: 'يرجى اختيار القسم' }]}
+            label={<span style={labelStyle}>الأقسام</span>}
+            name="sections"
+            rules={[{ required: true, message: 'يرجى اختيار قسم واحد على الأقل' }]}
         >
-            <Select size="large" placeholder="اختر القسم" style={{ fontFamily: 'Cairo, sans-serif' }}>
+            <Select mode="multiple" size="large" placeholder="اختر الأقسام" style={{ fontFamily: 'Cairo, sans-serif' }}>
                 {SECTIONS.map((s) => (
                     <Option key={s.key} value={s.key}>{s.label}</Option>
                 ))}

@@ -4,7 +4,7 @@ export type SectionKey = 'A' | 'B' | 'C' | 'D' | 'THE_SIXTH' | 'EYES';
 
 export interface Product {
     id: string;
-    section: SectionKey;
+    sections: SectionKey[];
     type: string;           // e.g. "Bordeaux"
     capacity: string;       // e.g. "750 ML"
     itemNo: string;         // Alternative No, e.g. "264"

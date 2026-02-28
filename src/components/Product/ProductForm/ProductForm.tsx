@@ -12,7 +12,7 @@ import ProductFormDate from './ProductFormDate';
 
 interface Props {
     initialValues?: Partial<ProductFormData>;
-    defaultSection?: SectionKey;
+    defaultSections?: SectionKey[];
     onSubmit: (data: ProductFormData) => Promise<void>;
     loading?: boolean;
     isEdit?: boolean;
@@ -20,7 +20,7 @@ interface Props {
 
 const ProductForm: React.FC<Props> = ({
     initialValues,
-    defaultSection,
+    defaultSections,
     onSubmit,
     loading = false,
     isEdit = false,
@@ -34,7 +34,7 @@ const ProductForm: React.FC<Props> = ({
         handleOCRResult,
         handleFinish,
         formInitials,
-    } = useProductForm({ initialValues, defaultSection, onSubmit });
+    } = useProductForm({ initialValues, defaultSections, onSubmit });
 
     return (
         <>

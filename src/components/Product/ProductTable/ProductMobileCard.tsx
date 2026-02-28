@@ -41,16 +41,30 @@ const ProductMobileCard: React.FC<Props> = ({ record, showSection }) => {
                 {/* Card Header */}
                 <div className="flex justify-between mb-2.5 border-b border-[#e2e8f0] pb-2 items-center">
                     <div>
-                        {showSection && (() => {
-                            const s = SECTION_MAP[record.section as keyof typeof SECTION_MAP];
-                            return s ? (
-                                <div className="mb-1">
-                                    <Tag color={s.color} style={{ fontSize: 10, lineHeight: '16px', fontWeight: 600 }}>
-                                        {s.label}
-                                    </Tag>
-                                </div>
-                            ) : null;
-                        })()}
+                        {showSection && record.sections && Array.isArray(record.sections) && (
+                            <div className="mb-1 flex flex-wrap gap-1">
+                                {(record as any).displaySection ? (
+                                    (() => {
+                                        const secKey = (record as any).displaySection;
+                                        const s = SECTION_MAP[secKey as keyof typeof SECTION_MAP];
+                                        return s ? (
+                                            <Tag color={s.color} style={{ fontSize: 10, lineHeight: '16px', fontWeight: 600, margin: 0 }}>
+                                                {s.label}
+                                            </Tag>
+                                        ) : null;
+                                    })()
+                                ) : (
+                                    record.sections.map(val => {
+                                        const s = SECTION_MAP[val as keyof typeof SECTION_MAP];
+                                        return s ? (
+                                            <Tag key={val} color={s.color} style={{ fontSize: 10, lineHeight: '16px', fontWeight: 600, margin: 0 }}>
+                                                {s.label}
+                                            </Tag>
+                                        ) : null;
+                                    })
+                                )}
+                            </div>
+                        )}
                         <Text strong style={{ fontSize: 15 }}>
                             {record.type} — {record.capacity}
                         </Text>

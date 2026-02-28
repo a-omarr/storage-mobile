@@ -31,8 +31,12 @@ const ProductMobileList: React.FC<Props> = ({ products, loading, showSection, so
             </div>
         )}
         {!loading && products.length === 0 && <ProductEmptyState />}
-        {products.map((record) => (
-            <ProductMobileCard key={record.id} record={record} showSection={showSection} />
+        {products.map((record: any) => (
+            <ProductMobileCard
+                key={record.displaySection ? `${record.id}-${record.displaySection}` : record.id}
+                record={record}
+                showSection={showSection}
+            />
         ))}
     </div>
 );

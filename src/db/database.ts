@@ -6,8 +6,6 @@ const DB_NAME = 'storageapp';
 const DB_VERSION = 1;
 
 const SQL_CREATE_TABLES = `
-PRAGMA journal_mode=WAL;
-
 CREATE TABLE IF NOT EXISTS products (
   id              TEXT PRIMARY KEY,
   sections        TEXT NOT NULL DEFAULT '[]',

@@ -10,8 +10,13 @@ export default defineConfig({
     react(),
     tailwindcss(),
     // Copy sql.js WASM files so jeep-sqlite can run SQLite in the browser during dev/test
+    // Important: It must go to 'assets' for the browser to find it alongside the built files
     viteStaticCopy({
       targets: [
+        {
+          src: 'node_modules/sql.js/dist/sql-wasm.wasm',
+          dest: 'assets',
+        },
         {
           src: 'node_modules/sql.js/dist/sql-wasm.wasm',
           dest: '',
@@ -49,4 +54,7 @@ export default defineConfig({
       },
     }),
   ],
+  optimizeDeps: {
+    exclude: ['@capacitor-community/sqlite', 'jeep-sqlite'],
+  }
 })

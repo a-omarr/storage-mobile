@@ -52,10 +52,10 @@ const AllProductsItem: React.FC<Props> = ({ product: p, isSelected = false, onTo
                 </div>
                 <div className="min-w-0">
                     <Text strong style={{ fontFamily: 'Cairo, sans-serif', fontSize: 15, display: 'block' }}>
-                        {p.type} — {p.capacity}
+                        {p.type} {p.capacity ? `— ${p.capacity}` : ''}
                     </Text>
                     <Text style={{ color: '#64748b', fontSize: 12, fontFamily: 'Cairo, sans-serif' }}>
-                        {section?.label || 'غير محدد'} · {p.batchNumber}
+                        {section?.label || 'غير محدد'} {p.batchNumber ? `· ${p.batchNumber}` : ''}
                     </Text>
                 </div>
             </div>

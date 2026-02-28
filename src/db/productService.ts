@@ -9,28 +9,28 @@ function generateId(): string {
 }
 
 /** Map a raw SQLite row to a Product object */
-function rowToProduct(row: any[]): Product {
-    // Column order must match the SELECT in queries below
+function rowToProduct(row: any): Product {
     return {
-        id: row[0] as string,
-        sections: JSON.parse(row[1] as string) as SectionKey[],
-        type: row[2] as string,
-        capacity: row[3] as string,
-        itemNo: row[4] as string,
-        batchNumber: row[5] as string,
-        color: row[6] as string,
-        finishType: row[7] as string,
-        qtyPerLayer: row[8] as number,
-        numberOfLayers: row[9] as number,
-        piecesPerPallet: row[10] as number,
-        numberOfPallet: row[11] as number,
-        dateOfProduction: row[12] as string,
-        createdAt: row[13] as string,
+        id: row.id as string,
+        sections: JSON.parse(row.sections as string) as SectionKey[],
+        inventory: row.inventory as 1 | 2,
+        type: row.type as string,
+        capacity: row.capacity as string || undefined,
+        itemNo: row.itemNo as string || undefined,
+        batchNumber: row.batchNumber as string || undefined,
+        color: row.color as string || undefined,
+        finishType: row.finishType as string || undefined,
+        qtyPerLayer: row.qtyPerLayer as number || undefined,
+        numberOfLayers: row.numberOfLayers as number || undefined,
+        piecesPerPallet: row.piecesPerPallet as number || undefined,
+        numberOfPallet: row.numberOfPallet as number || undefined,
+        dateOfProduction: row.dateOfProduction as string || null,
+        createdAt: row.createdAt as string,
     };
 }
 
 const SELECT_ALL_COLS = `
-  id, sections, type, capacity, itemNo, batchNumber, color, finishType,
+  id, sections, inventory, type, capacity, itemNo, batchNumber, color, finishType,
   qtyPerLayer, numberOfLayers, piecesPerPallet, numberOfPallet,
   dateOfProduction, createdAt
 `;
@@ -83,32 +83,31 @@ export async function getProductsBySection(section: SectionKey): Promise<Product
 
 /** Add a new product. Returns the generated ID. */
 export async function addProduct(data: ProductFormData): Promise<string> {
-    if (!data.dateOfProduction) throw new Error('dateOfProduction is required');
-
     const db = await getDB();
     const id = generateId();
     const now = new Date().toISOString();
-    const dateStr = data.dateOfProduction.toISOString();
+    const dateStr = data.dateOfProduction ? data.dateOfProduction.toISOString() : null;
     const sectionsJson = JSON.stringify(data.sections ?? []);
 
     await db.run(
         `INSERT INTO products
-         (id, sections, type, capacity, itemNo, batchNumber, color, finishType,
+         (id, sections, inventory, type, capacity, itemNo, batchNumber, color, finishType,
           qtyPerLayer, numberOfLayers, piecesPerPallet, numberOfPallet, dateOfProduction, createdAt)
-         VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?);`,
+         VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);`,
         [
             id,
             sectionsJson,
+            data.inventory,
             data.type,
-            data.capacity,
-            data.itemNo,
-            data.batchNumber,
-            data.color,
-            data.finishType,
-            data.qtyPerLayer,
-            data.numberOfLayers,
-            data.piecesPerPallet,
-            data.numberOfPallet,
+            data.capacity ?? null,
+            data.itemNo ?? null,
+            data.batchNumber ?? null,
+            data.color ?? null,
+            data.finishType ?? null,
+            data.qtyPerLayer ?? null,
+            data.numberOfLayers ?? null,
+            data.piecesPerPallet ?? null,
+            data.numberOfPallet ?? null,
             dateStr,
             now,
         ]
@@ -122,30 +121,29 @@ export async function updateProduct(
     id: string,
     data: ProductFormData
 ): Promise<void> {
-    if (!data.dateOfProduction) throw new Error('dateOfProduction is required');
-
     const db = await getDB();
-    const dateStr = data.dateOfProduction.toISOString();
+    const dateStr = data.dateOfProduction ? data.dateOfProduction.toISOString() : null;
     const sectionsJson = JSON.stringify(data.sections ?? []);
 
     await db.run(
         `UPDATE products SET
-           sections = ?, type = ?, capacity = ?, itemNo = ?, batchNumber = ?,
+           sections = ?, inventory = ?, type = ?, capacity = ?, itemNo = ?, batchNumber = ?,
            color = ?, finishType = ?, qtyPerLayer = ?, numberOfLayers = ?,
            piecesPerPallet = ?, numberOfPallet = ?, dateOfProduction = ?
          WHERE id = ?;`,
         [
             sectionsJson,
+            data.inventory,
             data.type,
-            data.capacity,
-            data.itemNo,
-            data.batchNumber,
-            data.color,
-            data.finishType,
-            data.qtyPerLayer,
-            data.numberOfLayers,
-            data.piecesPerPallet,
-            data.numberOfPallet,
+            data.capacity ?? null,
+            data.itemNo ?? null,
+            data.batchNumber ?? null,
+            data.color ?? null,
+            data.finishType ?? null,
+            data.qtyPerLayer ?? null,
+            data.numberOfLayers ?? null,
+            data.piecesPerPallet ?? null,
+            data.numberOfPallet ?? null,
             dateStr,
             id,
         ]

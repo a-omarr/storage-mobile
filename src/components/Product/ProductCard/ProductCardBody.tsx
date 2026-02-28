@@ -26,14 +26,14 @@ const ProductCardBody: React.FC<Props> = ({ product }) => {
             }}
             contentStyle={{ fontFamily: 'Cairo, sans-serif' }}
         >
-            <Descriptions.Item label="رقم الصنف">{product.itemNo}</Descriptions.Item>
-            <Descriptions.Item label="رقم الدفعة">{product.batchNumber}</Descriptions.Item>
-            <Descriptions.Item label="اللون">{product.color}</Descriptions.Item>
-            <Descriptions.Item label="نوع الغطاء">{product.finishType}</Descriptions.Item>
-            <Descriptions.Item label="كمية لكل طبقة">{product.qtyPerLayer}</Descriptions.Item>
-            <Descriptions.Item label="عدد الطبقات">{product.numberOfLayers}</Descriptions.Item>
-            <Descriptions.Item label="قيمة التعبئة \ السعة">{product.piecesPerPallet}</Descriptions.Item>
-            <Descriptions.Item label="رقم الطلبية">{product.numberOfPallet}</Descriptions.Item>
+            <Descriptions.Item label="رقم الصنف">{product.itemNo || '—'}</Descriptions.Item>
+            <Descriptions.Item label="رقم الدفعة">{product.batchNumber || '—'}</Descriptions.Item>
+            <Descriptions.Item label="اللون">{product.color || '—'}</Descriptions.Item>
+            <Descriptions.Item label="نوع الغطاء">{product.finishType || '—'}</Descriptions.Item>
+            <Descriptions.Item label="كمية لكل طبقة">{product.qtyPerLayer ?? '—'}</Descriptions.Item>
+            <Descriptions.Item label="عدد الطبقات">{product.numberOfLayers ?? '—'}</Descriptions.Item>
+            <Descriptions.Item label="قيمة التعبئة \ السعة">{product.piecesPerPallet ?? '—'}</Descriptions.Item>
+            <Descriptions.Item label="رقم الطلبية">{product.numberOfPallet ?? '—'}</Descriptions.Item>
             <Descriptions.Item label="تاريخ الإنتاج" span={2}>
                 <Text style={{ color: isOld ? '#ef4444' : 'inherit', fontWeight: isOld ? 600 : 400 }}>
                     {formatDate(product.dateOfProduction)}

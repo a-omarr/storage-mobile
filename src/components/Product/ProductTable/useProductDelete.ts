@@ -61,7 +61,7 @@ export const useProductDelete = () => {
                         await updateProduct(id, {
                             ...product,
                             sections: newSections,
-                            dateOfProduction: new Date(product.dateOfProduction),
+                            dateOfProduction: product.dateOfProduction ? new Date(product.dateOfProduction) : null,
                         });
                     }
                 }

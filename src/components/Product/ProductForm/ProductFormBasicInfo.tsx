@@ -5,7 +5,11 @@ import { SECTIONS } from '../../../constants/sections';
 const { Option } = Select;
 const labelStyle = { fontFamily: 'Cairo, sans-serif', fontWeight: 600 };
 
-const ProductFormBasicInfo: React.FC = () => (
+interface Props {
+    inventory?: 1 | 2;
+}
+
+const ProductFormBasicInfo: React.FC<Props> = ({ inventory = 1 }) => (
     <>
         <Form.Item
             label={<span style={labelStyle}>الأقسام</span>}
@@ -24,18 +28,21 @@ const ProductFormBasicInfo: React.FC = () => (
                 label={<span style={labelStyle}>نوع المنتج</span>}
                 name="type"
                 rules={[{ required: true, message: 'مطلوب' }]}
-                className="flex-1 min-w-0 mb-0 sm:mb-6"
+                className="flex-1 min-w-0 mb-6"
             >
                 <Input size="large" placeholder="مثال: Bordeaux" />
             </Form.Item>
-            <Form.Item
-                label={<span style={labelStyle}>السعة</span>}
-                name="capacity"
-                rules={[{ required: true, message: 'مطلوب' }]}
-                className="flex-1 min-w-0 mb-0 sm:mb-6"
-            >
-                <Input size="large" placeholder="مثال: 750 ML" />
-            </Form.Item>
+
+            {inventory === 1 && (
+                <Form.Item
+                    label={<span style={labelStyle}>السعة</span>}
+                    name="capacity"
+                    rules={[{ required: true, message: 'مطلوب' }]}
+                    className="flex-1 min-w-0 mb-6"
+                >
+                    <Input size="large" placeholder="مثال: 750 ML" />
+                </Form.Item>
+            )}
         </div>
     </>
 );

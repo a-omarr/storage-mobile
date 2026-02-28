@@ -3,7 +3,11 @@ import { Form, InputNumber } from 'antd';
 
 const labelStyle = { fontFamily: 'Cairo, sans-serif', fontWeight: 600 };
 
-const ProductFormPallet: React.FC = () => (
+interface Props {
+    inventory?: 1 | 2;
+}
+
+const ProductFormPallet: React.FC<Props> = ({ inventory = 1 }) => (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {[
             { label: 'كمية لكل طبقة', name: 'qtyPerLayer', placeholder: 'مثال: 12' },
@@ -15,7 +19,7 @@ const ProductFormPallet: React.FC = () => (
                 key={name}
                 label={<span style={labelStyle}>{label}</span>}
                 name={name}
-                rules={[{ required: true, message: 'مطلوب' }]}
+                rules={[{ required: inventory === 1, message: 'مطلوب' }]}
             >
                 <InputNumber
                     size="large"

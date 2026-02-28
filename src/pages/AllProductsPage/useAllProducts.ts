@@ -25,8 +25,9 @@ export const useAllProducts = () => {
             : false;
 
         return (
-            p.type.toLowerCase().includes(term) ||
-            p.batchNumber.toLowerCase().includes(term) ||
+            p.type?.toLowerCase().includes(term) ||
+            p.batchNumber?.toLowerCase().includes(term) ||
+            p.itemNo?.toLowerCase().includes(term) ||
             sectionMatch
         );
     });
@@ -34,8 +35,8 @@ export const useAllProducts = () => {
     const sorted = [...filtered]
         .filter((p) => p.dateOfProduction)
         .sort((a, b) => {
-            const ta = new Date(a.dateOfProduction).getTime();
-            const tb = new Date(b.dateOfProduction).getTime();
+            const ta = a.dateOfProduction ? new Date(a.dateOfProduction).getTime() : 0;
+            const tb = b.dateOfProduction ? new Date(b.dateOfProduction).getTime() : 0;
             return sortOrder === 'asc' ? ta - tb : tb - ta;
         });
 

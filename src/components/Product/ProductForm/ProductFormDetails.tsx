@@ -3,12 +3,16 @@ import { Form, Input } from 'antd';
 
 const labelStyle = { fontFamily: 'Cairo, sans-serif', fontWeight: 600 };
 
-const ProductFormDetails: React.FC = () => (
+interface Props {
+    inventory?: 1 | 2;
+}
+
+const ProductFormDetails: React.FC<Props> = ({ inventory = 1 }) => (
     <div className="flex flex-col sm:flex-row gap-3">
         <Form.Item
             label={<span style={labelStyle}>اللون</span>}
             name="color"
-            rules={[{ required: true, message: 'مطلوب' }]}
+            rules={[{ required: inventory === 1, message: 'مطلوب' }]}
             className="flex-1 min-w-0 mb-0 sm:mb-6"
         >
             <Input size="large" placeholder="مثال: Flint" />
@@ -16,7 +20,7 @@ const ProductFormDetails: React.FC = () => (
         <Form.Item
             label={<span style={labelStyle}>نوع الغطاء</span>}
             name="finishType"
-            rules={[{ required: true, message: 'مطلوب' }]}
+            rules={[{ required: inventory === 1, message: 'مطلوب' }]}
             className="flex-1 min-w-0 mb-0 sm:mb-6"
         >
             <Input size="large" placeholder="مثال: CORK" />

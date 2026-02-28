@@ -8,19 +8,20 @@ const DB_VERSION = 1;
 const SQL_CREATE_TABLES = `
 CREATE TABLE IF NOT EXISTS products (
   id              TEXT PRIMARY KEY,
-  sections        TEXT NOT NULL DEFAULT '[]',
-  type            TEXT NOT NULL DEFAULT '',
-  capacity        TEXT NOT NULL DEFAULT '',
-  itemNo          TEXT NOT NULL DEFAULT '',
-  batchNumber     TEXT NOT NULL DEFAULT '',
-  color           TEXT NOT NULL DEFAULT '',
-  finishType      TEXT NOT NULL DEFAULT '',
-  qtyPerLayer     INTEGER NOT NULL DEFAULT 0,
-  numberOfLayers  INTEGER NOT NULL DEFAULT 0,
-  piecesPerPallet INTEGER NOT NULL DEFAULT 0,
-  numberOfPallet  INTEGER NOT NULL DEFAULT 0,
-  dateOfProduction TEXT NOT NULL DEFAULT '',
-  createdAt        TEXT NOT NULL DEFAULT ''
+  sections        TEXT NOT NULL,
+  inventory       INTEGER NOT NULL,
+  type            TEXT NOT NULL,
+  capacity        TEXT,
+  itemNo          TEXT,
+  batchNumber     TEXT,
+  color           TEXT,
+  finishType      TEXT,
+  qtyPerLayer     INTEGER,
+  numberOfLayers  INTEGER,
+  piecesPerPallet INTEGER,
+  numberOfPallet  INTEGER,
+  dateOfProduction TEXT,
+  createdAt        TEXT NOT NULL
 );
 `;
 
@@ -74,6 +75,14 @@ export async function getDB(): Promise<SQLiteDBConnection> {
     if (_db) {
         await _db.open();
         await _db.execute(SQL_CREATE_TABLES);
+
+        // Simple Migration: Add inventory column if missing
+        try {
+            await _db.execute(`ALTER TABLE products ADD COLUMN inventory INTEGER DEFAULT 1;`);
+            console.log('Migration: Added inventory column');
+        } catch (e) {
+            // Column already exists
+        }
     } else {
         throw new Error('Failed to create or retrieve SQLite connection.');
     }

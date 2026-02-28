@@ -94,7 +94,7 @@ const ProductMobileCard: React.FC<Props> = ({ record, showSection, isSelected = 
                                 </div>
                             )}
                             <Text strong style={{ fontSize: 15 }}>
-                                {record.type} — {record.capacity}
+                                {record.type} {record.capacity ? `— ${record.capacity}` : ''}
                             </Text>
                         </div>
                     </div>
@@ -120,17 +120,13 @@ const ProductMobileCard: React.FC<Props> = ({ record, showSection, isSelected = 
                     {[
                         { label: 'رقم الصنف:', value: record.itemNo },
                         { label: 'الدفعة:', value: record.batchNumber },
-                    ].map(({ label, value }) => (
+                        { label: 'رقم الطلبية:', value: record.numberOfPallet },
+                    ].filter(item => item.value !== undefined && item.value !== null && item.value !== '').map(({ label, value }) => (
                         <div key={label} className="flex justify-between text-[13px]">
                             <span className="text-[#6b7c93] font-['Cairo',sans-serif]">{label}</span>
                             <span className="font-semibold text-[#1a2332]">{value}</span>
                         </div>
                     ))}
-
-                    <div className="flex justify-between text-[13px]">
-                        <span className="text-[#6b7c93] font-['Cairo',sans-serif]">رقم الطلبية:</span>
-                        <Text className="font-semibold text-[#1a2332]">{record.numberOfPallet}</Text>
-                    </div>
 
                     <div className="flex justify-between text-[13px]">
                         <span className="text-[#6b7c93] font-['Cairo',sans-serif]">تاريخ الإنتاج:</span>

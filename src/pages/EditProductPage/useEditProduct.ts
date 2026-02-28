@@ -36,7 +36,9 @@ export const useEditProduct = () => {
     }, [id]);
 
     const handleSubmit = async (data: ProductFormData) => {
-        if (!id || !data.dateOfProduction) {
+        if (!id) return;
+
+        if (!data.dateOfProduction) {
             message.error('يرجى إدخال تاريخ الإنتاج');
             return;
         }
@@ -68,7 +70,10 @@ export const useEditProduct = () => {
     };
 
     const initialValues: Partial<ProductFormData> | undefined = product
-        ? { ...product, dateOfProduction: new Date(product.dateOfProduction) }
+        ? {
+            ...product,
+            dateOfProduction: product.dateOfProduction ? new Date(product.dateOfProduction) : null
+        }
         : undefined;
 
     return { product, loading, saving, error, sectionConfig, initialValues, handleSubmit, handleCancel };

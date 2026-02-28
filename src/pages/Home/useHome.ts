@@ -16,7 +16,11 @@ export const useHome = () => {
 
     const oldest = [...products]
         .filter((p) => p.dateOfProduction)
-        .sort((a, b) => new Date(a.dateOfProduction).getTime() - new Date(b.dateOfProduction).getTime())
+        .sort((a, b) => {
+            const dateA = a.dateOfProduction ? new Date(a.dateOfProduction).getTime() : 0;
+            const dateB = b.dateOfProduction ? new Date(b.dateOfProduction).getTime() : 0;
+            return dateA - dateB;
+        })
         .slice(0, 5);
 
     return { products, loading, counts, oldest, totalCount };

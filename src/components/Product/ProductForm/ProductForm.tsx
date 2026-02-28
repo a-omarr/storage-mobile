@@ -1,5 +1,6 @@
-import React from 'react';
-import { Form } from 'antd';
+import { useState } from 'react';
+import { Form, Button } from 'antd';
+import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import type { ProductFormData, SectionKey } from '../../../types/product';
 import CameraCapture from '../../Camera/CameraCapture';
 import { useProductForm } from './useProductForm';
@@ -9,6 +10,7 @@ import ProductFormIdentifiers from './ProductFormIdentifiers';
 import ProductFormDetails from './ProductFormDetails';
 import ProductFormPallet from './ProductFormPallet';
 import ProductFormDate from './ProductFormDate';
+import ProductFormSubmitButton from './ProductFormSubmitButton';
 
 interface Props {
     initialValues?: Partial<ProductFormData>;
@@ -34,7 +36,10 @@ const ProductForm: React.FC<Props> = ({
         handleOCRResult,
         handleFinish,
         formInitials,
+        selectedInventory,
     } = useProductForm({ initialValues, defaultSections, onSubmit });
+
+    const [isAdvancedOpen, setIsAdvancedOpen] = useState(isEdit); // Open by default on edit
 
     return (
         <>
@@ -58,11 +63,38 @@ const ProductForm: React.FC<Props> = ({
                     onOpenCamera={() => setShowCamera(true)}
                     onClearFeedback={() => setOcrFeedback({ status: null, message: '', missingFields: [] })}
                 />
-                <ProductFormBasicInfo />
-                <ProductFormIdentifiers />
-                <ProductFormDetails />
-                <ProductFormPallet />
-                <ProductFormDate loading={loading} isEdit={isEdit} />
+
+                <ProductFormBasicInfo inventory={selectedInventory} />
+                <ProductFormDate inventory={selectedInventory} />
+
+                {selectedInventory === 1 ? (
+                    <>
+                        <ProductFormIdentifiers />
+                        <ProductFormDetails />
+                        <ProductFormPallet />
+                    </>
+                ) : (
+                    <div className="mt-2 mb-6">
+                        <Button
+                            type="link"
+                            onClick={() => setIsAdvancedOpen(!isAdvancedOpen)}
+                            icon={isAdvancedOpen ? <FiChevronUp /> : <FiChevronDown />}
+                            style={{ padding: 0, height: 'auto', fontFamily: 'Cairo, sans-serif' }}
+                        >
+                            {isAdvancedOpen ? 'إخفاء الخيارات الإضافية' : 'المزيد من الخيارات (اختياري)'}
+                        </Button>
+
+                        {isAdvancedOpen && (
+                            <div className="mt-4 pt-4 border-t border-gray-100 italic-fields">
+                                <ProductFormIdentifiers inventory={2} />
+                                <ProductFormDetails inventory={2} />
+                                <ProductFormPallet inventory={2} />
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                <ProductFormSubmitButton loading={loading} isEdit={isEdit} />
             </Form>
         </>
     );

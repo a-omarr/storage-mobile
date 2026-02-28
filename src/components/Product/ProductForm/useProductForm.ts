@@ -3,6 +3,7 @@ import { Form } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
 import type { ProductFormData, SectionKey } from '../../../types/product';
 import type { ParsedOCRData } from '../../../utils/ocrParser';
+import { SECTION_MAP } from '../../../constants/sections';
 
 interface UseProductFormProps {
     initialValues?: Partial<ProductFormData>;
@@ -24,6 +25,13 @@ export const useProductForm = ({
     const [form] = Form.useForm();
     const [showCamera, setShowCamera] = useState(false);
     const [ocrFeedback, setOcrFeedback] = useState<OCRFeedback>({ status: null, message: '', missingFields: [] });
+
+    // Watch sections to determine inventory
+    const sections = Form.useWatch<SectionKey[]>('sections', form) || defaultSections;
+
+    // Logic: If any selected section belongs to Inventory 1, treat as Inventory 1 (strict).
+    // Otherwise, if all are Inventory 2, treat as Inventory 2 (collapsed).
+    const selectedInventory: 1 | 2 = sections.some(s => SECTION_MAP[s]?.inventory === 1) ? 1 : 2;
 
     const handleOCRResult = (data: ParsedOCRData) => {
         const updates: Record<string, any> = {};
@@ -76,12 +84,13 @@ export const useProductForm = ({
     const handleFinish = async (values: any) => {
         const data: ProductFormData = {
             sections: values.sections || [],
-            type: values.type?.trim(),
-            capacity: values.capacity?.trim(),
-            itemNo: values.itemNo?.trim(),
-            batchNumber: values.batchNumber?.trim(),
-            color: values.color?.trim(),
-            finishType: values.finishType?.trim(),
+            inventory: selectedInventory,
+            type: (values.type || '').trim(),
+            capacity: values.capacity ? String(values.capacity).trim() : undefined,
+            itemNo: values.itemNo ? String(values.itemNo).trim() : undefined,
+            batchNumber: values.batchNumber ? String(values.batchNumber).trim() : undefined,
+            color: values.color ? String(values.color).trim() : undefined,
+            finishType: values.finishType ? String(values.finishType).trim() : undefined,
             qtyPerLayer: values.qtyPerLayer,
             numberOfLayers: values.numberOfLayers,
             piecesPerPallet: values.piecesPerPallet,
@@ -110,5 +119,6 @@ export const useProductForm = ({
         handleOCRResult,
         handleFinish,
         formInitials,
+        selectedInventory,
     };
 };

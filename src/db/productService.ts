@@ -1,4 +1,4 @@
-import { getDB } from './database';
+import { getDB, saveWebStore } from './database';
 import type { Product, ProductFormData, SectionKey } from '../types/product';
 
 /** Generate a UUID-style ID */
@@ -113,6 +113,7 @@ export async function addProduct(data: ProductFormData): Promise<string> {
             now,
         ]
     );
+    await saveWebStore();
     return id;
 }
 
@@ -149,12 +150,14 @@ export async function updateProduct(
             id,
         ]
     );
+    await saveWebStore();
 }
 
 /** Delete a product entirely */
 export async function deleteProduct(id: string): Promise<void> {
     const db = await getDB();
     await db.run(`DELETE FROM products WHERE id = ?;`, [id]);
+    await saveWebStore();
 }
 
 /**
@@ -179,4 +182,5 @@ export async function removeProductSection(
             [JSON.stringify(newSections), id]
         );
     }
+    await saveWebStore();
 }

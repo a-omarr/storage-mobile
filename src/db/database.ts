@@ -39,45 +39,69 @@ export async function getDB(): Promise<SQLiteDBConnection> {
 
     const platform = Capacitor.getPlatform();
 
-    if (platform === 'web') {
-        // Bring in jeep-sqlite web component for browser-based dev/test
-        const { defineCustomElements } = await import('jeep-sqlite/loader');
-        defineCustomElements(window);
-
-        // Wait for the custom element to be defined before using it
-        await customElements.whenDefined('jeep-sqlite');
-
-        const jeepEl = document.querySelector('jeep-sqlite');
-        if (!jeepEl) {
-            throw new Error('jeep-sqlite element not found. Make sure it is in index.html.');
-        }
-        await (jeepEl as any).initWebStore();
-    }
-
     _sqlite = new SQLiteConnection(CapacitorSQLite);
 
-    const isConn = (await _sqlite.isConnection(DB_NAME, false)).result;
-    if (isConn) {
-        _db = await _sqlite.retrieveConnection(DB_NAME, false);
-    } else {
-        _db = await _sqlite.createConnection(
-            DB_NAME,
-            false,
-            'no-encryption',
-            DB_VERSION,
-            false
-        );
+    if (platform === 'web') {
+        const jeepEl = document.querySelector('jeep-sqlite');
+        if (!jeepEl) {
+            throw new Error('jeep-sqlite element not found in DOM.');
+        }
+        await _sqlite.initWebStore();
     }
 
-    await _db.open();
-    await _db.execute(SQL_CREATE_TABLES);
+    try {
+        // First check if connection exists in the plugin
+        const isConn = (await _sqlite.isConnection(DB_NAME, false)).result;
+
+        if (isConn) {
+            _db = await _sqlite.retrieveConnection(DB_NAME, false);
+        } else {
+            _db = await _sqlite.createConnection(
+                DB_NAME,
+                false,
+                'no-encryption',
+                DB_VERSION,
+                false
+            );
+        }
+    } catch (err: any) {
+        // Fallback for HMR where the connection thinks it exists but retrieve fails
+        if (err.message && err.message.includes('already exists')) {
+            _db = await _sqlite.retrieveConnection(DB_NAME, false);
+        } else {
+            throw err;
+        }
+    }
+
+    if (_db) {
+        await _db.open();
+        await _db.execute(SQL_CREATE_TABLES);
+    } else {
+        throw new Error('Failed to create or retrieve SQLite connection.');
+    }
 
     return _db;
+}
+
+/** 
+ * On web, we must explicitly save the db to IndexedDB after mutations.
+ * On native, this is a no-op / not needed.
+ */
+export async function saveWebStore(): Promise<void> {
+    const platform = Capacitor.getPlatform();
+    if (platform === 'web' && _sqlite) {
+        try {
+            await _sqlite.saveToStore(DB_NAME);
+        } catch (e) {
+            console.warn('Failed to save to web store:', e);
+        }
+    }
 }
 
 /** Close the DB connection (call on app teardown if needed). */
 export async function closeDB(): Promise<void> {
     if (_db && _sqlite) {
+        await saveWebStore();
         await _sqlite.closeConnection(DB_NAME, false);
         _db = null;
     }

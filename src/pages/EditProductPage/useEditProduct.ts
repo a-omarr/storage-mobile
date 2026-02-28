@@ -38,7 +38,13 @@ export const useEditProduct = () => {
     const handleSubmit = async (data: ProductFormData) => {
         if (!id) return;
 
-        if (!data.dateOfProduction) {
+        // Determine inventory
+        const isInventory1 = data.sections?.some(s => {
+            const config = SECTION_MAP[s as keyof typeof SECTION_MAP];
+            return config && config.inventory === 1;
+        });
+
+        if (isInventory1 && !data.dateOfProduction) {
             message.error('يرجى إدخال تاريخ الإنتاج');
             return;
         }

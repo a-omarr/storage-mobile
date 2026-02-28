@@ -24,7 +24,7 @@ const AllProductsHeader: React.FC<Props> = ({
 
     return (
         <div className="bg-gradient-to-br from-blue-600 to-blue-800 rounded-[12px] px-6 py-5 mb-5 shadow-lg">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-4">
                 <div className="flex items-center gap-3">
                     <button
                         onClick={() => navigate(-1)}
@@ -45,7 +45,7 @@ const AllProductsHeader: React.FC<Props> = ({
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2 mt-2 md:mt-0">
                     {hasItems && (
                         <Button
                             onClick={onSelectAll}

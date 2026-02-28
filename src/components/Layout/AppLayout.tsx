@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Layout } from 'antd';
 import Navbar from './Navbar.tsx';
 import Sidebar from './Sidebar.tsx';
@@ -7,6 +7,8 @@ import { SECTIONS } from '../../constants/sections';
 import { FiBox } from 'react-icons/fi';
 import ErrorBoundary from '../Common/ErrorBoundary';
 import OfflineIndicator from '../Common/OfflineIndicator';
+import { App as CapacitorApp } from '@capacitor/app';
+import { Capacitor } from '@capacitor/core';
 
 const { Content } = Layout;
 
@@ -19,6 +21,22 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
     const { section } = useParams<{ section?: string }>();
     const location = useLocation();
     const isAllProducts = location.pathname === '/all-products';
+
+    useEffect(() => {
+        if (Capacitor.isNativePlatform()) {
+            const listener = CapacitorApp.addListener('backButton', () => {
+                if (location.pathname === '/' || location.pathname === '') {
+                    CapacitorApp.exitApp();
+                } else {
+                    navigate(-1);
+                }
+            });
+
+            return () => {
+                listener.then((l: any) => l.remove());
+            };
+        }
+    }, [location, navigate]);
 
     return (
         <Layout style={{ minHeight: '100vh', background: 'var(--color-bg)' }}>

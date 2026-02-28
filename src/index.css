@@ -35,6 +35,18 @@ body,
   background-color: var(--color-bg);
   color: var(--color-text);
   direction: rtl;
+
+  /* Mobile App UX Polish */
+  -webkit-user-select: none; /* Prevent text selection */
+  user-select: none;
+  -webkit-touch-callout: none; /* Prevent long press context menu */
+  overscroll-behavior-y: none; /* Prevent rubber-band bounce effect on scroll */
+}
+
+/* Allow text selection inside inputs and textareas only */
+input, textarea {
+  -webkit-user-select: auto;
+  user-select: auto;
 }
 
 /* Ant Design RTL overrides */

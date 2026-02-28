@@ -1,13 +1,37 @@
 import React from 'react';
-import { Layout, Button, Typography } from 'antd';
-import { FiSearch } from 'react-icons/fi';
+import { Layout, Button, Typography, Dropdown } from 'antd';
+import type { MenuProps } from 'antd';
+import { FiSearch, FiSettings, FiDownload, FiUpload } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
+import { useDataExport } from '../../hooks/useDataExport';
+import { useDataImport } from '../../hooks/useDataImport';
 
 const { Header } = Layout;
 const { Text } = Typography;
 
 const Navbar: React.FC = () => {
     const navigate = useNavigate();
+    const { exportData, isExporting } = useDataExport();
+
+    // Refresh the page or navigate home after a successful import
+    const { importData, isImporting } = useDataImport(() => {
+        window.location.href = '/';
+    });
+
+    const menuItems: MenuProps['items'] = [
+        {
+            key: 'export',
+            label: 'تصدير نسخة احتياطية',
+            icon: <FiDownload />,
+            onClick: exportData
+        },
+        {
+            key: 'import',
+            label: 'استعادة من نسخة احتياطية',
+            icon: <FiUpload />,
+            onClick: importData
+        }
+    ];
 
     return (
         <Header
@@ -52,6 +76,16 @@ const Navbar: React.FC = () => {
             </div>
 
             <div className="flex items-center gap-2">
+                <Dropdown menu={{ items: menuItems }} trigger={['click']} placement="bottomRight">
+                    <Button
+                        type="text"
+                        icon={<FiSettings style={{ fontSize: 22 }} />}
+                        style={{ color: 'white' }}
+                        title="الإعدادات"
+                        loading={isExporting || isImporting}
+                    />
+                </Dropdown>
+
                 <Button
                     type="text"
                     icon={<FiSearch style={{ fontSize: 22 }} />}

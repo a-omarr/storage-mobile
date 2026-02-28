@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { collection, onSnapshot, query, where, orderBy } from 'firebase/firestore';
-import { db } from '../../firebase/config';
+import { getProductsBySection } from '../../db/productService';
 import type { Product, SectionKey } from '../../types/product';
 import { SECTION_MAP } from '../../constants/sections';
 
@@ -21,30 +20,24 @@ export const useSectionPage = () => {
             return;
         }
 
-        const q = query(
-            collection(db, 'products'),
-            where('sections', 'array-contains', sectionKey),
-            orderBy('dateOfProduction', 'asc')
-        );
+        let cancelled = false;
+        setLoading(true);
 
-        const unsub = onSnapshot(
-            q,
-            (snap) => {
-                const results = snap.docs.map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                    displaySection: sectionKey,
-                })) as unknown as Product[];
-                setProducts(results);
-                setLoading(false);
-            },
-            (err) => {
-                setError(err.message);
-                setLoading(false);
-            }
-        );
+        getProductsBySection(sectionKey)
+            .then((results) => {
+                if (!cancelled) {
+                    setProducts(results);
+                    setLoading(false);
+                }
+            })
+            .catch((err) => {
+                if (!cancelled) {
+                    setError(String(err));
+                    setLoading(false);
+                }
+            });
 
-        return () => unsub();
+        return () => { cancelled = true; };
     }, [sectionKey]);
 
     const handleAddProduct = () => {
@@ -53,3 +46,4 @@ export const useSectionPage = () => {
 
     return { sectionKey, sectionConfig, products, loading, error, handleAddProduct };
 };
+

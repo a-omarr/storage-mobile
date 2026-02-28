@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { collection, addDoc, Timestamp } from 'firebase/firestore';
 import { message } from 'antd';
-import { db } from '../../firebase/config';
+import { addProduct } from '../../db/productService';
 import type { ProductFormData, SectionKey } from '../../types/product';
 import { SECTION_MAP } from '../../constants/sections';
 
@@ -29,11 +28,7 @@ export const useAddProduct = () => {
         }
         setLoading(true);
         try {
-            await addDoc(collection(db, 'products'), {
-                ...data,
-                dateOfProduction: Timestamp.fromDate(data.dateOfProduction),
-                createdAt: Timestamp.now(),
-            });
+            await addProduct(data);
             navigator.vibrate?.(80);
             message.success('تم إضافة المنتج بنجاح');
             if (defaultSection) {
@@ -43,7 +38,7 @@ export const useAddProduct = () => {
             }
         } catch (err) {
             console.error('Add product error:', err);
-            message.error('حدث خطأ أثناء الحفظ. تحقق من اتصالك بالإنترنت.');
+            message.error('حدث خطأ أثناء الحفظ.');
         } finally {
             setLoading(false);
         }
@@ -51,3 +46,4 @@ export const useAddProduct = () => {
 
     return { loading, defaultSection, sectionConfig, handleCancel, handleSubmit };
 };
+

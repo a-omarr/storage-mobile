@@ -16,7 +16,7 @@ export const useHome = () => {
 
     const oldest = [...products]
         .filter((p) => p.dateOfProduction)
-        .sort((a, b) => a.dateOfProduction.toMillis() - b.dateOfProduction.toMillis())
+        .sort((a, b) => new Date(a.dateOfProduction).getTime() - new Date(b.dateOfProduction).getTime())
         .slice(0, 5);
 
     return { products, loading, counts, oldest, totalCount };

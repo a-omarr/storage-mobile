@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { doc, onSnapshot } from 'firebase/firestore';
-import { db } from '../../firebase/config';
+import { getProductById } from '../../db/productService';
 import type { Product } from '../../types/product';
 
 export const useProductDetail = () => {
@@ -12,23 +11,26 @@ export const useProductDetail = () => {
 
     useEffect(() => {
         if (!id) return;
-        const unsub = onSnapshot(
-            doc(db, 'products', id),
-            (snap) => {
-                if (snap.exists()) {
-                    setProduct({ id: snap.id, ...snap.data() } as Product);
-                } else {
-                    setError('المنتج غير موجود');
+        let cancelled = false;
+
+        getProductById(id)
+            .then((p) => {
+                if (!cancelled) {
+                    if (p) setProduct(p);
+                    else setError('المنتج غير موجود');
+                    setLoading(false);
                 }
-                setLoading(false);
-            },
-            (err) => {
-                setError(err.message);
-                setLoading(false);
-            }
-        );
-        return () => unsub();
+            })
+            .catch((err) => {
+                if (!cancelled) {
+                    setError(String(err));
+                    setLoading(false);
+                }
+            });
+
+        return () => { cancelled = true; };
     }, [id]);
 
     return { product, loading, error };
 };
+

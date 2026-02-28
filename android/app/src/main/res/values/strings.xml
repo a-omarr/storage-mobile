@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">إدارة المخزن</string>
+    <string name="title_activity_main">إدارة المخزن</string>
+    <string name="package_name">com.storage.app</string>
+    <string name="custom_url_scheme">com.storage.app</string>
+</resources>

@@ -1,5 +1,3 @@
-import { Timestamp } from 'firebase/firestore';
-
 export type SectionKey = 'A' | 'B' | 'C' | 'D' | 'THE_SIXTH' | 'EYES';
 
 export interface Product {
@@ -15,10 +13,11 @@ export interface Product {
     numberOfLayers: number; // e.g. 7
     piecesPerPallet: number;// e.g. 1631
     numberOfPallet: number; // e.g. 1108
-    dateOfProduction: Timestamp;
-    createdAt: Timestamp;
+    dateOfProduction: string; // ISO date string
+    createdAt: string;        // ISO date string
 }
 
 export type ProductFormData = Omit<Product, 'id' | 'createdAt' | 'dateOfProduction'> & {
     dateOfProduction: Date | null;
 };
+

@@ -3,8 +3,8 @@
 
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/logo.svg" />
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="icon" type="image/svg+xml" href="./logo.svg" />
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#1677ff" />
   <meta name="description" content="تطبيق إدارة المخزون لمنشأة التخزين" />
@@ -15,8 +15,11 @@
 </head>
 
 <body>
+  <!-- jeep-sqlite web component: used in browser dev mode for SQLite via WASM.
+       On Android/iOS, Capacitor uses native SQLite and this element is ignored. -->
+  <jeep-sqlite></jeep-sqlite>
   <div id="root"></div>
-  <script type="module" src="/src/main.tsx"></script>
+  <script type="module" src="./src/main.tsx"></script>
 </body>
 
 </html>

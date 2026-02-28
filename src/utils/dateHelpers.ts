@@ -1,11 +1,10 @@
-import { Timestamp } from 'firebase/firestore';
-
 /**
- * Format a Firestore Timestamp to DD/MM/YYYY
+ * Format an ISO date string to DD/MM/YYYY
  */
-export function formatDate(ts: Timestamp | null | undefined): string {
+export function formatDate(ts: string | null | undefined): string {
     if (!ts) return '—';
-    const d = ts.toDate();
+    const d = new Date(ts);
+    if (isNaN(d.getTime())) return '—';
     const day = String(d.getDate()).padStart(2, '0');
     const month = String(d.getMonth() + 1).padStart(2, '0');
     const year = d.getFullYear();
@@ -13,10 +12,10 @@ export function formatDate(ts: Timestamp | null | undefined): string {
 }
 
 /**
- * Convert a Date object to a Firestore Timestamp
+ * Convert a Date object to an ISO string (replaces Firestore Timestamp.fromDate)
  */
-export function dateToTimestamp(date: Date): Timestamp {
-    return Timestamp.fromDate(date);
+export function dateToISOString(date: Date): string {
+    return date.toISOString();
 }
 
 /**
@@ -51,11 +50,12 @@ export function parseOCRDate(raw: string): Date | null {
 }
 
 /**
- * Get how many days old a product is
+ * Get how many days old a product is (from its ISO date string)
  */
-export function daysOld(ts: Timestamp | null | undefined): number {
+export function daysOld(ts: string | null | undefined): number {
     if (!ts) return 0;
-    const now = Date.now();
-    const then = ts.toDate().getTime();
-    return Math.floor((now - then) / (1000 * 60 * 60 * 24));
+    const then = new Date(ts).getTime();
+    if (isNaN(then)) return 0;
+    return Math.floor((Date.now() - then) / (1000 * 60 * 60 * 24));
 }
+

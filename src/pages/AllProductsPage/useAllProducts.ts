@@ -34,8 +34,8 @@ export const useAllProducts = () => {
     const sorted = [...filtered]
         .filter((p) => p.dateOfProduction)
         .sort((a, b) => {
-            const ta = a.dateOfProduction.toMillis();
-            const tb = b.dateOfProduction.toMillis();
+            const ta = new Date(a.dateOfProduction).getTime();
+            const tb = new Date(b.dateOfProduction).getTime();
             return sortOrder === 'asc' ? ta - tb : tb - ta;
         });
 

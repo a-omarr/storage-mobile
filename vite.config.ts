@@ -2,11 +2,22 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 import tailwindcss from '@tailwindcss/vite'
+import { viteStaticCopy } from 'vite-plugin-static-copy'
 
 export default defineConfig({
+  base: './',
   plugins: [
     react(),
     tailwindcss(),
+    // Copy sql.js WASM files so jeep-sqlite can run SQLite in the browser during dev/test
+    viteStaticCopy({
+      targets: [
+        {
+          src: 'node_modules/sql.js/dist/sql-wasm.wasm',
+          dest: '',
+        },
+      ],
+    }),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['logo.svg', 'logo.png', 'apple-touch-icon.png'],
@@ -19,7 +30,7 @@ export default defineConfig({
         display: 'standalone',
         lang: 'ar',
         dir: 'rtl',
-        start_url: '/',
+        start_url: './',
         icons: [
           {
             src: 'pwa-192x192.png',
@@ -34,20 +45,7 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
-        runtimeCaching: [
-          {
-            urlPattern: /^https:\/\/firestore\.googleapis\.com\/.*/i,
-            handler: 'NetworkFirst',
-            options: {
-              cacheName: 'firestore-cache',
-              expiration: {
-                maxEntries: 200,
-                maxAgeSeconds: 60 * 60 * 24 * 7,
-              },
-            },
-          },
-        ],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,wasm}'],
       },
     }),
   ],

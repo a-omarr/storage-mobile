@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ConfigProvider, App as AntdApp } from 'antd';
 import arEG from 'antd/locale/ar_EG';
 import { antdTheme } from './constants/antdTheme';
@@ -11,55 +11,32 @@ import EditProductPage from './pages/EditProductPage/EditProductPage';
 import SearchResultsPage from './pages/SearchResultsPage/SearchResultsPage';
 import ProductDetailPage from './pages/ProductDetailPage/ProductDetailPage';
 import AllProductsPage from './pages/AllProductsPage/AllProductsPage';
-import LoginPage from './pages/LoginPage/LoginPage';
-import { AuthProvider } from './firebase/AuthContext';
-import ProtectedRoute from './components/Auth/ProtectedRoute';
-import AdminRoute from './components/Auth/AdminRoute';
-import AutoLogout from './components/Auth/AutoLogout';
-
 import ErrorBoundary from './components/Common/ErrorBoundary';
+import AppInit from './components/Common/AppInit.tsx';
 
-const App: React.FC = () => {
-  return (
-    <ConfigProvider direction="rtl" locale={arEG} theme={antdTheme}>
-      <AntdApp>
-        <ErrorBoundary>
-          <AuthProvider>
-            <BrowserRouter>
-              <AutoLogout>
-                <Routes>
-                  <Route path="/login" element={<LoginPage />} />
-
-                  <Route element={
-                    <ProtectedRoute>
-                      <AppLayout><Outlet /></AppLayout>
-                    </ProtectedRoute>
-                  }>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/section/:section" element={<SectionPage />} />
-                    <Route path="/product/:id" element={<ProductDetailPage />} />
-                    <Route path="/search" element={<SearchResultsPage />} />
-                    <Route path="/all-products" element={<AllProductsPage />} />
-                  </Route>
-
-                  <Route element={
-                    <AdminRoute>
-                      <AppLayout><Outlet /></AppLayout>
-                    </AdminRoute>
-                  }>
-                    <Route path="/add" element={<AddProductPage />} />
-                    <Route path="/edit/:id" element={<EditProductPage />} />
-                  </Route>
-
-                  <Route path="*" element={<Navigate to="/" replace />} />
-                </Routes>
-              </AutoLogout>
-            </BrowserRouter>
-          </AuthProvider>
-        </ErrorBoundary>
-      </AntdApp>
-    </ConfigProvider>
-  );
-};
+const App: React.FC = () => (
+  <ConfigProvider direction="rtl" locale={arEG} theme={antdTheme}>
+    <AntdApp>
+      <ErrorBoundary>
+        <AppInit>
+          <BrowserRouter>
+            <AppLayout>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/section/:section" element={<SectionPage />} />
+                <Route path="/product/:id" element={<ProductDetailPage />} />
+                <Route path="/search" element={<SearchResultsPage />} />
+                <Route path="/all-products" element={<AllProductsPage />} />
+                <Route path="/add" element={<AddProductPage />} />
+                <Route path="/edit/:id" element={<EditProductPage />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </AppLayout>
+          </BrowserRouter>
+        </AppInit>
+      </ErrorBoundary>
+    </AntdApp>
+  </ConfigProvider>
+);
 
 export default App;

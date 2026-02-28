@@ -215,7 +215,7 @@ export function parseOCRResult(words: OCRWord[]): ParsedOCRData {
     if (words.length === 0) return result;
 
     const rows = groupByRows(words, 20);
-    console.log('[ocrParser] rows:', rows.map(r => rowText(r)));
+    // Rows parsing follows...
 
     // ── Product title + capacity ──────────────────────────────────────────────
     for (let i = 0; i < Math.min(5, rows.length); i++) {

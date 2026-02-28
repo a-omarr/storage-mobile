@@ -108,8 +108,6 @@ const OCRProcessor: React.FC<OCRProcessorProps> = ({ imageDataUrl, onResult, onE
                 const { data } = await workerRef.current.recognize(canvas, {}, { blocks: true, text: true });
 
                 const words = extractWords(data);
-                console.log('[OCR raw text]:\n', data.text);
-                console.log('[OCR words]:', words.length);
 
                 // Calculate average confidence
                 const avgConfidence = words.length > 0
